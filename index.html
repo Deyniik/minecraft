@@ -39,7 +39,6 @@
             --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
         }
 
-        /* Навигация */
         .nav-tabs {
             display: inline-flex;
             background-color: var(--bg-raised);
@@ -66,7 +65,6 @@
             background-color: var(--bg-selected);
         }
 
-        /* Поиск */
         .search-section {
             margin-bottom: 1.5rem;
         }
@@ -102,7 +100,6 @@
             stroke: var(--text-secondary);
         }
 
-        /* Фильтры */
         .filters-section {
             display: flex;
             flex-wrap: wrap;
@@ -151,7 +148,73 @@
             fill: none;
         }
 
-        /* Сетка */
+        /* Переключатель "Описания на русском" */
+        .translate-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background-color: var(--bg-raised);
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--card-shadow);
+        }
+
+        .toggle-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-button);
+            transition: 0.2s;
+            border-radius: 34px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 2px;
+            background-color: var(--text-secondary);
+            transition: 0.2s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--bg-green);
+            border-color: var(--text-brand-green);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(23px);
+            background-color: var(--text-brand-green);
+        }
+
         .mods-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -159,7 +222,6 @@
             margin-top: 2rem;
         }
 
-        /* Карточка */
         .mod-card {
             background-color: var(--bg-raised);
             border-radius: 1rem;
@@ -262,7 +324,6 @@
             color: #ef4444;
         }
 
-        /* Пагинация */
         .pagination {
             display: flex;
             justify-content: center;
@@ -297,10 +358,6 @@
             opacity: 0.5;
             cursor: not-allowed;
         }
-
-        .status {
-            color: var(--text-secondary);
-        }
     </style>
 </head>
 <body>
@@ -325,7 +382,7 @@
             </div>
         </div>
 
-        <!-- Фильтры -->
+        <!-- Фильтры с переключателем вместо счётчика -->
         <div class="filters-section">
             <div class="filter-group">
                 <button class="filter-btn" id="sortBtn">
@@ -337,7 +394,15 @@
                     <span id="platformText">Все загрузчики</span>
                 </button>
             </div>
-            <div class="status" id="status"></div>
+            
+            <!-- Переключатель "Описания на русском" -->
+            <div class="translate-toggle">
+                <span class="toggle-label">🇷🇺 Описания на русском</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="translateToggle">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
         </div>
 
         <!-- Сетка -->
@@ -359,9 +424,11 @@
         let currentTab = 'mod';
         let currentSearch = '';
         let currentPlatform = 'all';
-        let currentSort = 'newest'; // ПО УМОЛЧАНИЮ NEWEST - самые новые!
+        let currentSort = 'newest';
+        let translateEnabled = false; // По умолчанию ВЫКЛЮЧЕН (английский)
         let totalHits = 0;
-        let cachedTranslations = new Map(); // Кэш переводов
+        let cachedProjects = null;
+        let cachedTranslations = new Map();
         const limit = 25;
 
         // Константы
@@ -376,7 +443,6 @@
 
         // Элементы
         const modsGrid = document.getElementById('modsGrid');
-        const statusEl = document.getElementById('status');
         const searchInput = document.getElementById('searchInput');
         const platformFilter = document.getElementById('platformFilter');
         const platformText = document.getElementById('platformText');
@@ -384,10 +450,31 @@
         const sortText = document.getElementById('sortText');
         const paginationEl = document.getElementById('pagination');
         const tabs = document.querySelectorAll('.nav-tab');
+        const translateToggle = document.getElementById('translateToggle');
+
+        // ========== ПЕРЕКЛЮЧЕНИЕ ПЕРЕВОДА ==========
+        translateToggle.addEventListener('change', async () => {
+            translateEnabled = translateToggle.checked;
+            
+            if (translateEnabled && cachedProjects) {
+                // Показываем сообщение о переводе
+                modsGrid.innerHTML = '<div class="loading">🔄 Переводим описания на русский...</div>';
+                
+                // Переводим все описания
+                for (const project of cachedProjects) {
+                    if (project.description && !cachedTranslations.has(project.description)) {
+                        await translateText(project.description);
+                    }
+                }
+            }
+            
+            // Перерисовываем
+            renderProjects();
+        });
 
         // ========== ПЕРЕВОД НА РУССКИЙ ==========
         async function translateText(text) {
-            if (!text || text.length < 10) return text; // Не переводим короткие тексты
+            if (!text || text.length < 10) return text;
             if (cachedTranslations.has(text)) return cachedTranslations.get(text);
             
             try {
@@ -402,19 +489,76 @@
             }
         }
 
+        // ========== ПОЛУЧЕНИЕ ОПИСАНИЯ ==========
+        function getDescription(project) {
+            if (!translateEnabled) {
+                return project.description || 'No description available.';
+            }
+            
+            const cached = cachedTranslations.get(project.description);
+            return cached || project.description || 'Нет описания';
+        }
+
+        // ========== ОТРИСОВКА ==========
+        function renderProjects() {
+            if (!cachedProjects || cachedProjects.length === 0) {
+                modsGrid.innerHTML = '<div class="loading">😕 Нет проектов</div>';
+                return;
+            }
+
+            let html = '';
+            for (const project of cachedProjects) {
+                const description = getDescription(project);
+                const iconUrl = project.icon_url || 'https://via.placeholder.com/64/2c2c30/a0a0a8?text=Mod';
+                const updated = project.date_modified ? new Date(project.date_modified).toLocaleDateString('ru-RU') : 'неизвестно';
+                
+                html += `
+                    <div class="mod-card" onclick="window.open('https://modrinth.com/${project.project_type}/${project.slug}', '_blank')">
+                        <div class="mod-header">
+                            <img src="${iconUrl}" class="mod-icon" alt="${escapeHtml(project.title)}"
+                                 onerror="this.src='https://via.placeholder.com/64/2c2c30/a0a0a8?text=Mod'">
+                            <div class="mod-title">
+                                <div class="mod-name">${escapeHtml(project.title)}</div>
+                                <div class="mod-author">by ${escapeHtml(project.author || 'Неизвестен')}</div>
+                            </div>
+                        </div>
+                        <div class="mod-description">${escapeHtml(description)}</div>
+                        <div class="mod-stats">
+                            <span class="mod-stat">
+                                <svg viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-1m-4-4-4 4m0 0-4-4m4 4V4"/></svg>
+                                ${formatNumber(project.downloads)}
+                            </span>
+                            <span class="mod-stat">
+                                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                ${formatNumber(project.follows)}
+                            </span>
+                            <span class="mod-stat">
+                                <svg viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2"/></svg>
+                                ${updated}
+                            </span>
+                        </div>
+                        <div class="mod-loaders">
+                            ${(project.categories || []).slice(0, 4).map(l => 
+                                `<span class="loader-badge">${escapeHtml(l)}</span>`
+                            ).join('')}
+                            ${(project.categories || []).length > 4 ? 
+                                `<span class="loader-badge">+${project.categories.length - 4}</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            modsGrid.innerHTML = html;
+        }
+
         // ========== ЗАГРУЗКА ==========
         async function loadMods() {
             try {
-                statusEl.textContent = '⏳ Загрузка...';
                 modsGrid.innerHTML = '<div class="loading">⏳ Загружаем проекты с Modrinth...</div>';
 
                 // Формируем facets
-                const facetsArray = [];
+                const facetsArray = [[`project_type:${currentTab}`]];
                 
-                // Тип проекта
-                facetsArray.push([`project_type:${currentTab}`]);
-                
-                // Платформа/загрузчик
                 if (currentPlatform !== 'all') {
                     facetsArray.push([`categories:${currentPlatform}`]);
                 }
@@ -429,79 +573,35 @@
                 
                 url += `&index=${currentSort}`;
 
-                console.log('Запрос:', url);
-
                 const response = await fetch(url);
                 if (!response.ok) throw new Error(`Ошибка ${response.status}`);
                 
                 const data = await response.json();
                 
                 totalHits = data.total_hits;
-                const projects = data.hits;
+                cachedProjects = data.hits;
 
-                statusEl.textContent = `📊 Найдено: ${totalHits.toLocaleString()}`;
-
-                if (!projects || projects.length === 0) {
+                if (!cachedProjects || cachedProjects.length === 0) {
                     modsGrid.innerHTML = '<div class="loading">😕 Ничего не найдено</div>';
                     return;
                 }
 
-                // Переводим описания и отображаем
-                modsGrid.innerHTML = '<div class="loading">🔄 Переводим описания на русский...</div>';
-                
-                let html = '';
-                for (const project of projects) {
-                    // Переводим описание
-                    const translatedDesc = await translateText(project.description || 'Нет описания');
+                // Если перевод включен - переводим
+                if (translateEnabled) {
+                    modsGrid.innerHTML = '<div class="loading">🔄 Переводим описания на русский...</div>';
                     
-                    // Заглушка для иконки
-                    const iconUrl = project.icon_url || 'https://via.placeholder.com/64/2c2c30/a0a0a8?text=Mod';
-                    
-                    // Форматируем дату
-                    const updated = project.date_modified ? new Date(project.date_modified).toLocaleDateString('ru-RU') : 'неизвестно';
-                    
-                    html += `
-                        <div class="mod-card" onclick="window.open('https://modrinth.com/${project.project_type}/${project.slug}', '_blank')">
-                            <div class="mod-header">
-                                <img src="${iconUrl}" class="mod-icon" alt="${escapeHtml(project.title)}"
-                                     onerror="this.src='https://via.placeholder.com/64/2c2c30/a0a0a8?text=Mod'">
-                                <div class="mod-title">
-                                    <div class="mod-name">${escapeHtml(project.title)}</div>
-                                    <div class="mod-author">by ${escapeHtml(project.author || 'Неизвестен')}</div>
-                                </div>
-                            </div>
-                            <div class="mod-description">${escapeHtml(translatedDesc)}</div>
-                            <div class="mod-stats">
-                                <span class="mod-stat">
-                                    <svg viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-1m-4-4-4 4m0 0-4-4m4 4V4"/></svg>
-                                    ${formatNumber(project.downloads)}
-                                </span>
-                                <span class="mod-stat">
-                                    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                                    ${formatNumber(project.follows)}
-                                </span>
-                                <span class="mod-stat">
-                                    <svg viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2"/></svg>
-                                    ${updated}
-                                </span>
-                            </div>
-                            <div class="mod-loaders">
-                                ${(project.categories || []).slice(0, 4).map(l => 
-                                    `<span class="loader-badge">${escapeHtml(l)}</span>`
-                                ).join('')}
-                                ${(project.categories || []).length > 4 ? 
-                                    `<span class="loader-badge">+${project.categories.length - 4}</span>` : ''}
-                            </div>
-                        </div>
-                    `;
+                    for (const project of cachedProjects) {
+                        if (project.description && !cachedTranslations.has(project.description)) {
+                            await translateText(project.description);
+                        }
+                    }
                 }
                 
-                modsGrid.innerHTML = html;
+                renderProjects();
                 updatePagination();
 
             } catch (error) {
                 console.error('Ошибка:', error);
-                statusEl.textContent = '❌ Ошибка';
                 modsGrid.innerHTML = `<div class="error">❌ Ошибка: ${error.message}</div>`;
             }
         }
@@ -531,7 +631,6 @@
 
             if (totalPages <= 1) return;
 
-            // Предыдущая
             const prevBtn = document.createElement('button');
             prevBtn.className = 'page-btn';
             prevBtn.innerHTML = '←';
@@ -545,7 +644,6 @@
             };
             paginationEl.appendChild(prevBtn);
 
-            // Номера
             let start = Math.max(0, currentPage - 2);
             let end = Math.min(totalPages, currentPage + 3);
 
@@ -561,7 +659,6 @@
                 paginationEl.appendChild(btn);
             }
 
-            // Следующая
             const nextBtn = document.createElement('button');
             nextBtn.className = 'page-btn';
             nextBtn.innerHTML = '→';
@@ -578,7 +675,6 @@
 
         // ========== ОБРАБОТЧИКИ ==========
         
-        // Вкладки
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 tabs.forEach(t => t.classList.remove('active'));
@@ -589,14 +685,12 @@
             });
         });
 
-        // Поиск
         let searchTimeout;
         searchInput.addEventListener('input', () => {
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(() => {
                 currentSearch = searchInput.value;
                 currentPage = 0;
-                // При поиске автоматически переключаем на релевантность
                 if (currentSearch) {
                     currentSort = 'relevance';
                     sortText.textContent = `Сортировка: ${sortNames.relevance}`;
@@ -605,7 +699,6 @@
             }, 500);
         });
 
-        // Фильтр по платформе
         let platformIndex = 0;
         platformFilter.addEventListener('click', () => {
             platformIndex = (platformIndex + 1) % platforms.length;
@@ -615,8 +708,7 @@
             loadMods();
         });
 
-        // Сортировка
-        let sortIndex = 0; // Начинаем с 0 - newest
+        let sortIndex = 0;
         sortBtn.addEventListener('click', () => {
             sortIndex = (sortIndex + 1) % sorts.length;
             currentSort = sorts[sortIndex];
