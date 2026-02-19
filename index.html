@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modrinth на русском - все моды с переводом</title>
+    <title>Deynik Minecraft</title>
     <style>
         * {
             margin: 0;
@@ -33,10 +33,31 @@
             --bg-selected: #3b3b45;
             --text-contrast: #ffffff;
             --text-secondary: #a0a0a8;
-            --text-brand-green: #2bde73;
-            --bg-green: rgba(43, 222, 115, 0.15);
+            --text-brand: #fbbf24; /* Жёлтый цвет */
+            --bg-brand: rgba(251, 191, 36, 0.15);
             --border-subtle: #2c2c32;
             --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Шапка */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-contrast);
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--text-brand);
         }
 
         .nav-tabs {
@@ -44,7 +65,6 @@
             background-color: var(--bg-raised);
             border-radius: 9999px;
             padding: 0.25rem;
-            margin-bottom: 1.5rem;
             box-shadow: var(--card-shadow);
             flex-wrap: wrap;
         }
@@ -58,6 +78,11 @@
             cursor: pointer;
             border: none;
             background: transparent;
+            transition: all 0.15s;
+        }
+
+        .nav-tab:hover {
+            color: var(--text-contrast);
         }
 
         .nav-tab.active {
@@ -65,6 +90,7 @@
             background-color: var(--bg-selected);
         }
 
+        /* Поиск */
         .search-section {
             margin-bottom: 1.5rem;
         }
@@ -87,7 +113,7 @@
 
         .search-input:focus {
             outline: none;
-            border-color: var(--text-brand-green);
+            border-color: var(--text-brand);
         }
 
         .search-icon {
@@ -100,6 +126,7 @@
             stroke: var(--text-secondary);
         }
 
+        /* Фильтры */
         .filters-section {
             display: flex;
             flex-wrap: wrap;
@@ -115,40 +142,83 @@
             flex-wrap: wrap;
         }
 
-        .filter-btn {
+        /* Кастомный селект */
+        .custom-select {
+            position: relative;
+            min-width: 180px;
+        }
+
+        .select-btn {
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 0.5rem;
             background-color: var(--bg-button);
-            border: none;
+            border: 1px solid var(--border-subtle);
             color: var(--text-secondary);
             font-weight: 600;
             font-size: 0.95rem;
             padding: 0.5rem 1rem;
             border-radius: 0.75rem;
             cursor: pointer;
-            transition: background 0.15s;
+            transition: all 0.15s;
+            width: 100%;
         }
 
-        .filter-btn:hover {
+        .select-btn:hover {
+            background-color: var(--bg-button-hover);
+            color: var(--text-contrast);
+            border-color: var(--text-brand);
+        }
+
+        .select-btn svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            stroke: currentColor;
+            transition: transform 0.2s;
+        }
+
+        .select-btn.open svg {
+            transform: rotate(180deg);
+        }
+
+        .select-dropdown {
+            position: absolute;
+            top: calc(100% + 0.5rem);
+            left: 0;
+            right: 0;
+            background-color: var(--bg-raised);
+            border: 1px solid var(--border-subtle);
+            border-radius: 0.75rem;
+            box-shadow: var(--card-shadow);
+            z-index: 100;
+            display: none;
+            overflow: hidden;
+        }
+
+        .select-dropdown.show {
+            display: block;
+        }
+
+        .select-option {
+            padding: 0.75rem 1rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s;
+            font-weight: 500;
+        }
+
+        .select-option:hover {
             background-color: var(--bg-button-hover);
             color: var(--text-contrast);
         }
 
-        .filter-btn.active {
-            background-color: var(--bg-green);
-            color: var(--text-brand-green);
-            border: 1px solid var(--text-brand-green);
+        .select-option.selected {
+            background-color: var(--bg-brand);
+            color: var(--text-brand);
         }
 
-        .filter-btn svg {
-            width: 1.25rem;
-            height: 1.25rem;
-            stroke: currentColor;
-            fill: none;
-        }
-
-        /* Переключатель "Описания на русском" */
+        /* Переключатель языка */
         .translate-toggle {
             display: flex;
             align-items: center;
@@ -206,15 +276,16 @@
         }
 
         input:checked + .toggle-slider {
-            background-color: var(--bg-green);
-            border-color: var(--text-brand-green);
+            background-color: var(--bg-brand);
+            border-color: var(--text-brand);
         }
 
         input:checked + .toggle-slider:before {
             transform: translateX(23px);
-            background-color: var(--text-brand-green);
+            background-color: var(--text-brand);
         }
 
+        /* Сетка */
         .mods-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -222,6 +293,7 @@
             margin-top: 2rem;
         }
 
+        /* Карточка */
         .mod-card {
             background-color: var(--bg-raised);
             border-radius: 1rem;
@@ -235,7 +307,7 @@
         .mod-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
-            border-color: var(--text-brand-green);
+            border-color: var(--text-brand);
         }
 
         .mod-header {
@@ -301,6 +373,11 @@
             fill: none;
         }
 
+        .mod-stat .likes-icon {
+            fill: none;
+            stroke: var(--text-secondary);
+        }
+
         .mod-loaders {
             display: flex;
             flex-wrap: wrap;
@@ -316,16 +393,12 @@
             color: var(--text-secondary);
         }
 
-        .loading, .error {
+        .loading {
             text-align: center;
             padding: 3rem;
             font-size: 1.2rem;
             grid-column: 1 / -1;
             color: var(--text-secondary);
-        }
-
-        .error {
-            color: #ef4444;
         }
 
         .pagination {
@@ -353,9 +426,9 @@
         }
 
         .page-btn.active {
-            background-color: var(--bg-green);
-            color: var(--text-brand-green);
-            border-color: var(--text-brand-green);
+            background-color: var(--bg-brand);
+            color: var(--text-brand);
+            border-color: var(--text-brand);
         }
 
         .page-btn:disabled {
@@ -366,14 +439,17 @@
 </head>
 <body>
     <div class="container">
-        <!-- Навигация -->
-        <div class="nav-tabs">
-            <button class="nav-tab active" data-tab="mod">📦 Моды</button>
-            <button class="nav-tab" data-tab="shader">✨ Шейдеры</button>
-            <button class="nav-tab" data-tab="resourcepack">🎨 Ресурспаки</button>
-            <button class="nav-tab" data-tab="modpack">📚 Сборки</button>
-            <button class="nav-tab" data-tab="plugin">🔌 Плагины</button>
-            <button class="nav-tab" data-tab="datapack">📁 Датапаки</button>
+        <!-- Шапка с логотипом -->
+        <div class="header">
+            <div class="logo">Deynik <span>Minecraft</span></div>
+            <div class="nav-tabs">
+                <button class="nav-tab active" data-tab="mod">📦 Моды</button>
+                <button class="nav-tab" data-tab="shader">✨ Шейдеры</button>
+                <button class="nav-tab" data-tab="resourcepack">🎨 Ресурспаки</button>
+                <button class="nav-tab" data-tab="modpack">📚 Сборки</button>
+                <button class="nav-tab" data-tab="plugin">🔌 Плагины</button>
+                <button class="nav-tab" data-tab="datapack">📁 Датапаки</button>
+            </div>
         </div>
 
         <!-- Поиск -->
@@ -382,26 +458,46 @@
                 <svg class="search-icon" viewBox="0 0 24 24">
                     <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
-                <input type="text" class="search-input" placeholder="🔍 Поиск модов (например, create, sodium, iris)..." id="searchInput">
+                <input type="text" class="search-input" placeholder="🔍 Поиск проектов..." id="searchInput">
             </div>
         </div>
 
-        <!-- Фильтры с переключателем вместо счётчика -->
+        <!-- Фильтры -->
         <div class="filters-section">
             <div class="filter-group">
-                <button class="filter-btn" id="sortBtn">
-                    <svg viewBox="0 0 24 24"><path d="M3 6h18M6 12h12M10 18h4"/></svg>
-                    <span id="sortText">Сортировка: новые</span>
-                </button>
-                <button class="filter-btn" id="platformFilter">
-                    <svg viewBox="0 0 24 24"><path d="M22 3H2l8 9.46V19l4 2v-8.54z"/></svg>
-                    <span id="platformText">Все загрузчики</span>
-                </button>
+                <!-- Сортировка -->
+                <div class="custom-select" id="sortSelect">
+                    <button class="select-btn" id="sortBtn">
+                        <span id="sortText">Сортировка: новые</span>
+                        <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+                    </button>
+                    <div class="select-dropdown" id="sortDropdown">
+                        <div class="select-option selected" data-value="newest">🔥 Новые</div>
+                        <div class="select-option" data-value="relevance">🎯 Релевантные</div>
+                        <div class="select-option" data-value="downloads">📥 Популярные</div>
+                        <div class="select-option" data-value="updated">🔄 Обновленные</div>
+                    </div>
+                </div>
+
+                <!-- Загрузчики -->
+                <div class="custom-select" id="platformSelect">
+                    <button class="select-btn" id="platformBtn">
+                        <span id="platformText">Все загрузчики</span>
+                        <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+                    </button>
+                    <div class="select-dropdown" id="platformDropdown">
+                        <div class="select-option selected" data-value="all">Все загрузчики</div>
+                        <div class="select-option" data-value="fabric">Fabric</div>
+                        <div class="select-option" data-value="forge">Forge</div>
+                        <div class="select-option" data-value="neoforge">NeoForge</div>
+                        <div class="select-option" data-value="quilt">Quilt</div>
+                    </div>
+                </div>
             </div>
             
-            <!-- Переключатель "Описания на русском" -->
+            <!-- Переключатель языка -->
             <div class="translate-toggle">
-                <span class="toggle-label">🇷🇺 Описания на русском</span>
+                <span class="toggle-label">🇷🇺 Русский</span>
                 <label class="toggle-switch">
                     <input type="checkbox" id="translateToggle">
                     <span class="toggle-slider"></span>
@@ -429,7 +525,7 @@
         let currentSearch = '';
         let currentPlatform = 'all';
         let currentSort = 'newest';
-        let translateEnabled = false; // По умолчанию ВЫКЛЮЧЕН (английский)
+        let translateEnabled = false;
         let totalHits = 0;
         let cachedProjects = null;
         let cachedTranslations = new Map();
@@ -439,32 +535,105 @@
         const platforms = ['all', 'fabric', 'forge', 'neoforge', 'quilt'];
         const sorts = ['newest', 'relevance', 'downloads', 'updated'];
         const sortNames = {
-            'newest': '🔥 новые',
-            'relevance': '🎯 релевантные',
-            'downloads': '📥 популярные',
-            'updated': '🔄 обновленные'
+            'newest': '🔥 Новые',
+            'relevance': '🎯 Релевантные',
+            'downloads': '📥 Популярные',
+            'updated': '🔄 Обновленные'
         };
 
         // Элементы
         const modsGrid = document.getElementById('modsGrid');
         const searchInput = document.getElementById('searchInput');
-        const platformFilter = document.getElementById('platformFilter');
-        const platformText = document.getElementById('platformText');
-        const sortBtn = document.getElementById('sortBtn');
-        const sortText = document.getElementById('sortText');
-        const paginationEl = document.getElementById('pagination');
         const tabs = document.querySelectorAll('.nav-tab');
         const translateToggle = document.getElementById('translateToggle');
+        const paginationEl = document.getElementById('pagination');
+
+        // Элементы селектов
+        const sortSelect = document.getElementById('sortSelect');
+        const sortBtn = document.getElementById('sortBtn');
+        const sortText = document.getElementById('sortText');
+        const sortDropdown = document.getElementById('sortDropdown');
+        const sortOptions = sortDropdown.querySelectorAll('.select-option');
+
+        const platformSelect = document.getElementById('platformSelect');
+        const platformBtn = document.getElementById('platformBtn');
+        const platformText = document.getElementById('platformText');
+        const platformDropdown = document.getElementById('platformDropdown');
+        const platformOptions = platformDropdown.querySelectorAll('.select-option');
+
+        // ========== ЗАКРЫТИЕ ДРОПДАУНОВ ПРИ КЛИКЕ ВНЕ ==========
+        document.addEventListener('click', (e) => {
+            if (!sortSelect.contains(e.target)) {
+                sortBtn.classList.remove('open');
+                sortDropdown.classList.remove('show');
+            }
+            if (!platformSelect.contains(e.target)) {
+                platformBtn.classList.remove('open');
+                platformDropdown.classList.remove('show');
+            }
+        });
+
+        // ========== СОРТИРОВКА ==========
+        sortBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sortBtn.classList.toggle('open');
+            sortDropdown.classList.toggle('show');
+            platformDropdown.classList.remove('show');
+            platformBtn.classList.remove('open');
+        });
+
+        sortOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const value = option.dataset.value;
+                const text = option.textContent;
+                
+                sortOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+                sortText.textContent = `Сортировка: ${text}`;
+                currentSort = value;
+                
+                sortBtn.classList.remove('open');
+                sortDropdown.classList.remove('show');
+                
+                currentPage = 0;
+                loadMods();
+            });
+        });
+
+        // ========== ПЛАТФОРМЫ ==========
+        platformBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            platformBtn.classList.toggle('open');
+            platformDropdown.classList.toggle('show');
+            sortDropdown.classList.remove('show');
+            sortBtn.classList.remove('open');
+        });
+
+        platformOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const value = option.dataset.value;
+                const text = option.textContent;
+                
+                platformOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+                platformText.textContent = text;
+                currentPlatform = value;
+                
+                platformBtn.classList.remove('open');
+                platformDropdown.classList.remove('show');
+                
+                currentPage = 0;
+                loadMods();
+            });
+        });
 
         // ========== ПЕРЕКЛЮЧЕНИЕ ПЕРЕВОДА ==========
         translateToggle.addEventListener('change', async () => {
             translateEnabled = translateToggle.checked;
             
             if (translateEnabled && cachedProjects) {
-                // Показываем сообщение о переводе
-                modsGrid.innerHTML = '<div class="loading">🔄 Переводим описания на русский...</div>';
+                modsGrid.innerHTML = '<div class="loading">🔄 Переводим описания...</div>';
                 
-                // Переводим все описания
                 for (const project of cachedProjects) {
                     if (project.description && !cachedTranslations.has(project.description)) {
                         await translateText(project.description);
@@ -472,11 +641,10 @@
                 }
             }
             
-            // Перерисовываем
             renderProjects();
         });
 
-        // ========== ПЕРЕВОД НА РУССКИЙ ==========
+        // ========== ПЕРЕВОД ==========
         async function translateText(text) {
             if (!text || text.length < 10) return text;
             if (cachedTranslations.has(text)) return cachedTranslations.get(text);
@@ -506,7 +674,7 @@
         // ========== ОТРИСОВКА ==========
         function renderProjects() {
             if (!cachedProjects || cachedProjects.length === 0) {
-                modsGrid.innerHTML = '<div class="loading">😕 Нет проектов</div>';
+                modsGrid.innerHTML = '<div class="loading">😕 Ничего не найдено</div>';
                 return;
             }
 
@@ -517,7 +685,7 @@
                 const updated = project.date_modified ? new Date(project.date_modified).toLocaleDateString('ru-RU') : 'неизвестно';
                 
                 html += `
-                    <div class="mod-card" onclick="window.location.href='/minecraft/${project.project_type}/${project.slug}'">
+                    <div class="mod-card" onclick="window.location.href='/minecraft/#${project.project_type}/${project.slug}'">
                         <div class="mod-header">
                             <img src="${iconUrl}" class="mod-icon" alt="${escapeHtml(project.title)}"
                                  onerror="this.src='https://via.placeholder.com/64/2c2c30/a0a0a8?text=Mod'">
@@ -533,7 +701,10 @@
                                 ${formatNumber(project.downloads)}
                             </span>
                             <span class="mod-stat">
-                                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                <svg class="likes-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="12" cy="7" r="4"/>
+                                </svg>
                                 ${formatNumber(project.follows)}
                             </span>
                             <span class="mod-stat">
@@ -558,16 +729,14 @@
         // ========== ЗАГРУЗКА ==========
         async function loadMods() {
             try {
-                modsGrid.innerHTML = '<div class="loading">⏳ Загружаем проекты с Modrinth...</div>';
+                modsGrid.innerHTML = '<div class="loading">⏳ Загрузка...</div>';
 
-                // Формируем facets
                 const facetsArray = [[`project_type:${currentTab}`]];
                 
                 if (currentPlatform !== 'all') {
                     facetsArray.push([`categories:${currentPlatform}`]);
                 }
 
-                // Строим URL
                 let url = `${API_BASE}/search?limit=${limit}&offset=${currentPage * limit}`;
                 url += `&facets=${encodeURIComponent(JSON.stringify(facetsArray))}`;
                 
@@ -590,9 +759,8 @@
                     return;
                 }
 
-                // Если перевод включен - переводим
                 if (translateEnabled) {
-                    modsGrid.innerHTML = '<div class="loading">🔄 Переводим описания на русский...</div>';
+                    modsGrid.innerHTML = '<div class="loading">🔄 Переводим описания...</div>';
                     
                     for (const project of cachedProjects) {
                         if (project.description && !cachedTranslations.has(project.description)) {
@@ -606,7 +774,7 @@
 
             } catch (error) {
                 console.error('Ошибка:', error);
-                modsGrid.innerHTML = `<div class="error">❌ Ошибка: ${error.message}</div>`;
+                modsGrid.innerHTML = `<div class="loading">❌ Ошибка загрузки</div>`;
             }
         }
 
@@ -677,8 +845,7 @@
             paginationEl.appendChild(nextBtn);
         }
 
-        // ========== ОБРАБОТЧИКИ ==========
-        
+        // ========== ВКЛАДКИ ==========
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 tabs.forEach(t => t.classList.remove('active'));
@@ -689,6 +856,7 @@
             });
         });
 
+        // ========== ПОИСК ==========
         let searchTimeout;
         searchInput.addEventListener('input', () => {
             clearTimeout(searchTimeout);
@@ -698,34 +866,18 @@
                 if (currentSearch) {
                     currentSort = 'relevance';
                     sortText.textContent = `Сортировка: ${sortNames.relevance}`;
+                    // Обновляем выделение в дропдауне
+                    sortOptions.forEach(opt => {
+                        opt.classList.remove('selected');
+                        if (opt.dataset.value === 'relevance') opt.classList.add('selected');
+                    });
                 }
                 loadMods();
             }, 500);
         });
 
-        let platformIndex = 0;
-        platformFilter.addEventListener('click', () => {
-            platformIndex = (platformIndex + 1) % platforms.length;
-            currentPlatform = platforms[platformIndex];
-            platformText.textContent = currentPlatform === 'all' ? 'Все загрузчики' : currentPlatform;
-            currentPage = 0;
-            loadMods();
-        });
-
-        let sortIndex = 0;
-        sortBtn.addEventListener('click', () => {
-            sortIndex = (sortIndex + 1) % sorts.length;
-            currentSort = sorts[sortIndex];
-            sortText.textContent = `Сортировка: ${sortNames[currentSort]}`;
-            currentPage = 0;
-            loadMods();
-        });
-
-        // Старт
+        // ========== СТАРТ ==========
         loadMods();
-
-        // Автообновление раз в 5 минут
-        setInterval(loadMods, 5 * 60 * 1000);
     </script>
 </body>
 </html>
