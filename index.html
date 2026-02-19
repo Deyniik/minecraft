@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modrinth на русском - все моды с переводом</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #0f0f11;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        :root {
+            --bg-body: #0f0f11;
+            --bg-raised: #1c1c1f;
+            --bg-button: #2c2c30;
+            --bg-button-hover: #3a3a40;
+            --bg-selected: #3b3b45;
+            --text-contrast: #ffffff;
+            --text-secondary: #a0a0a8;
+            --text-brand-green: #2bde73;
+            --bg-green: rgba(43, 222, 115, 0.15);
+            --border-subtle: #2c2c32;
+            --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Навигация */
+        .nav-tabs {
+            display: inline-flex;
+            background-color: var(--bg-raised);
+            border-radius: 9999px;
+            padding: 0.25rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--card-shadow);
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 0.5rem 1.5rem;
+            border-radius: 9999px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border: none;
+            background: transparent;
+        }
+
+        .nav-tab.active {
+            color: var(--text-contrast);
+            background-color: var(--bg-selected);
+        }
+
+        /* Поиск */
+        .search-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .search-wrapper {
+            position: relative;
+            max-width: 600px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            background-color: var(--bg-raised);
+            border: 2px solid var(--border-subtle);
+            border-radius: 9999px;
+            color: var(--text-contrast);
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--text-brand-green);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1.25rem;
+            height: 1.25rem;
+            stroke: var(--text-secondary);
+        }
+
+        /* Фильтры */
+        .filters-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--bg-button);
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .filter-btn:hover {
+            background-color: var(--bg-button-hover);
+            color: var(--text-contrast);
+        }
+
+        .filter-btn.active {
+            background-color: var(--bg-green);
+            color: var(--text-brand-green);
+            border: 1px solid var(--text-brand-green);
+        }
+
+        .filter-btn svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            stroke: currentColor;
+            fill: none;
+        }
+
+        /* Сетка */
+        .mods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        /* Карточка */
+        .mod-card {
+            background-color: var(--bg-raised);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            transition: all 0.2s;
+            cursor: pointer;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .mod-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
+            border-color: var(--text-brand-green);
+        }
+
+        .mod-header {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .mod-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            background-color: var(--bg-button);
+            object-fit: cover;
+        }
+
+        .mod-title {
+            flex: 1;
+        }
+
+        .mod-name {
+            font-weight: 700;
+            color: var(--text-contrast);
+            font-size: 1.2rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .mod-author {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .mod-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .mod-stats {
+            display: flex;
+            gap: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .mod-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .mod-stat svg {
+            width: 1rem;
+            height: 1rem;
+            stroke: currentColor;
+            fill: none;
+        }
+
+        .mod-loaders {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .loader-badge {
+            background-color: var(--bg-button);
+            border: 1px solid var(--border-subtle);
+            border-radius: 9999px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .loading, .error {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            grid-column: 1 / -1;
+            color: var(--text-secondary);
+        }
+
+        .error {
+            color: #ef4444;
+        }
+
+        /* Пагинация */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 9999px;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background-color: var(--bg-button);
+            color: var(--text-contrast);
+        }
+
+        .page-btn.active {
+            background-color: var(--bg-green);
+            color: var(--text-brand-green);
+            border-color: var(--text-brand-green);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .status {
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Навигация -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-tab="mod">📦 Моды</button>
+            <button class="nav-tab" data-tab="shader">✨ Шейдеры</button>
+            <button class="nav-tab" data-tab="resourcepack">🎨 Ресурспаки</button>
+            <button class="nav-tab" data-tab="modpack">📚 Сборки</button>
+            <button class="nav-tab" data-tab="plugin">🔌 Плагины</button>
+            <button class="nav-tab" data-tab="datapack">📁 Датапаки</button>
+        </div>
+
+        <!-- Поиск -->
+        <div class="search-section">
+            <div class="search-wrapper">
+                <svg class="search-icon" viewBox="0 0 24 24">
+                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <input type="text" class="search-input" placeholder="🔍 Поиск модов (например, create, sodium, iris)..." id="searchInput">
+            </div>
+        </div>
+
+        <!-- Фильтры -->
+        <div class="filters-section">
+            <div class="filter-group">
+                <button class="filter-btn" id="sortBtn">
+                    <svg viewBox="0 0 24 24"><path d="M3 6h18M6 12h12M10 18h4"/></svg>
+                    <span id="sortText">Сортировка: новые</span>
+                </button>
+                <button class="filter-btn" id="platformFilter">
+                    <svg viewBox="0 0 24 24"><path d="M22 3H2l8 9.46V19l4 2v-8.54z"/></svg>
+                    <span id="platformText">Все загрузчики</span>
+                </button>
+            </div>
+            <div class="status" id="status"></div>
+        </div>
+
+        <!-- Сетка -->
+        <div id="modsGrid" class="mods-grid">
+            <div class="loading">⏳ Загрузка...</div>
+        </div>
+
+        <!-- Пагинация -->
+        <div class="pagination" id="pagination"></div>
+    </div>
+
+    <script>
+        // ========== НАСТРОЙКИ ==========
+        const API_BASE = 'https://api.modrinth.com/v2';
+        const TRANSLATE_API = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ru&dt=t&q=';
+
+        // Состояние
+        let currentPage = 0;
+        let currentTab = 'mod';
+        let currentSearch = '';
+        let currentPlatform = 'all';
+        let currentSort = 'newest'; // ПО УМОЛЧАНИЮ NEWEST - самые новые!
+        let totalHits = 0;
+        let cachedTranslations = new Map(); // Кэш переводов
+        const limit = 25;
+
+        // Константы
+        const platforms = ['all', 'fabric', 'forge', 'neoforge', 'quilt'];
+        const sorts = ['newest', 'relevance', 'downloads', 'updated'];
+        const sortNames = {
+            'newest': '🔥 новые',
+            'relevance': '🎯 релевантные',
+            'downloads': '📥 популярные',
+            'updated': '🔄 обновленные'
+        };
+
+        // Элементы
+        const modsGrid = document.getElementById('modsGrid');
+        const statusEl = document.getElementById('status');
+        const searchInput = document.getElementById('searchInput');
+        const platformFilter = document.getElementById('platformFilter');
+        const platformText = document.getElementById('platformText');
+        const sortBtn = document.getElementById('sortBtn');
+        const sortText = document.getElementById('sortText');
+        const paginationEl = document.getElementById('pagination');
+        const tabs = document.querySelectorAll('.nav-tab');
+
+        // ========== ПЕРЕВОД НА РУССКИЙ ==========
+        async function translateText(text) {
+            if (!text || text.length < 10) return text; // Не переводим короткие тексты
+            if (cachedTranslations.has(text)) return cachedTranslations.get(text);
+            
+            try {
+                const response = await fetch(TRANSLATE_API + encodeURIComponent(text));
+                const data = await response.json();
+                const translated = data[0][0][0];
+                cachedTranslations.set(text, translated);
+                return translated;
+            } catch (error) {
+                console.warn('Ошибка перевода:', error);
+                return text;
+            }
+        }
+
+        // ========== ЗАГРУЗКА ==========
+        async function loadMods() {
+            try {
+                statusEl.textContent = '⏳ Загрузка...';
+                modsGrid.innerHTML = '<div class="loading">⏳ Загружаем проекты с Modrinth...</div>';
+
+                // Формируем facets
+                const facetsArray = [];
+                
+                // Тип проекта
+                facetsArray.push([`project_type:${currentTab}`]);
+                
+                // Платформа/загрузчик
+                if (currentPlatform !== 'all') {
+                    facetsArray.push([`categories:${currentPlatform}`]);
+                }
+
+                // Строим URL
+                let url = `${API_BASE}/search?limit=${limit}&offset=${currentPage * limit}`;
+                url += `&facets=${encodeURIComponent(JSON.stringify(facetsArray))}`;
+                
+                if (currentSearch.trim()) {
+                    url += `&query=${encodeURIComponent(currentSearch.trim())}`;
+                }
+                
+                url += `&index=${currentSort}`;
+
+                console.log('Запрос:', url);
+
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Ошибка ${response.status}`);
+                
+                const data = await response.json();
+                
+                totalHits = data.total_hits;
+                const projects = data.hits;
+
+                statusEl.textContent = `📊 Найдено: ${totalHits.toLocaleString()}`;
+
+                if (!projects || projects.length === 0) {
+                    modsGrid.innerHTML = '<div class="loading">😕 Ничего не найдено</div>';
+                    return;
+                }
+
+                // Переводим описания и отображаем
+                modsGrid.innerHTML = '<div class="loading">🔄 Переводим описания на русский...</div>';
+                
+                let html = '';
+                for (const project of projects) {
+                    // Переводим описание
+                    const translatedDesc = await translateText(project.description || 'Нет описания');
+                    
+                    // Заглушка для иконки
+                    const iconUrl = project.icon_url || 'https://via.placeholder.com/64/2c2c30/a0a0a8?text=Mod';
+                    
+                    // Форматируем дату
+                    const updated = project.date_modified ? new Date(project.date_modified).toLocaleDateString('ru-RU') : 'неизвестно';
+                    
+                    html += `
+                        <div class="mod-card" onclick="window.open('https://modrinth.com/${project.project_type}/${project.slug}', '_blank')">
+                            <div class="mod-header">
+                                <img src="${iconUrl}" class="mod-icon" alt="${escapeHtml(project.title)}"
+                                     onerror="this.src='https://via.placeholder.com/64/2c2c30/a0a0a8?text=Mod'">
+                                <div class="mod-title">
+                                    <div class="mod-name">${escapeHtml(project.title)}</div>
+                                    <div class="mod-author">by ${escapeHtml(project.author || 'Неизвестен')}</div>
+                                </div>
+                            </div>
+                            <div class="mod-description">${escapeHtml(translatedDesc)}</div>
+                            <div class="mod-stats">
+                                <span class="mod-stat">
+                                    <svg viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-1m-4-4-4 4m0 0-4-4m4 4V4"/></svg>
+                                    ${formatNumber(project.downloads)}
+                                </span>
+                                <span class="mod-stat">
+                                    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                    ${formatNumber(project.follows)}
+                                </span>
+                                <span class="mod-stat">
+                                    <svg viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2"/></svg>
+                                    ${updated}
+                                </span>
+                            </div>
+                            <div class="mod-loaders">
+                                ${(project.categories || []).slice(0, 4).map(l => 
+                                    `<span class="loader-badge">${escapeHtml(l)}</span>`
+                                ).join('')}
+                                ${(project.categories || []).length > 4 ? 
+                                    `<span class="loader-badge">+${project.categories.length - 4}</span>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                modsGrid.innerHTML = html;
+                updatePagination();
+
+            } catch (error) {
+                console.error('Ошибка:', error);
+                statusEl.textContent = '❌ Ошибка';
+                modsGrid.innerHTML = `<div class="error">❌ Ошибка: ${error.message}</div>`;
+            }
+        }
+
+        // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return String(unsafe)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function formatNumber(num) {
+            if (!num) return '0';
+            if (num >= 1_000_000) return (num / 1_000_000).toFixed(1) + 'M';
+            if (num >= 1_000) return (num / 1_000).toFixed(1) + 'k';
+            return num.toString();
+        }
+
+        // ========== ПАГИНАЦИЯ ==========
+        function updatePagination() {
+            const totalPages = Math.ceil(totalHits / limit);
+            paginationEl.innerHTML = '';
+
+            if (totalPages <= 1) return;
+
+            // Предыдущая
+            const prevBtn = document.createElement('button');
+            prevBtn.className = 'page-btn';
+            prevBtn.innerHTML = '←';
+            prevBtn.disabled = currentPage === 0;
+            prevBtn.onclick = () => {
+                if (currentPage > 0) {
+                    currentPage--;
+                    loadMods();
+                    window.scrollTo(0, 0);
+                }
+            };
+            paginationEl.appendChild(prevBtn);
+
+            // Номера
+            let start = Math.max(0, currentPage - 2);
+            let end = Math.min(totalPages, currentPage + 3);
+
+            for (let i = start; i < end; i++) {
+                const btn = document.createElement('button');
+                btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                btn.textContent = i + 1;
+                btn.onclick = () => {
+                    currentPage = i;
+                    loadMods();
+                    window.scrollTo(0, 0);
+                };
+                paginationEl.appendChild(btn);
+            }
+
+            // Следующая
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'page-btn';
+            nextBtn.innerHTML = '→';
+            nextBtn.disabled = currentPage >= totalPages - 1;
+            nextBtn.onclick = () => {
+                if (currentPage < totalPages - 1) {
+                    currentPage++;
+                    loadMods();
+                    window.scrollTo(0, 0);
+                }
+            };
+            paginationEl.appendChild(nextBtn);
+        }
+
+        // ========== ОБРАБОТЧИКИ ==========
+        
+        // Вкладки
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentTab = tab.dataset.tab;
+                currentPage = 0;
+                loadMods();
+            });
+        });
+
+        // Поиск
+        let searchTimeout;
+        searchInput.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                currentSearch = searchInput.value;
+                currentPage = 0;
+                // При поиске автоматически переключаем на релевантность
+                if (currentSearch) {
+                    currentSort = 'relevance';
+                    sortText.textContent = `Сортировка: ${sortNames.relevance}`;
+                }
+                loadMods();
+            }, 500);
+        });
+
+        // Фильтр по платформе
+        let platformIndex = 0;
+        platformFilter.addEventListener('click', () => {
+            platformIndex = (platformIndex + 1) % platforms.length;
+            currentPlatform = platforms[platformIndex];
+            platformText.textContent = currentPlatform === 'all' ? 'Все загрузчики' : currentPlatform;
+            currentPage = 0;
+            loadMods();
+        });
+
+        // Сортировка
+        let sortIndex = 0; // Начинаем с 0 - newest
+        sortBtn.addEventListener('click', () => {
+            sortIndex = (sortIndex + 1) % sorts.length;
+            currentSort = sorts[sortIndex];
+            sortText.textContent = `Сортировка: ${sortNames[currentSort]}`;
+            currentPage = 0;
+            loadMods();
+        });
+
+        // Старт
+        loadMods();
+
+        // Автообновление раз в 5 минут
+        setInterval(loadMods, 5 * 60 * 1000);
+    </script>
+</body>
+</html>
