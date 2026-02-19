@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Загрузка...</title>
+    <title>Deynik Minecraft - Мод</title>
     <style>
         * {
             margin: 0;
@@ -14,7 +14,6 @@
 
         body {
             background-color: #0f0f11;
-            color: #b0bac5;
             display: flex;
             justify-content: center;
             min-height: 100vh;
@@ -59,6 +58,9 @@
             text-decoration: none;
             font-weight: 600;
             transition: color 0.2s;
+            cursor: pointer;
+            background: none;
+            border: none;
         }
 
         .back-btn:hover {
@@ -123,6 +125,7 @@
             font-weight: 700;
             color: var(--text-contrast);
             margin-bottom: 0.5rem;
+            line-height: 1.2;
         }
 
         .project-author {
@@ -238,28 +241,6 @@
             stroke: currentColor;
         }
 
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .gallery-image {
-            width: 100%;
-            aspect-ratio: 16/9;
-            object-fit: cover;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: transform 0.2s;
-            border: 1px solid var(--border-subtle);
-        }
-
-        .gallery-image:hover {
-            transform: scale(1.02);
-            border-color: var(--text-brand);
-        }
-
         .versions-table {
             width: 100%;
             border-collapse: collapse;
@@ -314,11 +295,11 @@
     <div class="container">
         <!-- Навигация -->
         <div class="nav-bar">
-            <a href="/minecraft/" class="back-btn">
+            <button class="back-btn" onclick="window.location.href='/minecraft/'">
                 <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                 На главную
-            </a>
-            <div class="logo">Deynik <span>Minecraft</span></div>
+            </button>
+            <div class="logo" onclick="window.location.href='/minecraft/'">Deynik <span>Minecraft</span></div>
         </div>
 
         <!-- Контейнер для данных -->
@@ -334,8 +315,7 @@
 
         // ========== ПОЛУЧАЕМ SLUG ИЗ URL ==========
         function getProjectInfoFromUrl() {
-            // URL выглядит так: /minecraft/#mod/fabric-api
-            const hash = window.location.hash.substring(1); // убираем #
+            const hash = window.location.hash.substring(1);
             const parts = hash.split('/');
             
             if (parts.length >= 2) {
@@ -348,13 +328,13 @@
         }
 
         const projectInfo = getProjectInfoFromUrl();
+        const projectContent = document.getElementById('projectContent');
         
         if (!projectInfo) {
-            // Если нет информации в URL, показываем ошибку
-            document.getElementById('projectContent').innerHTML = `
+            projectContent.innerHTML = `
                 <div class="error">
                     ❌ Не указан проект<br>
-                    <a href="/minecraft/" style="color: var(--text-brand); margin-top: 1rem; display: inline-block;">Вернуться на главную</a>
+                    <button onclick="window.location.href='/minecraft/'" style="color: var(--text-brand); margin-top: 1rem; padding: 0.5rem 1rem; background: none; border: 1px solid var(--text-brand); border-radius: 0.5rem; cursor: pointer;">Вернуться на главную</button>
                 </div>
             `;
         }
@@ -367,6 +347,11 @@
         let versions = [];
         let cachedTranslations = new Map();
         let translateEnabled = false;
+
+        // Проверяем настройки перевода из localStorage
+        try {
+            translateEnabled = localStorage.getItem('translateEnabled') === 'true';
+        } catch (e) {}
 
         // ========== ПЕРЕВОД ==========
         async function translateText(text) {
@@ -388,33 +373,32 @@
         // ========== ЗАГРУЗКА ДАННЫХ ==========
         async function loadProject() {
             try {
-                const projectContent = document.getElementById('projectContent');
+                projectContent.innerHTML = '<div class="loading">⏳ Загрузка...</div>';
                 
                 // Загружаем основную информацию
                 const projectResponse = await fetch(`${API_BASE}/project/${projectSlug}`);
                 if (!projectResponse.ok) throw new Error('Проект не найден');
                 projectData = await projectResponse.json();
 
-                // Проверяем тип проекта
-                if (projectData.project_type !== projectType) {
-                    // Перенаправляем на правильный тип
-                    window.location.href = `/minecraft/#${projectData.project_type}/${projectSlug}`;
-                    return;
-                }
-
                 // Загружаем версии
                 const versionsResponse = await fetch(`${API_BASE}/project/${projectSlug}/version`);
                 versions = await versionsResponse.json();
+
+                // Если включен перевод, переводим описание
+                if (translateEnabled && projectData.description) {
+                    projectContent.innerHTML = '<div class="loading">🔄 Переводим описание...</div>';
+                    await translateText(projectData.description);
+                }
 
                 // Отображаем
                 renderProject();
 
             } catch (error) {
                 console.error('Ошибка:', error);
-                document.getElementById('projectContent').innerHTML = `
+                projectContent.innerHTML = `
                     <div class="error">
                         ❌ Ошибка: ${error.message}<br>
-                        <a href="/minecraft/" style="color: var(--text-brand); margin-top: 1rem; display: inline-block;">Вернуться на главную</a>
+                        <button onclick="window.location.href='/minecraft/'" style="color: var(--text-brand); margin-top: 1rem; padding: 0.5rem 1rem; background: none; border: 1px solid var(--text-brand); border-radius: 0.5rem; cursor: pointer;">Вернуться на главную</button>
                     </div>
                 `;
             }
@@ -439,14 +423,14 @@
 
         // ========== ПОЛУЧЕНИЕ ОПИСАНИЯ ==========
         function getDescription() {
-            if (!projectData) return '';
+            if (!projectData || !projectData.description) return 'Нет описания';
             
             if (!translateEnabled) {
-                return projectData.description || 'Нет описания';
+                return projectData.description;
             }
             
             const cached = cachedTranslations.get(projectData.description);
-            return cached || projectData.description || 'Нет описания';
+            return cached || projectData.description;
         }
 
         // ========== ОТРИСОВКА ==========
@@ -495,7 +479,7 @@
                     </div>
                 </div>
 
-                <div class="project-description" id="description">
+                <div class="project-description">
                     ${escapeHtml(description)}
                 </div>
 
@@ -580,7 +564,7 @@
                 ` : ''}
             `;
 
-            document.getElementById('projectContent').innerHTML = html;
+            projectContent.innerHTML = html;
         }
 
         // ========== ЗАЩИТА ОТ XSS ==========
@@ -596,7 +580,6 @@
 
         // ========== СЛЕДИМ ЗА ИЗМЕНЕНИЕМ HASH ==========
         window.addEventListener('hashchange', () => {
-            // Перезагружаем страницу при изменении hash
             window.location.reload();
         });
 
