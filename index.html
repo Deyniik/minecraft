@@ -273,6 +273,10 @@
             font-size: 0.95rem;
             line-height: 1.5;
             margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         .mod-stats {
@@ -513,7 +517,7 @@
                 const updated = project.date_modified ? new Date(project.date_modified).toLocaleDateString('ru-RU') : 'неизвестно';
                 
                 html += `
-                    <div class="mod-card" onclick="window.open('https://modrinth.com/${project.project_type}/${project.slug}', '_blank')">
+                    <div class="mod-card" onclick="window.location.href='/minecraft/${project.project_type}/${project.slug}'">
                         <div class="mod-header">
                             <img src="${iconUrl}" class="mod-icon" alt="${escapeHtml(project.title)}"
                                  onerror="this.src='https://via.placeholder.com/64/2c2c30/a0a0a8?text=Mod'">
