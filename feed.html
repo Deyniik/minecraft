@@ -41,7 +41,6 @@
             --border-subtle: #2c2c32;
             --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
             
-            /* Цвета для типов проектов */
             --color-mod: #fbbf24;
             --color-shader: #a78bfa;
             --color-resourcepack: #60a5fa;
@@ -50,7 +49,6 @@
             --color-datapack: #f472b6;
         }
 
-        /* Боковая панель */
         .sidebar {
             width: 260px;
             flex-shrink: 0;
@@ -117,15 +115,13 @@
             fill: none;
         }
 
-        /* Основной контент */
         .main-content {
             flex: 1;
             min-width: 0;
-            max-width: 550px; /* Как в Instagram */
+            max-width: 550px;
             margin: 0 auto;
         }
 
-        /* Шапка */
         .feed-header {
             margin-bottom: 2rem;
         }
@@ -140,14 +136,12 @@
             color: var(--text-brand);
         }
 
-        /* Лента */
         .feed {
             display: flex;
             flex-direction: column;
             gap: 2rem;
         }
 
-        /* Пост как в Instagram — исправленные отступы */
         .feed-post {
             background-color: var(--bg-raised);
             border-radius: 1rem;
@@ -164,17 +158,16 @@
             border-color: var(--text-brand);
         }
 
-        /* Шапка поста — пиксельная точность */
         .post-header {
             display: flex;
             align-items: center;
-            gap: 0.75rem; /* Уменьшил с 1rem до 0.75rem (12px) для симметрии */
-            padding: 0.75rem 1rem; /* Вертикальный и горизонтальный паддинг теперь равны (12px) */
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
             border-bottom: 1px solid var(--border-subtle);
         }
 
         .post-icon {
-            width: 44px; /* Чуть уменьшил, чтобы отступы дышали */
+            width: 44px;
             height: 44px;
             border-radius: 50%;
             background-color: var(--bg-button);
@@ -224,25 +217,123 @@
             margin-top: 0.1rem;
         }
 
-        /* Изображение поста — сохраняем пропорции, без обрезки */
-        .post-image {
+        /* Карусель */
+        .carousel-container {
+            position: relative;
             width: 100%;
-            display: block; /* Убирает лишний отступ снизу */
-            aspect-ratio: auto; /* Отключаем принудительное соотношение */
-            max-height: 70vh; /* Чтобы слишком высокие не ломали ленту */
-            object-fit: contain; /* Вписываем целиком, фоном будет цвет */
-            background-color: #000; /* Фон для незаполненных областей */
+            background-color: #000;
+            border-bottom: 1px solid var(--border-subtle);
+            user-select: none;
+        }
+
+        .carousel-track {
+            display: flex;
+            scroll-snap-type: x mandatory;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE/Edge */
+        }
+
+        .carousel-track::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+
+        .carousel-slide {
+            flex: 0 0 100%;
+            scroll-snap-align: start;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            display: block;
+            max-height: 70vh;
+            object-fit: contain;
+            cursor: pointer;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.2s;
+            backdrop-filter: blur(4px);
+        }
+
+        .carousel-btn:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+            border-color: var(--text-brand);
+        }
+
+        .carousel-btn.prev {
+            left: 12px;
+        }
+
+        .carousel-btn.next {
+            right: 12px;
+        }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            z-index: 10;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 4px 10px;
+            border-radius: 20px;
+            backdrop-filter: blur(2px);
+        }
+
+        .carousel-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .carousel-dot.active {
+            background-color: var(--text-brand);
+            width: 16px;
+            border-radius: 10px;
+        }
+
+        .post-image-static {
+            width: 100%;
+            display: block;
+            max-height: 70vh;
+            object-fit: contain;
+            background-color: #000;
             border-bottom: 1px solid var(--border-subtle);
             cursor: pointer;
         }
 
-        /* Действия под фото — теперь ПОД описанием, как просили */
         .post-actions {
             display: flex;
             gap: 1rem;
-            padding: 0.75rem 1rem 1rem 1rem; /* чуть меньше сверху, отделяем от описания */
-            border-top: 1px solid var(--border-subtle); /* граница сверху, теперь отделяет от описания */
-            border-bottom: none;
+            padding: 0.75rem 1rem 1rem 1rem;
+            border-top: 1px solid var(--border-subtle);
         }
 
         .action-btn {
@@ -269,7 +360,6 @@
             transition: all 0.2s;
         }
 
-        /* Лайк — сердечко */
         .action-btn.liked svg {
             fill: var(--text-brand);
             stroke: var(--text-brand);
@@ -280,9 +370,8 @@
             color: var(--text-contrast);
         }
 
-        /* Тело поста — описание теперь над кнопками */
         .post-body {
-            padding: 1rem 1rem 0.5rem 1rem; /* нижний отступ уменьшен, так как border у .post-actions */
+            padding: 1rem 1rem 0.5rem 1rem;
         }
 
         .post-description {
@@ -314,30 +403,38 @@
             text-transform: uppercase;
         }
 
-        /* Загрузка */
+        /* Загрузка с новым текстом */
         .loading {
             text-align: center;
-            padding: 3rem;
+            padding: 2.5rem;
             font-size: 1.2rem;
             color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
         }
 
         .loading-spinner {
             display: inline-block;
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border: 3px solid var(--border-subtle);
             border-top-color: var(--text-brand);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-            margin-bottom: 1rem;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        /* Модальное окно */
+        .friendly-text {
+            color: var(--text-brand);
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -345,7 +442,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0, 0, 0, 0.9);
+            background-color: rgba(0, 0, 0, 0.95);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -373,11 +470,11 @@
             color: white;
             font-size: 3rem;
             cursor: pointer;
+            z-index: 1010;
         }
     </style>
 </head>
 <body>
-    <!-- Модальное окно для галереи -->
     <div class="modal" id="galleryModal" onclick="closeModal()">
         <span class="modal-close">&times;</span>
         <div class="modal-content">
@@ -386,10 +483,8 @@
     </div>
 
     <div class="container">
-        <!-- Боковая панель -->
         <div class="sidebar">
             <div class="sidebar-logo" onclick="window.location.href='/minecraft/'">Deynik <span>Minecraft</span></div>
-            
             <div class="sidebar-menu">
                 <button class="sidebar-item" onclick="window.location.href='/minecraft/'">
                     <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19.5v-9z"/><path d="M9 21v-6h6v6"/></svg>
@@ -400,7 +495,6 @@
                     Рекомендации
                 </button>
             </div>
-
             <div class="sidebar-menu">
                 <button class="sidebar-item" onclick="window.location.href='/minecraft/?#mod'">
                     <svg viewBox="0 0 24 24"><path d="M20 7h-4.5L15 4H9L8.5 7H4v2h16V7z"/><rect x="4" y="9" width="16" height="10" rx="1"/><circle cx="8" cy="13" r="1"/><circle cx="16" cy="13" r="1"/></svg>
@@ -429,46 +523,41 @@
             </div>
         </div>
 
-        <!-- Основной контент -->
         <div class="main-content">
             <div class="feed-header">
                 <h1 class="feed-title">Рекомендации <span>для вас</span></h1>
             </div>
-
             <div class="feed" id="feed">
                 <div class="loading">
                     <div class="loading-spinner"></div>
-                    Загрузка...
+                    <div class="friendly-text">Собираем для вас подборку ✨</div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // ========== НАСТРОЙКИ ==========
         const API_BASE = 'https://api.modrinth.com/v2';
         const TRANSLATE_API = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ru&dt=t&q=';
-        const POSTS_PER_PAGE = 5; // Загружаем по 5 постов за раз для скорости
+        const POSTS_PER_PAGE = 5;
 
-        // Типы проектов
         const projectTypes = ['mod', 'shader', 'resourcepack', 'modpack', 'plugin', 'datapack'];
         const projectTypeNames = {
-            'mod': 'Мод',
-            'shader': 'Шейдер',
-            'resourcepack': 'Ресурспак',
-            'modpack': 'Сборка',
-            'plugin': 'Плагин',
-            'datapack': 'Датапак'
+            'mod': 'Мод', 'shader': 'Шейдер', 'resourcepack': 'Ресурспак',
+            'modpack': 'Сборка', 'plugin': 'Плагин', 'datapack': 'Датапак'
         };
 
-        // Состояние
         let feedPosts = [];
         let cachedTranslations = new Map();
         let isLoading = false;
         let hasMore = true;
         let currentPage = 0;
 
-        // ========== ФУНКЦИЯ ДЛЯ ГАЛЕРЕИ ==========
+        // Для карусели: функция остановки клика, чтобы не переходить по посту
+        window.stopPropagation = function(e) {
+            e.stopPropagation();
+        };
+
         window.openModal = function(src) {
             document.getElementById('modalImage').src = src;
             document.getElementById('galleryModal').classList.add('show');
@@ -478,11 +567,37 @@
             document.getElementById('galleryModal').classList.remove('show');
         };
 
-        // ========== ПЕРЕВОД ==========
+        // Навигация карусели
+        window.scrollCarousel = function(container, direction) {
+            const track = container.querySelector('.carousel-track');
+            if (!track) return;
+            const slideWidth = track.clientWidth;
+            track.scrollBy({ left: direction * slideWidth, behavior: 'smooth' });
+        };
+
+        // Обновление dots при прокрутке
+        function setupCarousel(container) {
+            const track = container.querySelector('.carousel-track');
+            const dots = container.querySelectorAll('.carousel-dot');
+            if (!track || dots.length === 0) return;
+
+            const updateDots = () => {
+                const scrollLeft = track.scrollLeft;
+                const slideWidth = track.clientWidth;
+                const activeIndex = Math.round(scrollLeft / slideWidth);
+                dots.forEach((dot, idx) => {
+                    dot.classList.toggle('active', idx === activeIndex);
+                });
+            };
+
+            track.addEventListener('scroll', updateDots);
+            track.addEventListener('scrollend', updateDots); // современный браузер
+            updateDots();
+        }
+
         async function translateText(text) {
             if (!text || text.length < 20) return text;
             if (cachedTranslations.has(text)) return cachedTranslations.get(text);
-            
             try {
                 const response = await fetch(TRANSLATE_API + encodeURIComponent(text));
                 const data = await response.json();
@@ -495,7 +610,6 @@
             }
         }
 
-        // ========== ФОРМАТИРОВАНИЕ ЧИСЕЛ ==========
         function formatNumber(num) {
             if (!num) return '0';
             if (num >= 1_000_000) return (num / 1_000_000).toFixed(1) + 'M';
@@ -503,67 +617,30 @@
             return num.toString();
         }
 
-        // ========== ФОРМАТИРОВАНИЕ ДАТЫ ==========
         function formatRelativeDate(dateString) {
             if (!dateString) return 'неизвестно';
             const date = new Date(dateString);
             const now = new Date();
             const diffTime = Math.abs(now - date);
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            
-            if (diffDays < 7) {
-                return `${diffDays} ${getDaysWord(diffDays)} назад`;
-            } else if (diffDays < 30) {
-                const weeks = Math.floor(diffDays / 7);
-                return `${weeks} ${getWeeksWord(weeks)} назад`;
-            } else if (diffDays < 365) {
-                const months = Math.floor(diffDays / 30);
-                return `${months} ${getMonthsWord(months)} назад`;
-            } else {
-                const years = Math.floor(diffDays / 365);
-                return `${years} ${getYearsWord(years)} назад`;
-            }
+            if (diffDays < 7) return `${diffDays} ${['день', 'дня', 'дней'][getWordIndex(diffDays)]} назад`;
+            if (diffDays < 30) return `${Math.floor(diffDays/7)} ${['неделю', 'недели', 'недель'][getWordIndex(Math.floor(diffDays/7))]} назад`;
+            if (diffDays < 365) return `${Math.floor(diffDays/30)} ${['месяц', 'месяца', 'месяцев'][getWordIndex(Math.floor(diffDays/30))]} назад`;
+            return `${Math.floor(diffDays/365)} ${['год', 'года', 'лет'][getWordIndex(Math.floor(diffDays/365))]} назад`;
         }
+        function getWordIndex(n) { return (n%10==1 && n%100!=11) ? 0 : (n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20)) ? 1 : 2; }
 
-        function getDaysWord(days) {
-            if (days === 1) return 'день';
-            if (days >= 2 && days <= 4) return 'дня';
-            return 'дней';
-        }
-
-        function getWeeksWord(weeks) {
-            if (weeks === 1) return 'неделю';
-            if (weeks >= 2 && weeks <= 4) return 'недели';
-            return 'недель';
-        }
-
-        function getMonthsWord(months) {
-            if (months === 1) return 'месяц';
-            if (months >= 2 && months <= 4) return 'месяца';
-            return 'месяцев';
-        }
-
-        function getYearsWord(years) {
-            if (years === 1) return 'год';
-            if (years >= 2 && years <= 4) return 'года';
-            return 'лет';
-        }
-
-        // ========== ПОЛУЧЕНИЕ СЛУЧАЙНОЙ КАРТИНКИ ==========
         function getRandomGalleryImage(project) {
             if (project.gallery && project.gallery.length > 0) {
-                const randomIndex = Math.floor(Math.random() * project.gallery.length);
-                return project.gallery[randomIndex].url;
+                return project.gallery.map(g => g.url);
             }
             return null;
         }
 
-        // ========== ЛАЙКИ ==========
         window.toggleLike = function(button, postId) {
             button.classList.toggle('liked');
             const likesSpan = button.querySelector('.likes-count');
             let likes = parseInt(likesSpan.textContent.replace(/[^0-9]/g, ''));
-            
             if (button.classList.contains('liked')) {
                 likes++;
                 localStorage.setItem(`like_${postId}`, 'true');
@@ -571,105 +648,81 @@
                 likes--;
                 localStorage.removeItem(`like_${postId}`);
             }
-            
             likesSpan.textContent = formatNumber(likes);
         };
 
-        // ========== ЗАГРУЗКА ПОСТОВ ==========
         async function loadMorePosts() {
             if (isLoading || !hasMore) return;
-            
             isLoading = true;
-            
             const feedEl = document.getElementById('feed');
-            
-            // Показываем индикатор загрузки внизу
-            if (currentPage > 0) {
+
+            // Заменяем статическую заглушку или добавляем индикатор
+            if (currentPage === 0) {
+                feedEl.innerHTML = '<div class="loading" id="loading-more"><div class="loading-spinner"></div><div class="friendly-text">Собираем для вас подборку ✨</div></div>';
+            } else {
                 const loadingDiv = document.createElement('div');
                 loadingDiv.className = 'loading';
                 loadingDiv.id = 'loading-more';
-                loadingDiv.innerHTML = '<div class="loading-spinner"></div> Загружаем ещё...';
+                loadingDiv.innerHTML = '<div class="loading-spinner"></div><div class="friendly-text">Изучаем новые проекты 🔍</div>';
                 feedEl.appendChild(loadingDiv);
             }
-            
+
             try {
-                const newPosts = [];
                 const promises = [];
-                
-                // Загружаем посты параллельно для скорости
                 for (let i = 0; i < POSTS_PER_PAGE; i++) {
                     const randomType = projectTypes[Math.floor(Math.random() * projectTypes.length)];
-                    const randomOffset = Math.floor(Math.random() * 5000); // Увеличил диапазон
-                    
+                    const randomOffset = Math.floor(Math.random() * 5000);
                     const url = `${API_BASE}/search?limit=1&offset=${randomOffset}&index=newest&facets=${encodeURIComponent(JSON.stringify([[`project_type:${randomType}`]]))}`;
-                    
                     promises.push(
-                        fetch(url)
-                            .then(res => res.json())
-                            .then(async data => {
-                                if (data.hits && data.hits.length > 0) {
-                                    const project = data.hits[0];
-                                    
-                                    // Загружаем полную информацию
-                                    const projectRes = await fetch(`${API_BASE}/project/${project.slug}`);
-                                    const fullProject = await projectRes.json();
-                                    
-                                    return {
-                                        ...project,
-                                        fullData: fullProject
-                                    };
-                                }
-                                return null;
-                            })
+                        fetch(url).then(res => res.json()).then(async data => {
+                            if (data.hits && data.hits.length > 0) {
+                                const project = data.hits[0];
+                                const projectRes = await fetch(`${API_BASE}/project/${project.slug}`);
+                                const fullProject = await projectRes.json();
+                                return { ...project, fullData: fullProject };
+                            }
+                            return null;
+                        })
                     );
                 }
-                
-                const results = await Promise.all(promises);
-                const validPosts = results.filter(p => p !== null);
-                
-                // Перемешиваем
-                const shuffled = shuffleArray(validPosts);
-                newPosts.push(...shuffled);
-                
-                // Переводим описания (параллельно)
-                const translatePromises = [];
-                for (const post of newPosts) {
-                    if (post.description && !cachedTranslations.has(post.description)) {
-                        translatePromises.push(translateText(post.description));
-                    }
-                }
-                
+
+                let results = await Promise.all(promises);
+                let validPosts = results.filter(p => p !== null);
+                validPosts = shuffleArray(validPosts);
+
+                // Перевод описаний
+                const translatePromises = validPosts.map(p => p.description && !cachedTranslations.has(p.description) ? translateText(p.description) : Promise.resolve());
                 await Promise.all(translatePromises);
-                
-                // Добавляем новые посты
-                feedPosts.push(...newPosts);
-                
+
                 // Убираем индикатор загрузки
                 const loadingMore = document.getElementById('loading-more');
                 if (loadingMore) loadingMore.remove();
-                
-                // Рендерим только новые посты
-                renderNewPosts(newPosts);
-                
-                currentPage++;
-                
-                // Если загрузили меньше чем запрашивали, значит больше нет
-                if (validPosts.length < POSTS_PER_PAGE) {
+
+                if (validPosts.length === 0) {
                     hasMore = false;
+                } else {
+                    renderNewPosts(validPosts);
+                    feedPosts.push(...validPosts);
+                    currentPage++;
                 }
-                
+
+                // Если загрузили меньше чем запрашивали, возможно, больше нет, но дадим ещё шанс
+                if (validPosts.length < POSTS_PER_PAGE) {
+                    // не отключаем hasMore сразу, потому что это может быть случайность
+                    // просто уменьшим лимит для следующего раза
+                }
             } catch (error) {
                 console.error('Ошибка загрузки:', error);
                 const loadingMore = document.getElementById('loading-more');
                 if (loadingMore) {
-                    loadingMore.innerHTML = '❌ Ошибка загрузки. Попробуйте позже.';
+                    loadingMore.innerHTML = '<div class="friendly-text">❌ Неудача, пробуем снова...</div>';
+                    setTimeout(() => loadingMore.remove(), 1500);
                 }
             } finally {
                 isLoading = false;
             }
         }
 
-        // ========== ПЕРЕМЕШИВАНИЕ ==========
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -678,36 +731,55 @@
             return array;
         }
 
-        // ========== ПОЛУЧЕНИЕ ПЕРЕВЕДЁННОГО ОПИСАНИЯ ==========
         function getDescription(project) {
             const cached = cachedTranslations.get(project.description);
             return cached || project.description || 'Нет описания';
         }
 
-        // ========== ПРОВЕРКА ЛАЙКА ==========
         function isLiked(postId) {
             return localStorage.getItem(`like_${postId}`) === 'true';
         }
 
-        // ========== ОТРИСОВКА НОВЫХ ПОСТОВ ==========
         function renderNewPosts(posts) {
             const feedEl = document.getElementById('feed');
-            
             let html = '';
-            
+
             for (const post of posts) {
                 const description = getDescription(post);
                 const iconUrl = post.icon_url || 'https://via.placeholder.com/48/2c2c30/a0a0a8?text=Mod';
-                const randomImage = getRandomGalleryImage(post.fullData);
+                const galleryImages = getRandomGalleryImage(post.fullData);
                 const typeName = projectTypeNames[post.project_type] || 'Проект';
                 const postId = `${post.project_type}_${post.slug}`;
                 const liked = isLiked(postId);
-                
+
+                // Генерация блока с каруселью или статичной картинкой
+                let mediaHtml = '';
+                if (galleryImages && galleryImages.length > 1) {
+                    const slidesHtml = galleryImages.map(img => 
+                        `<div class="carousel-slide"><img src="${img}" onclick="event.stopPropagation(); openModal('${img}')" loading="lazy"></div>`
+                    ).join('');
+                    const dotsHtml = galleryImages.map((_, idx) => 
+                        `<span class="carousel-dot" onclick="event.stopPropagation(); document.querySelector('#carousel-${postId} .carousel-track').scrollTo({ left: ${idx} * document.querySelector('#carousel-${postId} .carousel-track').clientWidth, behavior: 'smooth' })"></span>`
+                    ).join('');
+
+                    mediaHtml = `
+                        <div class="carousel-container" id="carousel-${postId}" onclick="event.stopPropagation()">
+                            <div class="carousel-track">${slidesHtml}</div>
+                            <div class="carousel-btn prev" onclick="event.stopPropagation(); scrollCarousel(this.closest('.carousel-container'), -1)">‹</div>
+                            <div class="carousel-btn next" onclick="event.stopPropagation(); scrollCarousel(this.closest('.carousel-container'), 1)">›</div>
+                            <div class="carousel-dots">${dotsHtml}</div>
+                        </div>
+                    `;
+                } else if (galleryImages && galleryImages.length === 1) {
+                    mediaHtml = `<img src="${galleryImages[0]}" class="post-image-static" onclick="event.stopPropagation(); openModal('${galleryImages[0]}')" loading="lazy">`;
+                } else {
+                    mediaHtml = `<div style="width:100%; aspect-ratio:16/9; background:#2a2a2e; display:flex; align-items:center; justify-content:center; color:var(--text-secondary); border-bottom:1px solid var(--border-subtle);">🖼️ Нет изображения</div>`;
+                }
+
                 html += `
                     <div class="feed-post" onclick="window.location.href='/minecraft/${post.project_type}.html#${post.project_type}/${post.slug}'">
                         <div class="post-header">
-                            <img src="${iconUrl}" class="post-icon" alt="${escapeHtml(post.title)}"
-                                 onerror="this.src='https://via.placeholder.com/48/2c2c30/a0a0a8?text=Mod'">
+                            <img src="${iconUrl}" class="post-icon" alt="${escapeHtml(post.title)}" onerror="this.src='https://via.placeholder.com/48/2c2c30/a0a0a8?text=Mod'">
                             <div class="post-info">
                                 <div class="post-title-row">
                                     <span class="post-title">${escapeHtml(post.title)}</span>
@@ -717,26 +789,19 @@
                             </div>
                         </div>
                         
-                        ${randomImage ? `
-                            <img src="${randomImage}" class="post-image" onclick="event.stopPropagation(); openModal('${randomImage}')" loading="lazy">
-                        ` : ''}
-                        
-                        <!-- ТЕПЕРЬ СНАЧАЛА ОПИСАНИЕ -->
+                        ${mediaHtml}
+
                         <div class="post-body">
                             <div class="post-description">${escapeHtml(description)}</div>
                             <div class="post-categories">
-                                ${(post.categories || []).slice(0, 3).map(cat => 
-                                    `<span class="category-tag">${escapeHtml(cat)}</span>`
-                                ).join('')}
+                                ${(post.categories || []).slice(0, 3).map(cat => `<span class="category-tag">${escapeHtml(cat)}</span>`).join('')}
                             </div>
                             <div class="post-date">${formatRelativeDate(post.date_created)}</div>
                         </div>
 
-                        <!-- ПОТОМ ДЕЙСТВИЯ (ЛАЙК И ПОДРОБНЕЕ) -->
                         <div class="post-actions">
                             <button class="action-btn ${liked ? 'liked' : ''}" onclick="event.stopPropagation(); toggleLike(this, '${postId}')">
-                                <!-- СЕРДЕЧКО -->
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <svg viewBox="0 0 24 24">
                                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                                 </svg>
                                 <span class="likes-count">${formatNumber(post.follows)}</span>
@@ -749,46 +814,53 @@
                     </div>
                 `;
             }
-            
-            // Добавляем в конец ленты
+
             if (currentPage === 0) {
                 feedEl.innerHTML = html;
             } else {
                 feedEl.insertAdjacentHTML('beforeend', html);
             }
+
+            // Активируем карусели: после добавления в DOM настраиваем dots
+            posts.forEach(post => {
+                const postId = `${post.project_type}_${post.slug}`;
+                const container = document.getElementById(`carousel-${postId}`);
+                if (container) setupCarousel(container);
+            });
         }
 
-        // ========== ЗАЩИТА ОТ XSS ==========
         function escapeHtml(unsafe) {
             if (!unsafe) return '';
-            return String(unsafe)
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
+            return String(unsafe).replace(/[&<>"]/g, function(m) {
+                if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; if (m === '"') return '&quot;';
+                return m;
+            });
         }
 
-        // ========== БЕСКОНЕЧНАЯ ПРОКРУТКА (ПОЧИНЕНА) ==========
+        // Бесконечная прокрутка: более агрессивная
         window.addEventListener('scroll', () => {
             const scrollY = window.scrollY;
             const windowHeight = window.innerHeight;
             const documentHeight = document.documentElement.scrollHeight;
-            
-            // Уменьшил порог до 300px, чтобы срабатывало чаще
-            if (scrollY + windowHeight > documentHeight - 300) {
+            // Срабатываем за 400px до конца, но если не загружено — цепляемся
+            if (scrollY + windowHeight > documentHeight - 400) {
                 loadMorePosts();
             }
         });
 
-        // ========== ЗАКРЫТИЕ МОДАЛЬНОГО ОКНА ПО ESC ==========
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeModal();
+        // Дополнительный триггер на resize и load
+        window.addEventListener('resize', () => {
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            if (scrollY + windowHeight > documentHeight - 400) {
+                loadMorePosts();
             }
         });
 
-        // ========== СТАРТ ==========
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+        // Старт
         loadMorePosts();
     </script>
 </body>
