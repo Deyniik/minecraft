@@ -1,1 +1,762 @@
-в
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deynik Minecraft - Лента</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #0f0f11;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            display: flex;
+            gap: 2rem;
+        }
+
+        :root {
+            --bg-body: #0f0f11;
+            --bg-raised: #1c1c1f;
+            --bg-button: #2c2c30;
+            --bg-button-hover: #3a3a40;
+            --bg-selected: #3b3b45;
+            --text-contrast: #ffffff;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a8;
+            --text-brand: #fbbf24;
+            --bg-brand: rgba(251, 191, 36, 0.15);
+            --border-subtle: #2c2c32;
+            --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            
+            /* Цвета для типов проектов */
+            --color-mod: #fbbf24;
+            --color-shader: #a78bfa;
+            --color-resourcepack: #60a5fa;
+            --color-modpack: #f87171;
+            --color-plugin: #34d399;
+            --color-datapack: #f472b6;
+        }
+
+        /* Боковая панель */
+        .sidebar {
+            width: 260px;
+            flex-shrink: 0;
+            background-color: var(--bg-raised);
+            border-radius: 1rem;
+            border: 1px solid var(--border-subtle);
+            padding: 1.5rem 1rem;
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .sidebar-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-contrast);
+            margin-bottom: 2rem;
+            padding-left: 0.5rem;
+            cursor: pointer;
+        }
+
+        .sidebar-logo span {
+            color: var(--text-brand);
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .sidebar-item:hover {
+            background-color: var(--bg-button);
+            color: var(--text-contrast);
+        }
+
+        .sidebar-item.active {
+            background-color: var(--bg-brand);
+            color: var(--text-brand);
+        }
+
+        .sidebar-item svg {
+            width: 1.5rem;
+            height: 1.5rem;
+            stroke: currentColor;
+            fill: none;
+        }
+
+        /* Основной контент */
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Шапка ленты */
+        .feed-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .feed-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-contrast);
+        }
+
+        .feed-title span {
+            color: var(--text-brand);
+        }
+
+        .refresh-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--bg-button);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .refresh-btn:hover {
+            background-color: var(--bg-button-hover);
+            color: var(--text-contrast);
+            border-color: var(--text-brand);
+        }
+
+        .refresh-btn svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            stroke: currentColor;
+        }
+
+        /* Лента */
+        .feed {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Пост */
+        .feed-post {
+            background-color: var(--bg-raised);
+            border-radius: 1rem;
+            border: 1px solid var(--border-subtle);
+            overflow: hidden;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .feed-post:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow);
+            border-color: var(--text-brand);
+        }
+
+        /* Шапка поста */
+        .post-header {
+            display: flex;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .post-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 1rem;
+            background-color: var(--bg-button);
+            object-fit: cover;
+        }
+
+        .post-info {
+            flex: 1;
+        }
+
+        .post-title-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.25rem;
+        }
+
+        .post-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-contrast);
+        }
+
+        .post-type {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .post-type.mod {
+            background-color: var(--color-mod);
+            color: #000;
+        }
+
+        .post-type.shader {
+            background-color: var(--color-shader);
+            color: #000;
+        }
+
+        .post-type.resourcepack {
+            background-color: var(--color-resourcepack);
+            color: #000;
+        }
+
+        .post-type.modpack {
+            background-color: var(--color-modpack);
+            color: #000;
+        }
+
+        .post-type.plugin {
+            background-color: var(--color-plugin);
+            color: #000;
+        }
+
+        .post-type.datapack {
+            background-color: var(--color-datapack);
+            color: #000;
+        }
+
+        .post-author {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .post-stats {
+            display: flex;
+            gap: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .post-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .post-stat svg {
+            width: 1rem;
+            height: 1rem;
+            stroke: currentColor;
+            fill: none;
+        }
+
+        /* Изображение поста */
+        .post-image {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        /* Тело поста */
+        .post-body {
+            padding: 1.5rem;
+        }
+
+        .post-description {
+            color: var(--text-primary);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .post-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .category-tag {
+            background-color: var(--bg-button);
+            border: 1px solid var(--border-subtle);
+            border-radius: 9999px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Подвал поста */
+        .post-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .post-date {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--bg-button);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .action-btn:hover {
+            background-color: var(--bg-button-hover);
+            color: var(--text-contrast);
+        }
+
+        .action-btn svg {
+            width: 1rem;
+            height: 1rem;
+            stroke: currentColor;
+        }
+
+        /* Загрузка */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        /* Модальное окно для галереи */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 2rem;
+            color: white;
+            font-size: 3rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Модальное окно для галереи -->
+    <div class="modal" id="galleryModal" onclick="closeModal()">
+        <span class="modal-close">&times;</span>
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="">
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Боковая панель -->
+        <div class="sidebar">
+            <div class="sidebar-logo" onclick="window.location.href='/minecraft/'">Deynik <span>Minecraft</span></div>
+            
+            <div class="sidebar-menu">
+                <button class="sidebar-item" onclick="window.location.href='/minecraft/'">
+                    <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19.5v-9z"/><path d="M9 21v-6h6v6"/></svg>
+                    Главная
+                </button>
+                <button class="sidebar-item active" onclick="window.location.href='/minecraft/feed.html'">
+                    <svg viewBox="0 0 24 24"><path d="M22 6.5L12 2 2 6.5M22 6.5L12 11 2 6.5M22 6.5V17M2 6.5V17M12 11v9"/><path d="M7 15l5 3 5-3"/></svg>
+                    Лента
+                </button>
+            </div>
+
+            <div class="sidebar-menu">
+                <button class="sidebar-item" data-tab="mod" onclick="window.location.href='/minecraft/?#mod'">
+                    <svg viewBox="0 0 24 24"><path d="M20 7h-4.5L15 4H9L8.5 7H4v2h16V7z"/><rect x="4" y="9" width="16" height="10" rx="1"/><circle cx="8" cy="13" r="1"/><circle cx="16" cy="13" r="1"/></svg>
+                    Моды
+                </button>
+                <button class="sidebar-item" data-tab="shader" onclick="window.location.href='/minecraft/?#shader'">
+                    <svg viewBox="0 0 24 24"><path d="M12 3v1M5 8h1M18 8h1M8 21h8M12 8v8"/><circle cx="12" cy="15" r="3"/><path d="M8 11L5 8M16 11l3-3"/></svg>
+                    Шейдеры
+                </button>
+                <button class="sidebar-item" data-tab="resourcepack" onclick="window.location.href='/minecraft/?#resourcepack'">
+                    <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M9 9l6 6M15 9l-6 6"/></svg>
+                    Ресурспаки
+                </button>
+                <button class="sidebar-item" data-tab="modpack" onclick="window.location.href='/minecraft/?#modpack'">
+                    <svg viewBox="0 0 24 24"><path d="M4 4h16v2H4z"/><rect x="4" y="8" width="16" height="12" rx="1"/><path d="M10 12l2 2 4-4"/></svg>
+                    Сборки
+                </button>
+                <button class="sidebar-item" data-tab="plugin" onclick="window.location.href='/minecraft/?#plugin'">
+                    <svg viewBox="0 0 24 24"><path d="M20 12v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"/><rect x="4" y="4" width="16" height="8" rx="1"/><circle cx="12" cy="12" r="2"/></svg>
+                    Плагины
+                </button>
+                <button class="sidebar-item" data-tab="datapack" onclick="window.location.href='/minecraft/?#datapack'">
+                    <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8v8H8z"/><path d="M12 12l2-2-2-2"/></svg>
+                    Датапаки
+                </button>
+            </div>
+        </div>
+
+        <!-- Основной контент -->
+        <div class="main-content">
+            <div class="feed-header">
+                <h1 class="feed-title">Случайная <span>лента</span></h1>
+                <button class="refresh-btn" onclick="loadFeed()">
+                    <svg viewBox="0 0 24 24"><path d="M1 4v6h6"/><path d="M3.5 15a9 9 0 1 0 2.1-9.8L1 10"/></svg>
+                    Обновить
+                </button>
+            </div>
+
+            <div class="feed" id="feed">
+                <div class="loading">⏳ Загрузка ленты...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== НАСТРОЙКИ ==========
+        const API_BASE = 'https://api.modrinth.com/v2';
+        const TRANSLATE_API = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ru&dt=t&q=';
+        const POSTS_PER_PAGE = 15;
+
+        // Типы проектов и их цвета
+        const projectTypes = ['mod', 'shader', 'resourcepack', 'modpack', 'plugin', 'datapack'];
+        const projectTypeNames = {
+            'mod': 'Мод',
+            'shader': 'Шейдер',
+            'resourcepack': 'Ресурспак',
+            'modpack': 'Сборка',
+            'plugin': 'Плагин',
+            'datapack': 'Датапак'
+        };
+
+        // Состояние
+        let feedPosts = [];
+        let cachedTranslations = new Map();
+
+        // ========== ФУНКЦИЯ ДЛЯ ГАЛЕРЕИ ==========
+        window.openModal = function(src) {
+            document.getElementById('modalImage').src = src;
+            document.getElementById('galleryModal').classList.add('show');
+        };
+
+        window.closeModal = function() {
+            document.getElementById('galleryModal').classList.remove('show');
+        };
+
+        // ========== ПЕРЕВОД ==========
+        async function translateText(text) {
+            if (!text || text.length < 20) return text;
+            if (cachedTranslations.has(text)) return cachedTranslations.get(text);
+            
+            try {
+                const response = await fetch(TRANSLATE_API + encodeURIComponent(text));
+                const data = await response.json();
+                const translated = data[0][0][0];
+                cachedTranslations.set(text, translated);
+                return translated;
+            } catch (error) {
+                console.warn('Ошибка перевода:', error);
+                return text;
+            }
+        }
+
+        // ========== ФОРМАТИРОВАНИЕ ЧИСЕЛ ==========
+        function formatNumber(num) {
+            if (!num) return '0';
+            if (num >= 1_000_000) return (num / 1_000_000).toFixed(1) + 'M';
+            if (num >= 1_000) return (num / 1_000).toFixed(1) + 'k';
+            return num.toString();
+        }
+
+        // ========== ФОРМАТИРОВАНИЕ ДАТЫ ==========
+        function formatRelativeDate(dateString) {
+            if (!dateString) return 'неизвестно';
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays < 7) {
+                return `${diffDays} ${getDaysWord(diffDays)} назад`;
+            } else if (diffDays < 30) {
+                const weeks = Math.floor(diffDays / 7);
+                return `${weeks} ${getWeeksWord(weeks)} назад`;
+            } else if (diffDays < 365) {
+                const months = Math.floor(diffDays / 30);
+                return `${months} ${getMonthsWord(months)} назад`;
+            } else {
+                const years = Math.floor(diffDays / 365);
+                return `${years} ${getYearsWord(years)} назад`;
+            }
+        }
+
+        function getDaysWord(days) {
+            if (days === 1) return 'день';
+            if (days >= 2 && days <= 4) return 'дня';
+            return 'дней';
+        }
+
+        function getWeeksWord(weeks) {
+            if (weeks === 1) return 'неделю';
+            if (weeks >= 2 && weeks <= 4) return 'недели';
+            return 'недель';
+        }
+
+        function getMonthsWord(months) {
+            if (months === 1) return 'месяц';
+            if (months >= 2 && months <= 4) return 'месяца';
+            return 'месяцев';
+        }
+
+        function getYearsWord(years) {
+            if (years === 1) return 'год';
+            if (years >= 2 && years <= 4) return 'года';
+            return 'лет';
+        }
+
+        // ========== ПОЛУЧЕНИЕ СЛУЧАЙНОЙ КАРТИНКИ ИЗ ГАЛЕРЕИ ==========
+        function getRandomGalleryImage(project) {
+            if (project.gallery && project.gallery.length > 0) {
+                const randomIndex = Math.floor(Math.random() * project.gallery.length);
+                return project.gallery[randomIndex].url;
+            }
+            return null;
+        }
+
+        // ========== ЗАГРУЗКА ЛЕНТЫ ==========
+        async function loadFeed() {
+            const feedEl = document.getElementById('feed');
+            feedEl.innerHTML = '<div class="loading">⏳ Загружаем ленту...</div>';
+            
+            try {
+                feedPosts = [];
+                
+                // Загружаем случайные проекты из разных категорий
+                for (let i = 0; i < POSTS_PER_PAGE; i++) {
+                    const randomType = projectTypes[Math.floor(Math.random() * projectTypes.length)];
+                    const randomOffset = Math.floor(Math.random() * 1000); // Случайное смещение
+                    
+                    const url = `${API_BASE}/search?limit=1&offset=${randomOffset}&index=newest&facets=${encodeURIComponent(JSON.stringify([[`project_type:${randomType}`]]))}`;
+                    
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    
+                    if (data.hits && data.hits.length > 0) {
+                        const project = data.hits[0];
+                        
+                        // Загружаем полную информацию о проекте для галереи
+                        const projectResponse = await fetch(`${API_BASE}/project/${project.slug}`);
+                        const fullProject = await projectResponse.json();
+                        
+                        feedPosts.push({
+                            ...project,
+                            fullData: fullProject
+                        });
+                    }
+                }
+                
+                // Перемешиваем посты
+                feedPosts = shuffleArray(feedPosts);
+                
+                // Переводим описания
+                feedEl.innerHTML = '<div class="loading">🔄 Переводим посты...</div>';
+                
+                for (const post of feedPosts) {
+                    if (post.description) {
+                        await translateText(post.description);
+                    }
+                }
+                
+                renderFeed();
+                
+            } catch (error) {
+                console.error('Ошибка загрузки ленты:', error);
+                feedEl.innerHTML = '<div class="loading">❌ Ошибка загрузки. Попробуйте обновить.</div>';
+            }
+        }
+
+        // ========== ПЕРЕМЕШИВАНИЕ МАССИВА ==========
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // ========== ПОЛУЧЕНИЕ ПЕРЕВЕДЁННОГО ОПИСАНИЯ ==========
+        function getDescription(project) {
+            const cached = cachedTranslations.get(project.description);
+            return cached || project.description || 'Нет описания';
+        }
+
+        // ========== ОТРИСОВКА ЛЕНТЫ ==========
+        function renderFeed() {
+            const feedEl = document.getElementById('feed');
+            
+            if (feedPosts.length === 0) {
+                feedEl.innerHTML = '<div class="loading">😕 Нет постов</div>';
+                return;
+            }
+
+            let html = '';
+            
+            for (const post of feedPosts) {
+                const description = getDescription(post);
+                const iconUrl = post.icon_url || 'https://via.placeholder.com/64/2c2c30/a0a0a8?text=Mod';
+                const randomImage = getRandomGalleryImage(post.fullData);
+                const typeName = projectTypeNames[post.project_type] || 'Проект';
+                
+                html += `
+                    <div class="feed-post" onclick="window.location.href='/minecraft/${post.project_type}.html#${post.project_type}/${post.slug}'">
+                        <div class="post-header">
+                            <img src="${iconUrl}" class="post-icon" alt="${escapeHtml(post.title)}"
+                                 onerror="this.src='https://via.placeholder.com/64/2c2c30/a0a0a8?text=Mod'">
+                            <div class="post-info">
+                                <div class="post-title-row">
+                                    <span class="post-title">${escapeHtml(post.title)}</span>
+                                    <span class="post-type ${post.project_type}">${typeName}</span>
+                                </div>
+                                <div class="post-author">by ${escapeHtml(post.author || 'Неизвестен')}</div>
+                                <div class="post-stats">
+                                    <span class="post-stat">
+                                        <svg viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-1m-4-4-4 4m0 0-4-4m4 4V4"/></svg>
+                                        ${formatNumber(post.downloads)}
+                                    </span>
+                                    <span class="post-stat">
+                                        <svg viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2"/></svg>
+                                        ${formatRelativeDate(post.date_modified)}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        ${randomImage ? `
+                            <img src="${randomImage}" class="post-image" onclick="event.stopPropagation(); openModal('${randomImage}')">
+                        ` : ''}
+                        
+                        <div class="post-body">
+                            <div class="post-description">${escapeHtml(description)}</div>
+                            <div class="post-categories">
+                                ${(post.categories || []).slice(0, 5).map(cat => 
+                                    `<span class="category-tag">${escapeHtml(cat)}</span>`
+                                ).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="post-footer">
+                            <span class="post-date">Опубликовано ${formatRelativeDate(post.date_created)}</span>
+                            <div class="post-actions">
+                                <button class="action-btn" onclick="event.stopPropagation(); window.location.href='/minecraft/${post.project_type}.html#${post.project_type}/${post.slug}'">
+                                    <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    Подробнее
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            feedEl.innerHTML = html;
+        }
+
+        // ========== ЗАЩИТА ОТ XSS ==========
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return String(unsafe)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // ========== ЗАКРЫТИЕ МОДАЛЬНОГО ОКНА ПО ESC ==========
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // ========== ЗАПУСК ==========
+        loadFeed();
+    </script>
+</body>
+</html>
