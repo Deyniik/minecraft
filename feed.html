@@ -147,15 +147,13 @@
             border-radius: 1rem;
             border: 1px solid var(--border-subtle);
             overflow: hidden;
-            transition: all 0.2s;
+            transition: box-shadow 0.2s; /* Убрал transform, оставил только тень */
             cursor: pointer;
             width: 100%;
         }
 
         .feed-post:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--card-shadow);
-            border-color: var(--text-brand);
+            box-shadow: var(--card-shadow); /* Убрал transform и border-color */
         }
 
         .post-header {
@@ -217,7 +215,7 @@
             margin-top: 0.1rem;
         }
 
-        /* Карусель */
+        /* Карусель — свайпы мышью включены по умолчанию */
         .carousel-container {
             position: relative;
             width: 100%;
@@ -232,12 +230,17 @@
             overflow-x: auto;
             scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE/Edge */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            cursor: grab;
+        }
+
+        .carousel-track:active {
+            cursor: grabbing;
         }
 
         .carousel-track::-webkit-scrollbar {
-            display: none; /* Chrome/Safari */
+            display: none;
         }
 
         .carousel-slide {
@@ -255,8 +258,10 @@
             max-height: 70vh;
             object-fit: contain;
             cursor: pointer;
+            pointer-events: auto; /* Чтобы можно было открыть модалку */
         }
 
+        /* Кнопки карусели — без подсветки при наведении */
         .carousel-btn {
             position: absolute;
             top: 50%;
@@ -264,22 +269,25 @@
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background-color: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            font-size: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border: none; /* Убрал обводку */
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             z-index: 10;
-            transition: all 0.2s;
+            transition: background-color 0.2s;
             backdrop-filter: blur(4px);
+            line-height: 1;
+            padding-bottom: 4px; /* для вертикального центрирования */
         }
 
         .carousel-btn:hover {
-            background-color: rgba(0, 0, 0, 0.8);
-            border-color: var(--text-brand);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            /* Убрал border-color и text-brand */
         }
 
         .carousel-btn.prev {
@@ -345,7 +353,7 @@
             align-items: center;
             gap: 0.5rem;
             font-size: 1rem;
-            transition: all 0.2s;
+            transition: color 0.2s;
         }
 
         .action-btn:hover {
@@ -357,7 +365,7 @@
             height: 1.5rem;
             stroke: currentColor;
             fill: none;
-            transition: all 0.2s;
+            transition: fill 0.2s;
         }
 
         .action-btn.liked svg {
@@ -403,7 +411,6 @@
             text-transform: uppercase;
         }
 
-        /* Загрузка с новым текстом */
         .loading {
             text-align: center;
             padding: 2.5rem;
@@ -496,30 +503,12 @@
                 </button>
             </div>
             <div class="sidebar-menu">
-                <button class="sidebar-item" onclick="window.location.href='/minecraft/?#mod'">
-                    <svg viewBox="0 0 24 24"><path d="M20 7h-4.5L15 4H9L8.5 7H4v2h16V7z"/><rect x="4" y="9" width="16" height="10" rx="1"/><circle cx="8" cy="13" r="1"/><circle cx="16" cy="13" r="1"/></svg>
-                    Моды
-                </button>
-                <button class="sidebar-item" onclick="window.location.href='/minecraft/?#shader'">
-                    <svg viewBox="0 0 24 24"><path d="M12 3v1M5 8h1M18 8h1M8 21h8M12 8v8"/><circle cx="12" cy="15" r="3"/><path d="M8 11L5 8M16 11l3-3"/></svg>
-                    Шейдеры
-                </button>
-                <button class="sidebar-item" onclick="window.location.href='/minecraft/?#resourcepack'">
-                    <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M9 9l6 6M15 9l-6 6"/></svg>
-                    Ресурспаки
-                </button>
-                <button class="sidebar-item" onclick="window.location.href='/minecraft/?#modpack'">
-                    <svg viewBox="0 0 24 24"><path d="M4 4h16v2H4z"/><rect x="4" y="8" width="16" height="12" rx="1"/><path d="M10 12l2 2 4-4"/></svg>
-                    Сборки
-                </button>
-                <button class="sidebar-item" onclick="window.location.href='/minecraft/?#plugin'">
-                    <svg viewBox="0 0 24 24"><path d="M20 12v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"/><rect x="4" y="4" width="16" height="8" rx="1"/><circle cx="12" cy="12" r="2"/></svg>
-                    Плагины
-                </button>
-                <button class="sidebar-item" onclick="window.location.href='/minecraft/?#datapack'">
-                    <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8v8H8z"/><path d="M12 12l2-2-2-2"/></svg>
-                    Датапаки
-                </button>
+                <button class="sidebar-item" onclick="window.location.href='/minecraft/?#mod'"><svg viewBox="0 0 24 24"><path d="M20 7h-4.5L15 4H9L8.5 7H4v2h16V7z"/><rect x="4" y="9" width="16" height="10" rx="1"/><circle cx="8" cy="13" r="1"/><circle cx="16" cy="13" r="1"/></svg>Моды</button>
+                <button class="sidebar-item" onclick="window.location.href='/minecraft/?#shader'"><svg viewBox="0 0 24 24"><path d="M12 3v1M5 8h1M18 8h1M8 21h8M12 8v8"/><circle cx="12" cy="15" r="3"/><path d="M8 11L5 8M16 11l3-3"/></svg>Шейдеры</button>
+                <button class="sidebar-item" onclick="window.location.href='/minecraft/?#resourcepack'"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M9 9l6 6M15 9l-6 6"/></svg>Ресурспаки</button>
+                <button class="sidebar-item" onclick="window.location.href='/minecraft/?#modpack'"><svg viewBox="0 0 24 24"><path d="M4 4h16v2H4z"/><rect x="4" y="8" width="16" height="12" rx="1"/><path d="M10 12l2 2 4-4"/></svg>Сборки</button>
+                <button class="sidebar-item" onclick="window.location.href='/minecraft/?#plugin'"><svg viewBox="0 0 24 24"><path d="M20 12v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"/><rect x="4" y="4" width="16" height="8" rx="1"/><circle cx="12" cy="12" r="2"/></svg>Плагины</button>
+                <button class="sidebar-item" onclick="window.location.href='/minecraft/?#datapack'"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8v8H8z"/><path d="M12 12l2-2-2-2"/></svg>Датапаки</button>
             </div>
         </div>
 
@@ -553,7 +542,6 @@
         let hasMore = true;
         let currentPage = 0;
 
-        // Для карусели: функция остановки клика, чтобы не переходить по посту
         window.stopPropagation = function(e) {
             e.stopPropagation();
         };
@@ -567,7 +555,6 @@
             document.getElementById('galleryModal').classList.remove('show');
         };
 
-        // Навигация карусели
         window.scrollCarousel = function(container, direction) {
             const track = container.querySelector('.carousel-track');
             if (!track) return;
@@ -575,7 +562,6 @@
             track.scrollBy({ left: direction * slideWidth, behavior: 'smooth' });
         };
 
-        // Обновление dots при прокрутке
         function setupCarousel(container) {
             const track = container.querySelector('.carousel-track');
             const dots = container.querySelectorAll('.carousel-dot');
@@ -591,7 +577,7 @@
             };
 
             track.addEventListener('scroll', updateDots);
-            track.addEventListener('scrollend', updateDots); // современный браузер
+            track.addEventListener('scrollend', updateDots);
             updateDots();
         }
 
@@ -630,11 +616,8 @@
         }
         function getWordIndex(n) { return (n%10==1 && n%100!=11) ? 0 : (n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20)) ? 1 : 2; }
 
-        function getRandomGalleryImage(project) {
-            if (project.gallery && project.gallery.length > 0) {
-                return project.gallery.map(g => g.url);
-            }
-            return null;
+        function getGalleryImages(project) {
+            return (project.gallery && project.gallery.length > 0) ? project.gallery.map(g => g.url) : null;
         }
 
         window.toggleLike = function(button, postId) {
@@ -656,7 +639,6 @@
             isLoading = true;
             const feedEl = document.getElementById('feed');
 
-            // Заменяем статическую заглушку или добавляем индикатор
             if (currentPage === 0) {
                 feedEl.innerHTML = '<div class="loading" id="loading-more"><div class="loading-spinner"></div><div class="friendly-text">Собираем для вас подборку ✨</div></div>';
             } else {
@@ -690,11 +672,9 @@
                 let validPosts = results.filter(p => p !== null);
                 validPosts = shuffleArray(validPosts);
 
-                // Перевод описаний
                 const translatePromises = validPosts.map(p => p.description && !cachedTranslations.has(p.description) ? translateText(p.description) : Promise.resolve());
                 await Promise.all(translatePromises);
 
-                // Убираем индикатор загрузки
                 const loadingMore = document.getElementById('loading-more');
                 if (loadingMore) loadingMore.remove();
 
@@ -706,11 +686,6 @@
                     currentPage++;
                 }
 
-                // Если загрузили меньше чем запрашивали, возможно, больше нет, но дадим ещё шанс
-                if (validPosts.length < POSTS_PER_PAGE) {
-                    // не отключаем hasMore сразу, потому что это может быть случайность
-                    // просто уменьшим лимит для следующего раза
-                }
             } catch (error) {
                 console.error('Ошибка загрузки:', error);
                 const loadingMore = document.getElementById('loading-more');
@@ -747,12 +722,12 @@
             for (const post of posts) {
                 const description = getDescription(post);
                 const iconUrl = post.icon_url || 'https://via.placeholder.com/48/2c2c30/a0a0a8?text=Mod';
-                const galleryImages = getRandomGalleryImage(post.fullData);
+                const galleryImages = getGalleryImages(post.fullData);
                 const typeName = projectTypeNames[post.project_type] || 'Проект';
                 const postId = `${post.project_type}_${post.slug}`;
                 const liked = isLiked(postId);
 
-                // Генерация блока с каруселью или статичной картинкой
+                // Генерация медиа-блока: если нет изображений, просто пропускаем
                 let mediaHtml = '';
                 if (galleryImages && galleryImages.length > 1) {
                     const slidesHtml = galleryImages.map(img => 
@@ -773,7 +748,8 @@
                 } else if (galleryImages && galleryImages.length === 1) {
                     mediaHtml = `<img src="${galleryImages[0]}" class="post-image-static" onclick="event.stopPropagation(); openModal('${galleryImages[0]}')" loading="lazy">`;
                 } else {
-                    mediaHtml = `<div style="width:100%; aspect-ratio:16/9; background:#2a2a2e; display:flex; align-items:center; justify-content:center; color:var(--text-secondary); border-bottom:1px solid var(--border-subtle);">🖼️ Нет изображения</div>`;
+                    // Нет изображений — ничего не выводим
+                    mediaHtml = '';
                 }
 
                 html += `
@@ -821,7 +797,6 @@
                 feedEl.insertAdjacentHTML('beforeend', html);
             }
 
-            // Активируем карусели: после добавления в DOM настраиваем dots
             posts.forEach(post => {
                 const postId = `${post.project_type}_${post.slug}`;
                 const container = document.getElementById(`carousel-${postId}`);
@@ -837,18 +812,15 @@
             });
         }
 
-        // Бесконечная прокрутка: более агрессивная
         window.addEventListener('scroll', () => {
             const scrollY = window.scrollY;
             const windowHeight = window.innerHeight;
             const documentHeight = document.documentElement.scrollHeight;
-            // Срабатываем за 400px до конца, но если не загружено — цепляемся
             if (scrollY + windowHeight > documentHeight - 400) {
                 loadMorePosts();
             }
         });
 
-        // Дополнительный триггер на resize и load
         window.addEventListener('resize', () => {
             const scrollY = window.scrollY;
             const windowHeight = window.innerHeight;
@@ -860,7 +832,6 @@
 
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
-        // Старт
         loadMorePosts();
     </script>
 </body>
