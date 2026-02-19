@@ -114,6 +114,7 @@
             border-radius: 1rem;
             border: 1px solid var(--border-subtle);
             flex-wrap: wrap;
+            position: relative;
         }
 
         .project-icon {
@@ -128,12 +129,46 @@
             flex: 1;
         }
 
+        .project-name-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+        }
+
         .project-name {
             font-size: 2.5rem;
             font-weight: 700;
             color: var(--text-contrast);
-            margin-bottom: 0.5rem;
             line-height: 1.2;
+        }
+
+        .download-top-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--bg-brand);
+            color: var(--text-brand);
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            white-space: nowrap;
+        }
+
+        .download-top-btn:hover {
+            background-color: var(--text-brand);
+            color: var(--bg-body);
+        }
+
+        .download-top-btn svg {
+            width: 1.2rem;
+            height: 1.2rem;
+            stroke: currentColor;
         }
 
         .project-author {
@@ -181,6 +216,69 @@
             padding: 2rem;
             border-radius: 1rem;
             border: 1px solid var(--border-subtle);
+        }
+
+        .gallery-section {
+            margin-bottom: 2rem;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .gallery-image {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .gallery-image:hover {
+            transform: scale(1.02);
+            border-color: var(--text-brand);
+        }
+
+        /* Модальное окно для галереи */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 2rem;
+            color: white;
+            font-size: 3rem;
+            cursor: pointer;
         }
 
         .project-details {
@@ -304,26 +402,6 @@
             letter-spacing: 0.5px;
         }
 
-        .filter-select {
-            background-color: var(--bg-button);
-            border: 1px solid var(--border-subtle);
-            border-radius: 0.5rem;
-            padding: 0.5rem;
-            color: var(--text-contrast);
-            font-size: 0.9rem;
-            cursor: pointer;
-            outline: none;
-        }
-
-        .filter-select:hover {
-            border-color: var(--text-brand);
-        }
-
-        .filter-select option {
-            background-color: var(--bg-raised);
-            color: var(--text-contrast);
-        }
-
         .loader-badges {
             display: flex;
             flex-wrap: wrap;
@@ -367,16 +445,6 @@
         .loader-badge-filter[data-loader="quilt"] {
             background-color: var(--color-quilt);
             color: #000;
-        }
-
-        .loader-badge-filter[data-loader="all"] {
-            background-color: var(--bg-button);
-            color: var(--text-secondary);
-        }
-
-        .loader-badge-filter[data-loader="all"].active {
-            background-color: var(--bg-brand);
-            color: var(--text-brand);
         }
 
         /* Таблица версий */
@@ -483,36 +551,59 @@
             stroke: currentColor;
         }
 
+        /* Пагинация */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            min-width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.5rem;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.1s;
+            padding: 0 0.5rem;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background-color: var(--bg-button);
+            color: var(--text-contrast);
+        }
+
+        .page-btn.active {
+            background-color: var(--bg-brand);
+            color: var(--text-brand);
+            border-color: var(--text-brand);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         .no-versions {
             padding: 2rem;
             text-align: center;
             color: var(--text-secondary);
         }
-
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .gallery-image {
-            width: 100%;
-            aspect-ratio: 16/9;
-            object-fit: cover;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: transform 0.2s;
-            border: 1px solid var(--border-subtle);
-        }
-
-        .gallery-image:hover {
-            transform: scale(1.02);
-            border-color: var(--text-brand);
-        }
     </style>
 </head>
 <body>
+    <!-- Модальное окно для галереи -->
+    <div class="modal" id="galleryModal" onclick="closeModal()">
+        <span class="modal-close">&times;</span>
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="">
+        </div>
+    </div>
+
     <div class="container">
         <!-- Навигация -->
         <div class="nav-bar">
@@ -570,11 +661,11 @@
         let cachedTranslations = new Map();
         let translateEnabled = false;
 
-        // Фильтры
-        let selectedLoader = 'all';
-        let selectedGameVersion = 'all';
+        // Фильтры и пагинация
+        let selectedLoader = null; // null = все загрузчики
+        const VERSIONS_PER_PAGE = 10;
+        let currentPage = 1;
         let availableLoaders = [];
-        let availableGameVersions = [];
 
         // Проверяем настройки перевода из localStorage
         try {
@@ -598,6 +689,39 @@
             }
         }
 
+        // ========== ФУНКЦИЯ ДЛЯ ГАЛЕРЕИ ==========
+        window.openModal = function(src) {
+            document.getElementById('modalImage').src = src;
+            document.getElementById('galleryModal').classList.add('show');
+        };
+
+        window.closeModal = function() {
+            document.getElementById('galleryModal').classList.remove('show');
+        };
+
+        // ========== ФУНКЦИЯ ДЛЯ ПРОКРУТКИ К ВЕРСИЯМ ==========
+        window.scrollToVersions = function() {
+            document.getElementById('versions-section').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        // ========== ФУНКЦИЯ ДЛЯ ВЫБОРА ЗАГРУЗЧИКА ==========
+        window.toggleLoader = function(loader) {
+            if (selectedLoader === loader) {
+                selectedLoader = null; // Снимаем выбор
+            } else {
+                selectedLoader = loader;
+            }
+            currentPage = 1;
+            applyFilters();
+            renderProject();
+        };
+
+        // ========== ФУНКЦИЯ ДЛЯ ПАГИНАЦИИ ==========
+        window.goToPage = function(page) {
+            currentPage = page;
+            renderProject();
+        };
+
         // ========== ЗАГРУЗКА ДАННЫХ ==========
         async function loadProject() {
             try {
@@ -612,32 +736,12 @@
                 const versionsResponse = await fetch(`${API_BASE}/project/${projectSlug}/version`);
                 allVersions = await versionsResponse.json();
 
-                // Получаем уникальные загрузчики и версии для фильтров
+                // Получаем уникальные загрузчики
                 const loadersSet = new Set();
-                const gameVersionsSet = new Set();
-                
                 allVersions.forEach(version => {
                     version.loaders.forEach(loader => loadersSet.add(loader));
-                    version.game_versions.forEach(gv => {
-                        // Фильтруем снапшоты
-                        if (!gv.includes('snapshot') && !gv.includes('w')) {
-                            gameVersionsSet.add(gv);
-                        }
-                    });
                 });
-
                 availableLoaders = Array.from(loadersSet).sort();
-                availableGameVersions = Array.from(gameVersionsSet).sort((a, b) => {
-                    // Сортировка версий по убыванию
-                    const aParts = a.split('.').map(Number);
-                    const bParts = b.split('.').map(Number);
-                    for (let i = 0; i < Math.max(aParts.length, bParts.length); i++) {
-                        const aVal = aParts[i] || 0;
-                        const bVal = bParts[i] || 0;
-                        if (aVal !== bVal) return bVal - aVal;
-                    }
-                    return 0;
-                });
 
                 // Применяем фильтры
                 applyFilters();
@@ -665,13 +769,22 @@
         // ========== ПРИМЕНЕНИЕ ФИЛЬТРОВ ==========
         function applyFilters() {
             filteredVersions = allVersions.filter(version => {
-                if (selectedLoader !== 'all' && !version.loaders.includes(selectedLoader)) {
+                // Фильтр по загрузчику
+                if (selectedLoader && !version.loaders.includes(selectedLoader)) {
                     return false;
                 }
-                if (selectedGameVersion !== 'all' && !version.game_versions.includes(selectedGameVersion)) {
-                    return false;
-                }
-                return true;
+                
+                // Показываем только стабильные версии (не снапшоты, не пре-релизы)
+                const hasStableGameVersion = version.game_versions.some(gv => 
+                    !gv.includes('snapshot') && 
+                    !gv.includes('pre') && 
+                    !gv.includes('w') && 
+                    !gv.includes('beta') &&
+                    !gv.includes('alpha') &&
+                    !gv.includes('rc')
+                );
+                
+                return hasStableGameVersion;
             });
         }
 
@@ -683,13 +796,49 @@
             return num.toString();
         }
 
-        // ========== ФОРМАТИРОВАНИЕ ДАТЫ ==========
-        function formatDate(dateString) {
-            return new Date(dateString).toLocaleDateString('ru-RU', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
+        // ========== ФОРМАТИРОВАНИЕ ДАТЫ КАК НА MODRINTH ==========
+        function formatRelativeDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays < 7) {
+                return `${diffDays} ${getDaysWord(diffDays)} назад`;
+            } else if (diffDays < 30) {
+                const weeks = Math.floor(diffDays / 7);
+                return `${weeks} ${getWeeksWord(weeks)} назад`;
+            } else if (diffDays < 365) {
+                const months = Math.floor(diffDays / 30);
+                return `${months} ${getMonthsWord(months)} назад`;
+            } else {
+                const years = Math.floor(diffDays / 365);
+                return `${years} ${getYearsWord(years)} назад`;
+            }
+        }
+
+        function getDaysWord(days) {
+            if (days === 1) return 'день';
+            if (days >= 2 && days <= 4) return 'дня';
+            return 'дней';
+        }
+
+        function getWeeksWord(weeks) {
+            if (weeks === 1) return 'неделю';
+            if (weeks >= 2 && weeks <= 4) return 'недели';
+            return 'недель';
+        }
+
+        function getMonthsWord(months) {
+            if (months === 1) return 'месяц';
+            if (months >= 2 && months <= 4) return 'месяца';
+            return 'месяцев';
+        }
+
+        function getYearsWord(years) {
+            if (years === 1) return 'год';
+            if (years >= 2 && years <= 4) return 'года';
+            return 'лет';
         }
 
         // ========== ПОЛУЧЕНИЕ ОПИСАНИЯ ==========
@@ -728,17 +877,52 @@
 
             const description = getDescription();
 
-            // Формируем HTML для фильтров загрузчиков
+            // Формируем фильтры загрузчиков
             const loaderFilters = `
                 <div class="loader-badges">
-                    <span class="loader-badge-filter ${selectedLoader === 'all' ? 'active' : ''}" 
-                          data-loader="all" onclick="selectLoader('all')">Все</span>
                     ${availableLoaders.map(loader => `
                         <span class="loader-badge-filter ${getLoaderClass(loader)} ${selectedLoader === loader ? 'active' : ''}" 
-                              data-loader="${loader}" onclick="selectLoader('${loader}')">${loader}</span>
+                              data-loader="${loader}" onclick="toggleLoader('${loader}')">${loader}</span>
                     `).join('')}
                 </div>
             `;
+
+            // Пагинация
+            const totalPages = Math.ceil(filteredVersions.length / VERSIONS_PER_PAGE);
+            const startIndex = (currentPage - 1) * VERSIONS_PER_PAGE;
+            const endIndex = Math.min(startIndex + VERSIONS_PER_PAGE, filteredVersions.length);
+            const paginatedVersions = filteredVersions.slice(startIndex, endIndex);
+
+            // Формируем кнопки пагинации
+            let paginationButtons = '';
+            if (totalPages > 1) {
+                paginationButtons += '<div class="pagination">';
+                
+                // Кнопка "Назад"
+                paginationButtons += `
+                    <button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} 
+                            onclick="goToPage(${currentPage - 1})">←</button>
+                `;
+                
+                // Номера страниц
+                let startPage = Math.max(1, currentPage - 2);
+                let endPage = Math.min(totalPages, currentPage + 2);
+                
+                for (let i = startPage; i <= endPage; i++) {
+                    paginationButtons += `
+                        <button class="page-btn ${i === currentPage ? 'active' : ''}" 
+                                onclick="goToPage(${i})">${i}</button>
+                    `;
+                }
+                
+                // Кнопка "Вперед"
+                paginationButtons += `
+                    <button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} 
+                            onclick="goToPage(${currentPage + 1})">→</button>
+                `;
+                
+                paginationButtons += '</div>';
+            }
 
             // Формируем таблицу версий
             const versionsTable = filteredVersions.length > 0 ? `
@@ -747,13 +931,24 @@
                         <tr>
                             <th>Версия</th>
                             <th>Загрузчики</th>
-                            <th>Игры</th>
+                            <th>Версии</th>
                             <th>Дата</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${filteredVersions.map(version => `
+                        ${paginatedVersions.map(version => {
+                            // Получаем только стабильные версии игр
+                            const stableGameVersions = version.game_versions.filter(gv => 
+                                !gv.includes('snapshot') && 
+                                !gv.includes('pre') && 
+                                !gv.includes('w') && 
+                                !gv.includes('beta') &&
+                                !gv.includes('alpha') &&
+                                !gv.includes('rc')
+                            );
+                            
+                            return `
                             <tr>
                                 <td><span class="version-number">${escapeHtml(version.version_number)}</span></td>
                                 <td>
@@ -763,14 +958,14 @@
                                 </td>
                                 <td>
                                     <div class="game-versions">
-                                        ${version.game_versions.filter(gv => !gv.includes('snapshot') && !gv.includes('w')).slice(0, 3).map(gv => 
+                                        ${stableGameVersions.slice(0, 3).map(gv => 
                                             `<span class="game-version">${gv}</span>`
                                         ).join('')}
-                                        ${version.game_versions.filter(gv => !gv.includes('snapshot') && !gv.includes('w')).length > 3 ? 
-                                            `<span class="game-version">+${version.game_versions.length - 3}</span>` : ''}
+                                        ${stableGameVersions.length > 3 ? 
+                                            `<span class="game-version">+${stableGameVersions.length - 3}</span>` : ''}
                                     </div>
                                 </td>
-                                <td>${formatDate(version.date_published)}</td>
+                                <td>${formatRelativeDate(version.date_published)}</td>
                                 <td>
                                     <a href="${version.files[0]?.url}" class="download-btn" target="_blank">
                                         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
@@ -778,17 +973,24 @@
                                     </a>
                                 </td>
                             </tr>
-                        `).join('')}
+                        `}).join('')}
                     </tbody>
                 </table>
-            ` : '<div class="no-versions">Нет версий, соответствующих фильтрам</div>';
+                ${paginationButtons}
+            ` : '<div class="no-versions">Нет стабильных версий</div>';
 
             let html = `
                 <div class="project-header">
                     <img src="${iconUrl}" class="project-icon" alt="${escapeHtml(projectData.title)}"
                          onerror="this.src='https://via.placeholder.com/128/2c2c30/a0a0a8?text=Mod'">
                     <div class="project-info">
-                        <h1 class="project-name">${escapeHtml(projectData.title)}</h1>
+                        <div class="project-name-row">
+                            <h1 class="project-name">${escapeHtml(projectData.title)}</h1>
+                            <button class="download-top-btn" onclick="scrollToVersions()">
+                                <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+                                Скачать
+                            </button>
+                        </div>
                         <div class="project-author">by ${escapeHtml(projectData.author || 'Неизвестен')}</div>
                         <div class="project-stats">
                             <div class="stat-item">
@@ -799,16 +1001,9 @@
                                 </div>
                             </div>
                             <div class="stat-item">
-                                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                                <div>
-                                    <div class="stat-value">${formatNumber(projectData.follows)}</div>
-                                    <div class="stat-label">подписчиков</div>
-                                </div>
-                            </div>
-                            <div class="stat-item">
                                 <svg viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2"/></svg>
                                 <div>
-                                    <div class="stat-value">${formatDate(projectData.updated)}</div>
+                                    <div class="stat-value">${formatRelativeDate(projectData.updated)}</div>
                                     <div class="stat-label">обновлено</div>
                                 </div>
                             </div>
@@ -820,6 +1015,17 @@
                     ${escapeHtml(description)}
                 </div>
 
+                ${projectData.gallery && projectData.gallery.length > 0 ? `
+                    <div class="gallery-section">
+                        <h3 class="section-title">🖼️ Галерея</h3>
+                        <div class="gallery">
+                            ${projectData.gallery.map(img => `
+                                <img src="${img.url}" class="gallery-image" onclick="openModal('${img.url}')">
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+
                 <div class="project-details">
                     <div class="detail-section">
                         <h3 class="section-title">📦 Информация</h3>
@@ -828,7 +1034,7 @@
                             <div><strong>Статус:</strong> ${escapeHtml(projectData.status || 'Неизвестно')}</div>
                             <div><strong>Сторона клиента:</strong> ${escapeHtml(projectData.client_side || 'Неизвестно')}</div>
                             <div><strong>Сторона сервера:</strong> ${escapeHtml(projectData.server_side || 'Неизвестно')}</div>
-                            <div><strong>Дата создания:</strong> ${formatDate(projectData.published)}</div>
+                            <div><strong>Дата создания:</strong> ${formatRelativeDate(projectData.published)}</div>
                         </div>
                     </div>
 
@@ -858,7 +1064,7 @@
                     </div>
                 </div>
 
-                <div class="versions-section">
+                <div class="versions-section" id="versions-section">
                     <div class="versions-header">
                         <h3 class="versions-title">📥 Версии</h3>
                         <div class="version-filters">
@@ -866,47 +1072,14 @@
                                 <span class="filter-label">Загрузчик</span>
                                 ${loaderFilters}
                             </div>
-                            <div class="filter-group">
-                                <span class="filter-label">Версия игры</span>
-                                <select class="filter-select" id="gameVersionSelect" onchange="selectGameVersion(this.value)">
-                                    <option value="all">Все версии</option>
-                                    ${availableGameVersions.map(gv => `
-                                        <option value="${gv}" ${selectedGameVersion === gv ? 'selected' : ''}>${gv}</option>
-                                    `).join('')}
-                                </select>
-                            </div>
                         </div>
                     </div>
                     ${versionsTable}
                 </div>
-
-                ${projectData.gallery && projectData.gallery.length > 0 ? `
-                    <div class="detail-section">
-                        <h3 class="section-title">🖼️ Галерея</h3>
-                        <div class="gallery">
-                            ${projectData.gallery.map(img => `
-                                <img src="${img.url}" class="gallery-image" onclick="window.open('${img.url}')">
-                            `).join('')}
-                        </div>
-                    </div>
-                ` : ''}
             `;
 
             projectContent.innerHTML = html;
         }
-
-        // ========== ФУНКЦИИ ДЛЯ ФИЛЬТРОВ ==========
-        window.selectLoader = function(loader) {
-            selectedLoader = loader;
-            applyFilters();
-            renderProject();
-        };
-
-        window.selectGameVersion = function(version) {
-            selectedGameVersion = version;
-            applyFilters();
-            renderProject();
-        };
 
         // ========== ЗАЩИТА ОТ XSS ==========
         function escapeHtml(unsafe) {
@@ -922,6 +1095,13 @@
         // ========== СЛЕДИМ ЗА ИЗМЕНЕНИЕМ HASH ==========
         window.addEventListener('hashchange', () => {
             window.location.reload();
+        });
+
+        // Закрытие модального окна по ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
         });
 
         // Запуск
