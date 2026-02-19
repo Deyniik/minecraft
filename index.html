@@ -23,6 +23,8 @@
         .container {
             max-width: 1400px;
             width: 100%;
+            display: flex;
+            gap: 2rem;
         }
 
         :root {
@@ -32,6 +34,7 @@
             --bg-button-hover: #3a3a40;
             --bg-selected: #3b3b45;
             --text-contrast: #ffffff;
+            --text-primary: #e0e0e0;
             --text-secondary: #a0a0a8;
             --text-brand: #fbbf24;
             --bg-brand: rgba(251, 191, 36, 0.15);
@@ -39,56 +42,75 @@
             --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
         }
 
-        /* Шапка */
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
+        /* Боковая панель */
+        .sidebar {
+            width: 260px;
+            flex-shrink: 0;
+            background-color: var(--bg-raised);
+            border-radius: 1rem;
+            border: 1px solid var(--border-subtle);
+            padding: 1.5rem 1rem;
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
         }
 
-        .logo {
-            font-size: 2rem;
+        .sidebar-logo {
+            font-size: 1.8rem;
             font-weight: 800;
             color: var(--text-contrast);
-            letter-spacing: -0.5px;
-            cursor: pointer;
+            margin-bottom: 2rem;
+            padding-left: 0.5rem;
         }
 
-        .logo span {
+        .sidebar-logo span {
             color: var(--text-brand);
         }
 
-        .nav-tabs {
-            display: inline-flex;
-            background-color: var(--bg-raised);
-            border-radius: 9999px;
-            padding: 0.25rem;
-            box-shadow: var(--card-shadow);
-            flex-wrap: wrap;
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
         }
 
-        .nav-tab {
-            padding: 0.5rem 1.5rem;
-            border-radius: 9999px;
-            font-size: 0.95rem;
-            font-weight: 600;
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
             color: var(--text-secondary);
             cursor: pointer;
+            transition: all 0.2s;
             border: none;
-            background: transparent;
-            transition: all 0.15s;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 1rem;
+            font-weight: 500;
         }
 
-        .nav-tab:hover {
+        .sidebar-item:hover {
+            background-color: var(--bg-button);
             color: var(--text-contrast);
         }
 
-        .nav-tab.active {
-            color: var(--text-contrast);
-            background-color: var(--bg-selected);
+        .sidebar-item.active {
+            background-color: var(--bg-brand);
+            color: var(--text-brand);
+        }
+
+        .sidebar-item svg {
+            width: 1.5rem;
+            height: 1.5rem;
+            stroke: currentColor;
+            fill: none;
+        }
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
         }
 
         /* Поиск */
@@ -148,7 +170,6 @@
             flex-wrap: wrap;
         }
 
-        /* Кастомный селект */
         .custom-select {
             position: relative;
             min-width: 180px;
@@ -299,7 +320,6 @@
             margin-top: 2rem;
         }
 
-        /* Карточка */
         .mod-card {
             background-color: var(--bg-raised);
             border-radius: 1rem;
@@ -347,7 +367,7 @@
         }
 
         .mod-description {
-            color: var(--text-secondary);
+            color: var(--text-primary);
             font-size: 0.95rem;
             line-height: 1.5;
             margin-bottom: 1rem;
@@ -379,11 +399,6 @@
             fill: none;
         }
 
-        .mod-stat .likes-icon {
-            fill: none;
-            stroke: var(--text-secondary);
-        }
-
         .mod-loaders {
             display: flex;
             flex-wrap: wrap;
@@ -396,7 +411,7 @@
             border-radius: 9999px;
             padding: 0.25rem 0.75rem;
             font-size: 0.8rem;
-            color: var(--text-secondary);
+            color: var(--text-primary);
         }
 
         .loading {
@@ -416,14 +431,15 @@
         }
 
         .page-btn {
-            width: 2.5rem;
+            min-width: 2.5rem;
             height: 2.5rem;
-            border-radius: 9999px;
+            border-radius: 0.5rem;
             background: transparent;
             border: 1px solid var(--border-subtle);
             color: var(--text-secondary);
             cursor: pointer;
             transition: all 0.1s;
+            padding: 0 0.5rem;
         }
 
         .page-btn:hover:not(:disabled) {
@@ -445,79 +461,109 @@
 </head>
 <body>
     <div class="container">
-        <!-- Шапка с логотипом -->
-        <div class="header">
-            <div class="logo" onclick="window.location.href='/minecraft/'">Deynik <span>Minecraft</span></div>
-            <div class="nav-tabs">
-                <button class="nav-tab active" data-tab="mod">📦 Моды</button>
-                <button class="nav-tab" data-tab="shader">✨ Шейдеры</button>
-                <button class="nav-tab" data-tab="resourcepack">🎨 Ресурспаки</button>
-                <button class="nav-tab" data-tab="modpack">📚 Сборки</button>
-                <button class="nav-tab" data-tab="plugin">🔌 Плагины</button>
-                <button class="nav-tab" data-tab="datapack">📁 Датапаки</button>
-            </div>
-        </div>
-
-        <!-- Поиск -->
-        <div class="search-section">
-            <div class="search-wrapper">
-                <svg class="search-icon" viewBox="0 0 24 24">
-                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                </svg>
-                <input type="text" class="search-input" placeholder="🔍 Найдется всё!" id="searchInput">
-            </div>
-        </div>
-
-        <!-- Фильтры -->
-        <div class="filters-section">
-            <div class="filter-group">
-                <!-- Сортировка -->
-                <div class="custom-select" id="sortSelect">
-                    <button class="select-btn" id="sortBtn">
-                        <span id="sortText">Сортировка: новые</span>
-                        <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
-                    </button>
-                    <div class="select-dropdown" id="sortDropdown">
-                        <div class="select-option selected" data-value="newest">🔥 Новые</div>
-                        <div class="select-option" data-value="relevance">🎯 Релевантные</div>
-                        <div class="select-option" data-value="downloads">📥 Популярные</div>
-                        <div class="select-option" data-value="updated">🔄 Обновленные</div>
-                    </div>
-                </div>
-
-                <!-- Загрузчики -->
-                <div class="custom-select" id="platformSelect">
-                    <button class="select-btn" id="platformBtn">
-                        <span id="platformText">Все загрузчики</span>
-                        <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
-                    </button>
-                    <div class="select-dropdown" id="platformDropdown">
-                        <div class="select-option selected" data-value="all">Все загрузчики</div>
-                        <div class="select-option" data-value="fabric">Fabric</div>
-                        <div class="select-option" data-value="forge">Forge</div>
-                        <div class="select-option" data-value="neoforge">NeoForge</div>
-                        <div class="select-option" data-value="quilt">Quilt</div>
-                    </div>
-                </div>
-            </div>
+        <!-- Боковая панель -->
+        <div class="sidebar">
+            <div class="sidebar-logo" onclick="window.location.href='/minecraft/'">Deynik <span>Minecraft</span></div>
             
-            <!-- Переключатель языка -->
-            <div class="translate-toggle">
-                <span class="toggle-label">🇷🇺 Русский</span>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="translateToggle">
-                    <span class="toggle-slider"></span>
-                </label>
+            <div class="sidebar-menu">
+                <button class="sidebar-item active" onclick="window.location.href='/minecraft/'">
+                    <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19.5v-9z"/><path d="M9 21v-6h6v6"/></svg>
+                    Главная
+                </button>
+                <button class="sidebar-item" onclick="window.location.href='/minecraft/feed.html'">
+                    <svg viewBox="0 0 24 24"><path d="M22 6.5L12 2 2 6.5M22 6.5L12 11 2 6.5M22 6.5V17M2 6.5V17M12 11v9"/><path d="M7 15l5 3 5-3"/></svg>
+                    Лента
+                </button>
+            </div>
+
+            <div class="sidebar-menu">
+                <button class="sidebar-item" data-tab="mod">
+                    <svg viewBox="0 0 24 24"><path d="M20 7h-4.5L15 4H9L8.5 7H4v2h16V7z"/><rect x="4" y="9" width="16" height="10" rx="1"/><circle cx="8" cy="13" r="1"/><circle cx="16" cy="13" r="1"/></svg>
+                    Моды
+                </button>
+                <button class="sidebar-item" data-tab="shader">
+                    <svg viewBox="0 0 24 24"><path d="M12 3v1M5 8h1M18 8h1M8 21h8M12 8v8"/><circle cx="12" cy="15" r="3"/><path d="M8 11L5 8M16 11l3-3"/></svg>
+                    Шейдеры
+                </button>
+                <button class="sidebar-item" data-tab="resourcepack">
+                    <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M9 9l6 6M15 9l-6 6"/></svg>
+                    Ресурспаки
+                </button>
+                <button class="sidebar-item" data-tab="modpack">
+                    <svg viewBox="0 0 24 24"><path d="M4 4h16v2H4z"/><rect x="4" y="8" width="16" height="12" rx="1"/><path d="M10 12l2 2 4-4"/></svg>
+                    Сборки
+                </button>
+                <button class="sidebar-item" data-tab="plugin">
+                    <svg viewBox="0 0 24 24"><path d="M20 12v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"/><rect x="4" y="4" width="16" height="8" rx="1"/><circle cx="12" cy="12" r="2"/></svg>
+                    Плагины
+                </button>
+                <button class="sidebar-item" data-tab="datapack">
+                    <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8v8H8z"/><path d="M12 12l2-2-2-2"/></svg>
+                    Датапаки
+                </button>
             </div>
         </div>
 
-        <!-- Сетка -->
-        <div id="modsGrid" class="mods-grid">
-            <div class="loading">⏳ Загрузка...</div>
-        </div>
+        <!-- Основной контент -->
+        <div class="main-content">
+            <!-- Поиск -->
+            <div class="search-section">
+                <div class="search-wrapper">
+                    <svg class="search-icon" viewBox="0 0 24 24">
+                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <input type="text" class="search-input" placeholder="🔍 Найдется всё!" id="searchInput">
+                </div>
+            </div>
 
-        <!-- Пагинация -->
-        <div class="pagination" id="pagination"></div>
+            <!-- Фильтры -->
+            <div class="filters-section">
+                <div class="filter-group">
+                    <div class="custom-select" id="sortSelect">
+                        <button class="select-btn" id="sortBtn">
+                            <span id="sortText">Сортировка: новые</span>
+                            <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+                        </button>
+                        <div class="select-dropdown" id="sortDropdown">
+                            <div class="select-option selected" data-value="newest">🔥 Новые</div>
+                            <div class="select-option" data-value="relevance">🎯 Релевантные</div>
+                            <div class="select-option" data-value="downloads">📥 Популярные</div>
+                            <div class="select-option" data-value="updated">🔄 Обновленные</div>
+                        </div>
+                    </div>
+
+                    <div class="custom-select" id="platformSelect">
+                        <button class="select-btn" id="platformBtn">
+                            <span id="platformText">Все загрузчики</span>
+                            <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+                        </button>
+                        <div class="select-dropdown" id="platformDropdown">
+                            <div class="select-option selected" data-value="all">Все загрузчики</div>
+                            <div class="select-option" data-value="fabric">Fabric</div>
+                            <div class="select-option" data-value="forge">Forge</div>
+                            <div class="select-option" data-value="neoforge">NeoForge</div>
+                            <div class="select-option" data-value="quilt">Quilt</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="translate-toggle">
+                    <span class="toggle-label">🇷🇺 Русский</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="translateToggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Сетка -->
+            <div id="modsGrid" class="mods-grid">
+                <div class="loading">⏳ Загрузка...</div>
+            </div>
+
+            <!-- Пагинация -->
+            <div class="pagination" id="pagination"></div>
+        </div>
     </div>
 
     <script>
@@ -531,7 +577,7 @@
         let currentSearch = '';
         let currentPlatform = 'all';
         let currentSort = 'newest';
-        let translateEnabled = false;
+        let translateEnabled = true;
         let totalHits = 0;
         let cachedProjects = null;
         let cachedTranslations = new Map();
@@ -550,7 +596,7 @@
         // Элементы
         const modsGrid = document.getElementById('modsGrid');
         const searchInput = document.getElementById('searchInput');
-        const tabs = document.querySelectorAll('.nav-tab');
+        const sidebarItems = document.querySelectorAll('.sidebar-item[data-tab]');
         const translateToggle = document.getElementById('translateToggle');
         const paginationEl = document.getElementById('pagination');
 
@@ -567,7 +613,7 @@
         const platformDropdown = document.getElementById('platformDropdown');
         const platformOptions = platformDropdown.querySelectorAll('.select-option');
 
-        // ========== ЗАКРЫТИЕ ДРОПДАУНОВ ПРИ КЛИКЕ ВНЕ ==========
+        // ========== ЗАКРЫТИЕ ДРОПДАУНОВ ==========
         document.addEventListener('click', (e) => {
             if (!sortSelect.contains(e.target)) {
                 sortBtn.classList.remove('open');
@@ -677,6 +723,17 @@
             return cached || project.description || 'Нет описания';
         }
 
+        // ========== ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ==========
+        sidebarItems.forEach(item => {
+            item.addEventListener('click', () => {
+                sidebarItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                currentTab = item.dataset.tab;
+                currentPage = 0;
+                loadMods();
+            });
+        });
+
         // ========== ОТРИСОВКА ==========
         function renderProjects() {
             if (!cachedProjects || cachedProjects.length === 0) {
@@ -707,15 +764,8 @@
                                 ${formatNumber(project.downloads)}
                             </span>
                             <span class="mod-stat">
-                                <svg class="likes-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                                    <circle cx="12" cy="7" r="4"/>
-                                </svg>
-                                ${formatNumber(project.follows)}
-                            </span>
-                            <span class="mod-stat">
                                 <svg viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2"/></svg>
-                                ${updated}
+                                ${formatRelativeDate(project.date_modified)}
                             </span>
                         </div>
                         <div class="mod-loaders">
@@ -730,6 +780,60 @@
             }
             
             modsGrid.innerHTML = html;
+        }
+
+        // ========== ФОРМАТИРОВАНИЕ ЧИСЕЛ ==========
+        function formatNumber(num) {
+            if (!num) return '0';
+            if (num >= 1_000_000) return (num / 1_000_000).toFixed(1) + 'M';
+            if (num >= 1_000) return (num / 1_000).toFixed(1) + 'k';
+            return num.toString();
+        }
+
+        // ========== ФОРМАТИРОВАНИЕ ДАТЫ ==========
+        function formatRelativeDate(dateString) {
+            if (!dateString) return 'неизвестно';
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays < 7) {
+                return `${diffDays} ${getDaysWord(diffDays)} назад`;
+            } else if (diffDays < 30) {
+                const weeks = Math.floor(diffDays / 7);
+                return `${weeks} ${getWeeksWord(weeks)} назад`;
+            } else if (diffDays < 365) {
+                const months = Math.floor(diffDays / 30);
+                return `${months} ${getMonthsWord(months)} назад`;
+            } else {
+                const years = Math.floor(diffDays / 365);
+                return `${years} ${getYearsWord(years)} назад`;
+            }
+        }
+
+        function getDaysWord(days) {
+            if (days === 1) return 'день';
+            if (days >= 2 && days <= 4) return 'дня';
+            return 'дней';
+        }
+
+        function getWeeksWord(weeks) {
+            if (weeks === 1) return 'неделю';
+            if (weeks >= 2 && weeks <= 4) return 'недели';
+            return 'недель';
+        }
+
+        function getMonthsWord(months) {
+            if (months === 1) return 'месяц';
+            if (months >= 2 && months <= 4) return 'месяца';
+            return 'месяцев';
+        }
+
+        function getYearsWord(years) {
+            if (years === 1) return 'год';
+            if (years >= 2 && years <= 4) return 'года';
+            return 'лет';
         }
 
         // ========== ЗАГРУЗКА ==========
@@ -784,24 +888,6 @@
             }
         }
 
-        // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
-        function escapeHtml(unsafe) {
-            if (!unsafe) return '';
-            return String(unsafe)
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-
-        function formatNumber(num) {
-            if (!num) return '0';
-            if (num >= 1_000_000) return (num / 1_000_000).toFixed(1) + 'M';
-            if (num >= 1_000) return (num / 1_000).toFixed(1) + 'k';
-            return num.toString();
-        }
-
         // ========== ПАГИНАЦИЯ ==========
         function updatePagination() {
             const totalPages = Math.ceil(totalHits / limit);
@@ -851,17 +937,6 @@
             paginationEl.appendChild(nextBtn);
         }
 
-        // ========== ВКЛАДКИ ==========
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                currentTab = tab.dataset.tab;
-                currentPage = 0;
-                loadMods();
-            });
-        });
-
         // ========== ПОИСК ==========
         let searchTimeout;
         searchInput.addEventListener('input', () => {
@@ -872,7 +947,6 @@
                 if (currentSearch) {
                     currentSort = 'relevance';
                     sortText.textContent = `Сортировка: ${sortNames.relevance}`;
-                    // Обновляем выделение в дропдауне
                     sortOptions.forEach(opt => {
                         opt.classList.remove('selected');
                         if (opt.dataset.value === 'relevance') opt.classList.add('selected');
@@ -882,7 +956,20 @@
             }, 500);
         });
 
+        // ========== ЗАЩИТА ОТ XSS ==========
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return String(unsafe)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
         // ========== СТАРТ ==========
+        // Активируем вкладку "Моды" по умолчанию
+        document.querySelector('.sidebar-item[data-tab="mod"]').classList.add('active');
         loadMods();
 
         // Автообновление раз в 5 минут
