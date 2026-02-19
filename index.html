@@ -33,7 +33,7 @@
             --bg-selected: #3b3b45;
             --text-contrast: #ffffff;
             --text-secondary: #a0a0a8;
-            --text-brand: #fbbf24; /* Жёлтый цвет */
+            --text-brand: #fbbf24;
             --bg-brand: rgba(251, 191, 36, 0.15);
             --border-subtle: #2c2c32;
             --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
@@ -54,6 +54,7 @@
             font-weight: 800;
             color: var(--text-contrast);
             letter-spacing: -0.5px;
+            cursor: pointer;
         }
 
         .logo span {
@@ -114,6 +115,11 @@
         .search-input:focus {
             outline: none;
             border-color: var(--text-brand);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.8;
         }
 
         .search-icon {
@@ -441,7 +447,7 @@
     <div class="container">
         <!-- Шапка с логотипом -->
         <div class="header">
-            <div class="logo">Deynik <span>Minecraft</span></div>
+            <div class="logo" onclick="window.location.href='/minecraft/'">Deynik <span>Minecraft</span></div>
             <div class="nav-tabs">
                 <button class="nav-tab active" data-tab="mod">📦 Моды</button>
                 <button class="nav-tab" data-tab="shader">✨ Шейдеры</button>
@@ -458,7 +464,7 @@
                 <svg class="search-icon" viewBox="0 0 24 24">
                     <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
-                <input type="text" class="search-input" placeholder="🔍 Поиск проектов..." id="searchInput">
+                <input type="text" class="search-input" placeholder="🔍 Найдется всё!" id="searchInput">
             </div>
         </div>
 
@@ -685,7 +691,7 @@
                 const updated = project.date_modified ? new Date(project.date_modified).toLocaleDateString('ru-RU') : 'неизвестно';
                 
                 html += `
-                    <div class="mod-card" onclick="window.location.href='/minecraft/#${project.project_type}/${project.slug}'">
+                    <div class="mod-card" onclick="window.location.href='/minecraft/${project.project_type}.html#${project.project_type}/${project.slug}'">
                         <div class="mod-header">
                             <img src="${iconUrl}" class="mod-icon" alt="${escapeHtml(project.title)}"
                                  onerror="this.src='https://via.placeholder.com/64/2c2c30/a0a0a8?text=Mod'">
@@ -878,6 +884,9 @@
 
         // ========== СТАРТ ==========
         loadMods();
+
+        // Автообновление раз в 5 минут
+        setInterval(loadMods, 5 * 60 * 1000);
     </script>
 </body>
 </html>
