@@ -147,7 +147,7 @@
             gap: 2rem;
         }
 
-        /* Пост как в Instagram */
+        /* Пост как в Instagram — исправленные отступы */
         .feed-post {
             background-color: var(--bg-raised);
             border-radius: 1rem;
@@ -164,18 +164,18 @@
             border-color: var(--text-brand);
         }
 
-        /* Шапка поста */
+        /* Шапка поста — пиксельная точность */
         .post-header {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            padding: 1rem 1.5rem;
+            gap: 0.75rem; /* Уменьшил с 1rem до 0.75rem (12px) для симметрии */
+            padding: 0.75rem 1rem; /* Вертикальный и горизонтальный паддинг теперь равны (12px) */
             border-bottom: 1px solid var(--border-subtle);
         }
 
         .post-icon {
-            width: 48px;
-            height: 48px;
+            width: 44px; /* Чуть уменьшил, чтобы отступы дышали */
+            height: 44px;
             border-radius: 50%;
             background-color: var(--bg-button);
             object-fit: cover;
@@ -190,7 +190,7 @@
             font-size: 1.1rem;
             font-weight: 700;
             color: var(--text-contrast);
-            margin-bottom: 0.1rem;
+            line-height: 1.3;
         }
 
         .post-title-row {
@@ -211,56 +211,38 @@
             letter-spacing: 0.5px;
         }
 
-        .post-type.mod {
-            background-color: var(--color-mod);
-            color: #000;
-        }
-
-        .post-type.shader {
-            background-color: var(--color-shader);
-            color: #000;
-        }
-
-        .post-type.resourcepack {
-            background-color: var(--color-resourcepack);
-            color: #000;
-        }
-
-        .post-type.modpack {
-            background-color: var(--color-modpack);
-            color: #000;
-        }
-
-        .post-type.plugin {
-            background-color: var(--color-plugin);
-            color: #000;
-        }
-
-        .post-type.datapack {
-            background-color: var(--color-datapack);
-            color: #000;
-        }
+        .post-type.mod { background-color: var(--color-mod); color: #000; }
+        .post-type.shader { background-color: var(--color-shader); color: #000; }
+        .post-type.resourcepack { background-color: var(--color-resourcepack); color: #000; }
+        .post-type.modpack { background-color: var(--color-modpack); color: #000; }
+        .post-type.plugin { background-color: var(--color-plugin); color: #000; }
+        .post-type.datapack { background-color: var(--color-datapack); color: #000; }
 
         .post-author {
             color: var(--text-secondary);
             font-size: 0.85rem;
+            margin-top: 0.1rem;
         }
 
-        /* Изображение поста */
+        /* Изображение поста — сохраняем пропорции, без обрезки */
         .post-image {
             width: 100%;
-            aspect-ratio: 1/1;
-            object-fit: cover;
-            cursor: pointer;
+            display: block; /* Убирает лишний отступ снизу */
+            aspect-ratio: auto; /* Отключаем принудительное соотношение */
+            max-height: 70vh; /* Чтобы слишком высокие не ломали ленту */
+            object-fit: contain; /* Вписываем целиком, фоном будет цвет */
+            background-color: #000; /* Фон для незаполненных областей */
             border-bottom: 1px solid var(--border-subtle);
+            cursor: pointer;
         }
 
-        /* Действия под фото */
+        /* Действия под фото — теперь ПОД описанием, как просили */
         .post-actions {
             display: flex;
             gap: 1rem;
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid var(--border-subtle);
+            padding: 0.75rem 1rem 1rem 1rem; /* чуть меньше сверху, отделяем от описания */
+            border-top: 1px solid var(--border-subtle); /* граница сверху, теперь отделяет от описания */
+            border-bottom: none;
         }
 
         .action-btn {
@@ -287,6 +269,7 @@
             transition: all 0.2s;
         }
 
+        /* Лайк — сердечко */
         .action-btn.liked svg {
             fill: var(--text-brand);
             stroke: var(--text-brand);
@@ -297,9 +280,9 @@
             color: var(--text-contrast);
         }
 
-        /* Тело поста */
+        /* Тело поста — описание теперь над кнопками */
         .post-body {
-            padding: 1rem 1.5rem;
+            padding: 1rem 1rem 0.5rem 1rem; /* нижний отступ уменьшен, так как border у .post-actions */
         }
 
         .post-description {
@@ -735,23 +718,10 @@
                         </div>
                         
                         ${randomImage ? `
-                            <img src="${randomImage}" class="post-image" onclick="event.stopPropagation(); openModal('${randomImage}')">
+                            <img src="${randomImage}" class="post-image" onclick="event.stopPropagation(); openModal('${randomImage}')" loading="lazy">
                         ` : ''}
                         
-                        <div class="post-actions">
-                            <button class="action-btn ${liked ? 'liked' : ''}" onclick="event.stopPropagation(); toggleLike(this, '${postId}')">
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                                    <circle cx="12" cy="7" r="4"/>
-                                </svg>
-                                <span class="likes-count">${formatNumber(post.follows)}</span>
-                            </button>
-                            <button class="action-btn" onclick="event.stopPropagation(); window.location.href='/minecraft/${post.project_type}.html#${post.project_type}/${post.slug}'">
-                                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                                Подробнее
-                            </button>
-                        </div>
-                        
+                        <!-- ТЕПЕРЬ СНАЧАЛА ОПИСАНИЕ -->
                         <div class="post-body">
                             <div class="post-description">${escapeHtml(description)}</div>
                             <div class="post-categories">
@@ -760,6 +730,21 @@
                                 ).join('')}
                             </div>
                             <div class="post-date">${formatRelativeDate(post.date_created)}</div>
+                        </div>
+
+                        <!-- ПОТОМ ДЕЙСТВИЯ (ЛАЙК И ПОДРОБНЕЕ) -->
+                        <div class="post-actions">
+                            <button class="action-btn ${liked ? 'liked' : ''}" onclick="event.stopPropagation(); toggleLike(this, '${postId}')">
+                                <!-- СЕРДЕЧКО -->
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                </svg>
+                                <span class="likes-count">${formatNumber(post.follows)}</span>
+                            </button>
+                            <button class="action-btn" onclick="event.stopPropagation(); window.location.href='/minecraft/${post.project_type}.html#${post.project_type}/${post.slug}'">
+                                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                Подробнее
+                            </button>
                         </div>
                     </div>
                 `;
@@ -784,13 +769,14 @@
                 .replace(/'/g, "&#039;");
         }
 
-        // ========== БЕСКОНЕЧНАЯ ПРОКРУТКА ==========
+        // ========== БЕСКОНЕЧНАЯ ПРОКРУТКА (ПОЧИНЕНА) ==========
         window.addEventListener('scroll', () => {
             const scrollY = window.scrollY;
             const windowHeight = window.innerHeight;
             const documentHeight = document.documentElement.scrollHeight;
             
-            if (scrollY + windowHeight > documentHeight - 1000) {
+            // Уменьшил порог до 300px, чтобы срабатывало чаще
+            if (scrollY + windowHeight > documentHeight - 300) {
                 loadMorePosts();
             }
         });
