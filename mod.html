@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Загрузка мода...</title>
+    <title>Загрузка...</title>
     <style>
         * {
             margin: 0;
@@ -34,8 +34,8 @@
             --bg-selected: #3b3b45;
             --text-contrast: #ffffff;
             --text-secondary: #a0a0a8;
-            --text-brand-green: #2bde73;
-            --bg-green: rgba(43, 222, 115, 0.15);
+            --text-brand: #fbbf24;
+            --bg-brand: rgba(251, 191, 36, 0.15);
             --border-subtle: #2c2c32;
             --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
         }
@@ -62,13 +62,23 @@
         }
 
         .back-btn:hover {
-            color: var(--text-brand-green);
+            color: var(--text-brand);
         }
 
         .back-btn svg {
             width: 1.25rem;
             height: 1.25rem;
             stroke: currentColor;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-contrast);
+        }
+
+        .logo span {
+            color: var(--text-brand);
         }
 
         .loading, .error {
@@ -219,7 +229,7 @@
 
         .link-item:hover {
             background-color: var(--bg-button);
-            color: var(--text-brand-green);
+            color: var(--text-brand);
         }
 
         .link-item svg {
@@ -247,7 +257,7 @@
 
         .gallery-image:hover {
             transform: scale(1.02);
-            border-color: var(--text-brand-green);
+            border-color: var(--text-brand);
         }
 
         .versions-table {
@@ -279,8 +289,8 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            background-color: var(--bg-green);
-            color: var(--text-brand-green);
+            background-color: var(--bg-brand);
+            color: var(--text-brand);
             padding: 0.5rem 1rem;
             border-radius: 0.5rem;
             text-decoration: none;
@@ -289,7 +299,7 @@
         }
 
         .download-btn:hover {
-            background-color: var(--text-brand-green);
+            background-color: var(--text-brand);
             color: var(--bg-body);
         }
 
@@ -308,12 +318,12 @@
                 <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                 На главную
             </a>
-            <span id="projectType" style="color: var(--text-secondary);">Загрузка...</span>
+            <div class="logo">Deynik <span>Minecraft</span></div>
         </div>
 
         <!-- Контейнер для данных -->
         <div id="projectContent">
-            <div class="loading">⏳ Загрузка информации о моде...</div>
+            <div class="loading">⏳ Загрузка...</div>
         </div>
     </div>
 
@@ -322,31 +332,41 @@
         const API_BASE = 'https://api.modrinth.com/v2';
         const TRANSLATE_API = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ru&dt=t&q=';
 
-        // Получаем slug из URL
-        const pathParts = window.location.pathname.split('/');
-        const projectSlug = pathParts[pathParts.length - 1];
-        const projectType = pathParts[pathParts.length - 2] || 'mod';
+        // ========== ПОЛУЧАЕМ SLUG ИЗ URL ==========
+        function getProjectInfoFromUrl() {
+            // URL выглядит так: /minecraft/#mod/fabric-api
+            const hash = window.location.hash.substring(1); // убираем #
+            const parts = hash.split('/');
+            
+            if (parts.length >= 2) {
+                return {
+                    type: parts[0],
+                    slug: parts[1]
+                };
+            }
+            return null;
+        }
+
+        const projectInfo = getProjectInfoFromUrl();
+        
+        if (!projectInfo) {
+            // Если нет информации в URL, показываем ошибку
+            document.getElementById('projectContent').innerHTML = `
+                <div class="error">
+                    ❌ Не указан проект<br>
+                    <a href="/minecraft/" style="color: var(--text-brand); margin-top: 1rem; display: inline-block;">Вернуться на главную</a>
+                </div>
+            `;
+        }
+
+        const projectType = projectInfo.type;
+        const projectSlug = projectInfo.slug;
 
         // Состояние
         let projectData = null;
         let versions = [];
         let cachedTranslations = new Map();
         let translateEnabled = false;
-
-        // Элементы
-        const projectContent = document.getElementById('projectContent');
-        const projectTypeEl = document.getElementById('projectType');
-
-        // Устанавливаем тип проекта
-        const typeNames = {
-            'mod': 'Мод',
-            'shader': 'Шейдер',
-            'resourcepack': 'Ресурспак',
-            'modpack': 'Сборка',
-            'plugin': 'Плагин',
-            'datapack': 'Датапак'
-        };
-        projectTypeEl.textContent = typeNames[projectType] || 'Проект';
 
         // ========== ПЕРЕВОД ==========
         async function translateText(text) {
@@ -368,6 +388,8 @@
         // ========== ЗАГРУЗКА ДАННЫХ ==========
         async function loadProject() {
             try {
+                const projectContent = document.getElementById('projectContent');
+                
                 // Загружаем основную информацию
                 const projectResponse = await fetch(`${API_BASE}/project/${projectSlug}`);
                 if (!projectResponse.ok) throw new Error('Проект не найден');
@@ -375,7 +397,8 @@
 
                 // Проверяем тип проекта
                 if (projectData.project_type !== projectType) {
-                    window.location.href = `/minecraft/${projectData.project_type}/${projectSlug}`;
+                    // Перенаправляем на правильный тип
+                    window.location.href = `/minecraft/#${projectData.project_type}/${projectSlug}`;
                     return;
                 }
 
@@ -388,10 +411,10 @@
 
             } catch (error) {
                 console.error('Ошибка:', error);
-                projectContent.innerHTML = `
+                document.getElementById('projectContent').innerHTML = `
                     <div class="error">
                         ❌ Ошибка: ${error.message}<br>
-                        <a href="/minecraft/" style="color: var(--text-brand-green); margin-top: 1rem; display: inline-block;">Вернуться на главную</a>
+                        <a href="/minecraft/" style="color: var(--text-brand); margin-top: 1rem; display: inline-block;">Вернуться на главную</a>
                     </div>
                 `;
             }
@@ -414,6 +437,18 @@
             });
         }
 
+        // ========== ПОЛУЧЕНИЕ ОПИСАНИЯ ==========
+        function getDescription() {
+            if (!projectData) return '';
+            
+            if (!translateEnabled) {
+                return projectData.description || 'Нет описания';
+            }
+            
+            const cached = cachedTranslations.get(projectData.description);
+            return cached || projectData.description || 'Нет описания';
+        }
+
         // ========== ОТРИСОВКА ==========
         function renderProject() {
             const iconUrl = projectData.icon_url || 'https://via.placeholder.com/128/2c2c30/a0a0a8?text=Mod';
@@ -425,7 +460,8 @@
             if (projectData.wiki_url) links.push({ type: 'wiki', url: projectData.wiki_url, name: 'Wiki' });
             if (projectData.discord_url) links.push({ type: 'discord', url: projectData.discord_url, name: 'Discord' });
 
-            // Формируем HTML
+            const description = getDescription();
+
             let html = `
                 <div class="project-header">
                     <img src="${iconUrl}" class="project-icon" alt="${escapeHtml(projectData.title)}"
@@ -460,7 +496,7 @@
                 </div>
 
                 <div class="project-description" id="description">
-                    ${escapeHtml(projectData.description || 'Нет описания')}
+                    ${escapeHtml(description)}
                 </div>
 
                 <div class="project-details">
@@ -544,7 +580,7 @@
                 ` : ''}
             `;
 
-            projectContent.innerHTML = html;
+            document.getElementById('projectContent').innerHTML = html;
         }
 
         // ========== ЗАЩИТА ОТ XSS ==========
@@ -558,8 +594,16 @@
                 .replace(/'/g, "&#039;");
         }
 
+        // ========== СЛЕДИМ ЗА ИЗМЕНЕНИЕМ HASH ==========
+        window.addEventListener('hashchange', () => {
+            // Перезагружаем страницу при изменении hash
+            window.location.reload();
+        });
+
         // Запуск
-        loadProject();
+        if (projectInfo) {
+            loadProject();
+        }
     </script>
 </body>
 </html>
