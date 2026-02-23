@@ -169,6 +169,7 @@
             color: #000;
             font-weight: bold;
             font-size: 1rem;
+            object-fit: cover;
         }
 
         .user-details {
@@ -239,6 +240,7 @@
             display: flex;
             flex-direction: column;
             height: 100%;
+            min-width: 0; /* Важно для переноса текста */
         }
 
         .chat-header {
@@ -263,10 +265,12 @@
             padding: 1rem;
             display: flex;
             flex-direction: column;
-            gap: 0.15rem; /* Уменьшил расстояние между сообщениями */
+            gap: 0.1rem;
             scrollbar-width: thin;
             scrollbar-color: rgba(251, 191, 36, 0.3) #1c1c1f;
             background-color: var(--bg-raised);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .messages-container::-webkit-scrollbar {
@@ -286,8 +290,8 @@
         .message-group {
             display: flex;
             flex-direction: column;
-            gap: 0.15rem;
-            margin-top: 0.25rem;
+            gap: 0.1rem;
+            margin-top: 0.2rem;
         }
 
         .message-group:first-child {
@@ -297,9 +301,30 @@
         .message-group-header {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
             margin-bottom: 0.1rem;
-            padding-left: 52px; /* Отступ под аватар */
+        }
+
+        .group-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--text-brand);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 1rem;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .group-info {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            flex-wrap: wrap;
         }
 
         .group-username {
@@ -316,22 +341,8 @@
         .message {
             display: flex;
             gap: 1rem;
-            padding: 0.1rem 0;
-        }
-
-        .message-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--text-brand);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #000;
-            font-weight: bold;
-            font-size: 1.1rem;
-            flex-shrink: 0;
-            align-self: flex-start;
+            padding: 0.05rem 0;
+            width: 100%;
         }
 
         .message-avatar-placeholder {
@@ -343,6 +354,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
+            min-width: 0; /* Важно для переноса текста */
         }
 
         .message-text {
@@ -350,6 +362,9 @@
             font-size: 0.95rem;
             line-height: 1.4;
             word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+            max-width: 100%;
         }
 
         .message a {
@@ -417,6 +432,7 @@
             max-height: 100px;
             outline: none;
             font-size: 0.9rem;
+            min-width: 0; /* Важно для адаптивности */
         }
 
         .chat-input:focus {
@@ -465,6 +481,7 @@
             font-size: 0.9rem;
             transition: all 0.3s ease;
             min-width: 100px;
+            flex-shrink: 0;
         }
 
         .chat-send-btn:hover:not(:disabled) {
@@ -642,6 +659,7 @@
             color: #000;
             font-weight: bold;
             font-size: 0.8rem;
+            object-fit: cover;
         }
 
         .mention-name {
@@ -725,6 +743,7 @@
             font-weight: bold;
             font-size: 0.9rem;
             position: relative;
+            object-fit: cover;
         }
 
         .online-indicator {
@@ -805,7 +824,7 @@
             <div class="user-section" id="userSection">
                 <div id="userInfo" style="display: none;">
                     <div class="user-info">
-                        <div class="user-avatar" id="userAvatar"></div>
+                        <img class="user-avatar" id="userAvatar" src="" alt="">
                         <div class="user-details">
                             <div class="user-name" id="userName"></div>
                             <div class="user-nick" id="userNick"></div>
@@ -909,6 +928,7 @@
         let userNickname = localStorage.getItem('userNickname') || '';
         let allUsers = [];
         let onlineUsers = new Set();
+        let heartbeatInterval = null;
 
         // Элементы
         const messagesContainer = document.getElementById('messagesContainer');
@@ -955,14 +975,21 @@
                 
                 userName.textContent = displayName;
                 userNick.textContent = nick;
-                userAvatar.textContent = displayName.charAt(0).toUpperCase();
+                userAvatar.src = user.photoURL || '';
+                userAvatar.onerror = function() {
+                    this.src = '';
+                    this.style.backgroundColor = 'var(--text-brand)';
+                    this.style.display = 'flex';
+                    this.textContent = displayName.charAt(0).toUpperCase();
+                };
                 
                 // Сохраняем в users
                 await db.collection('users').doc(user.uid).set({
                     uid: user.uid,
                     displayName: displayName,
                     nick: nick,
-                    email: user.email
+                    email: user.email,
+                    photoURL: user.photoURL || ''
                 }, { merge: true });
                 
                 loadMessages();
@@ -988,6 +1015,10 @@
                 if (unsubscribeMessages) {
                     unsubscribeMessages();
                 }
+                
+                if (heartbeatInterval) {
+                    clearInterval(heartbeatInterval);
+                }
             }
         });
 
@@ -1010,12 +1041,19 @@
             
             const userRef = db.collection('onlineUsers').doc(currentUser.uid);
             
-            // Устанавливаем онлайн статус и автоматически удаляем при закрытии
-            userRef.set({
-                online: true,
-                lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
-                uid: currentUser.uid
-            });
+            // Устанавливаем онлайн статус
+            const setOnline = () => {
+                userRef.set({
+                    online: true,
+                    lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+                    uid: currentUser.uid
+                });
+            };
+            
+            setOnline();
+            
+            // Отправляем heartbeat каждые 30 секунд
+            heartbeatInterval = setInterval(setOnline, 30000);
             
             // При закрытии вкладки
             window.addEventListener('beforeunload', () => {
@@ -1023,6 +1061,9 @@
                     online: false,
                     lastSeen: firebase.firestore.FieldValue.serverTimestamp() 
                 });
+                if (heartbeatInterval) {
+                    clearInterval(heartbeatInterval);
+                }
             });
             
             // Слушаем изменения онлайн статусов
@@ -1062,10 +1103,10 @@
                         const isOnline = onlineUsers.has(user.uid);
                         html += `
                             <div class="user-item" data-user="${user.uid}">
-                                <div class="user-item-avatar">
-                                    ${user.displayName.charAt(0)}
-                                    ${isOnline ? '<span class="online-indicator"></span>' : ''}
-                                </div>
+                                <img class="user-item-avatar" src="${user.photoURL || ''}" 
+                                     onerror="this.src=''; this.style.backgroundColor='var(--text-brand)'; this.style.display='flex'; this.textContent='${user.displayName.charAt(0)}';"
+                                     alt="">
+                                ${isOnline ? '<span class="online-indicator"></span>' : ''}
                                 <div class="user-item-info">
                                     <div class="user-item-name">${user.displayName}</div>
                                     <div class="user-item-nick">${user.nick || ''}</div>
@@ -1080,10 +1121,10 @@
                 if (currentUserData) {
                     html = `
                         <div class="user-item" style="background: var(--bg-brand); margin-bottom: 0.5rem;">
-                            <div class="user-item-avatar">
-                                ${currentUserData.displayName.charAt(0)}
-                                <span class="online-indicator"></span>
-                            </div>
+                            <img class="user-item-avatar" src="${currentUserData.photoURL || ''}" 
+                                 onerror="this.src=''; this.style.backgroundColor='var(--text-brand)'; this.style.display='flex'; this.textContent='${currentUserData.displayName.charAt(0)}';"
+                                 alt="">
+                            <span class="online-indicator"></span>
                             <div class="user-item-info">
                                 <div class="user-item-name">${currentUserData.displayName} (вы)</div>
                                 <div class="user-item-nick">${currentUserData.nick || ''}</div>
@@ -1135,16 +1176,18 @@
             let lastUserId = null;
             let lastTime = null;
             let messageGroup = [];
+            let messageCount = 0;
             
-            // Группируем сообщения по пользователям
+            // Группируем сообщения по пользователям (максимум 5 сообщений в группе)
             for (let i = 0; i < messages.length; i++) {
                 const msg = messages[i];
                 const nextMsg = messages[i + 1];
                 
                 messageGroup.push(msg);
+                messageCount++;
                 
-                // Если следующее сообщение от другого пользователя или его нет
-                if (!nextMsg || nextMsg.userId !== msg.userId) {
+                // Если следующее сообщение от другого пользователя или достигли лимита в 5 сообщений
+                if (!nextMsg || nextMsg.userId !== msg.userId || messageCount >= 5) {
                     // Рендерим группу
                     const firstMsg = messageGroup[0];
                     const time = firstMsg.timestamp ? new Date(firstMsg.timestamp.toDate()).toLocaleTimeString('ru-RU', { 
@@ -1153,13 +1196,23 @@
                     }) : '';
                     
                     const displayName = firstMsg.userName || 'Пользователь';
-                    const avatarLetter = displayName.charAt(0).toUpperCase();
+                    
+                    // Ищем пользователя в allUsers для получения photoURL
+                    const userData = allUsers.find(u => u.uid === firstMsg.userId);
+                    const photoURL = userData?.photoURL || '';
                     
                     html += `<div class="message-group">`;
+                    
+                    // Заголовок группы с аватаркой и ником
                     html += `
                         <div class="message-group-header">
-                            <span class="group-username">${displayName}</span>
-                            <span class="group-time">${time}</span>
+                            <img class="group-avatar" src="${photoURL}" 
+                                 onerror="this.src=''; this.style.backgroundColor='var(--text-brand)'; this.style.display='flex'; this.textContent='${displayName.charAt(0)}';"
+                                 alt="">
+                            <div class="group-info">
+                                <span class="group-username">${displayName}</span>
+                                <span class="group-time">${time}</span>
+                            </div>
                         </div>
                     `;
                     
@@ -1181,7 +1234,7 @@
                         
                         html += `
                             <div class="message">
-                                <div class="message-avatar">${avatarLetter}</div>
+                                <div class="message-avatar-placeholder"></div>
                                 <div class="message-content">
                                     <div class="message-text">${messageText}</div>
                                     ${gifHtml}
@@ -1194,6 +1247,7 @@
                     
                     // Сбрасываем группу
                     messageGroup = [];
+                    messageCount = 0;
                 }
             }
             
@@ -1245,7 +1299,9 @@
             filtered.forEach(user => {
                 html += `
                     <div class="mention-item" data-nick="${user.nick}">
-                        <div class="mention-avatar">${user.displayName.charAt(0)}</div>
+                        <img class="mention-avatar" src="${user.photoURL || ''}" 
+                             onerror="this.src=''; this.style.backgroundColor='var(--text-brand)'; this.style.display='flex'; this.textContent='${user.displayName.charAt(0)}';"
+                             alt="">
                         <div class="mention-name">${user.displayName}</div>
                         <div class="mention-nick">${user.nick}</div>
                     </div>
