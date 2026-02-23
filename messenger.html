@@ -319,6 +319,10 @@
             word-break: break-all;
         }
 
+        .message a:hover {
+            color: #fbbf24;
+        }
+
         .message-gif {
             max-width: 200px;
             max-height: 150px;
@@ -774,9 +778,9 @@
                 loadMessages();
                 
                 // Создаем приветственное сообщение если чат пуст
-                const snapshot = await db.collection('messages').limit(1).get();
+                const snapshot = await db.collection('chat').limit(1).get();
                 if (snapshot.empty) {
-                    db.collection('messages').add({
+                    db.collection('chat').add({
                         text: 'Добро пожаловать в общий чат! 🎮',
                         userId: 'system',
                         userName: 'Система',
@@ -816,7 +820,7 @@
 
             messagesContainer.innerHTML = '<div class="loading">Загрузка сообщений...</div>';
 
-            unsubscribeMessages = db.collection('messages')
+            unsubscribeMessages = db.collection('chat')
                 .orderBy('timestamp', 'asc')
                 .onSnapshot((snapshot) => {
                     const messages = [];
@@ -919,7 +923,7 @@
             }
             
             try {
-                await db.collection('messages').add(messageData);
+                await db.collection('chat').add(messageData);
                 messageInput.value = '';
                 sendBtn.disabled = true;
                 cancelReply();
@@ -1076,7 +1080,7 @@
             const displayName = userNickname || currentUser.displayName || 'Пользователь';
             
             try {
-                await db.collection('messages').add({
+                await db.collection('chat').add({
                     gif: url,
                     userId: currentUser.uid,
                     userName: displayName,
