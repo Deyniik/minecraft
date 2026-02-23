@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deynik Minecraft - Поиск</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #0f0f11;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .app-container {
+            display: flex;
+            width: 100%;
+            max-width: 1800px;
+        }
+
+        :root {
+            --bg-body: #0f0f11;
+            --bg-raised: #1c1c1f;
+            --bg-button: #2c2c30;
+            --bg-button-hover: #3a3a40;
+            --bg-selected: #3b3b45;
+            --text-contrast: #ffffff;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a8;
+            --text-brand: #fbbf24;
+            --bg-brand: rgba(251, 191, 36, 0.15);
+            --border-subtle: #2c2c32;
+            --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Боковая панель как на YouTube */
+        .sidebar {
+            width: 280px;
+            flex-shrink: 0;
+            background-color: var(--bg-raised);
+            border-right: 1px solid var(--border-subtle);
+            padding: 1.5rem 0.75rem;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--bg-button) var(--bg-raised);
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: var(--bg-raised);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--bg-button);
+            border-radius: 4px;
+        }
+
+        .sidebar-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-contrast);
+            margin-bottom: 2rem;
+            padding-left: 0.75rem;
+            cursor: pointer;
+        }
+
+        .sidebar-logo span {
+            color: var(--text-brand);
+        }
+
+        .sidebar-category {
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-category-title {
+            padding: 0.5rem 0.75rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.6rem 0.75rem;
+            border-radius: 0.75rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .sidebar-item:hover {
+            background-color: var(--bg-button);
+            color: var(--text-contrast);
+        }
+
+        .sidebar-item.active {
+            background-color: var(--bg-brand);
+            color: var(--text-brand);
+        }
+
+        .sidebar-item svg {
+            width: 1.5rem;
+            height: 1.5rem;
+            stroke: currentColor;
+            fill: none;
+        }
+
+        .user-section {
+            margin-top: auto;
+            padding: 1rem 0.75rem;
+            border-top: 1px solid var(--border-subtle);
+            margin-top: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            border-radius: 0.75rem;
+            background-color: var(--bg-button);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--text-brand);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .user-details {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .user-name {
+            color: var(--text-contrast);
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-nick {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--bg-button);
+            border: 1px solid var(--border-subtle);
+            border-radius: 2rem;
+            color: var(--text-contrast);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .google-btn:hover {
+            background-color: var(--bg-button-hover);
+            border-color: var(--text-brand);
+        }
+
+        .google-btn svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 2rem 2rem 2rem 1rem;
+        }
+
+        .search-header {
+            margin-bottom: 2rem;
+        }
+
+        .search-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-contrast);
+            margin-bottom: 1.5rem;
+        }
+
+        .search-title span {
+            color: var(--text-brand);
+        }
+
+        .search-wrapper {
+            position: relative;
+            max-width: 600px;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            background-color: var(--bg-raised);
+            border: 2px solid var(--border-subtle);
+            border-radius: 9999px;
+            color: var(--text-contrast);
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--text-brand);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.8;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1.25rem;
+            height: 1.25rem;
+            stroke: var(--text-secondary);
+        }
+
+        .filters-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: center;
+        }
+
+        .type-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .type-filter-btn {
+            padding: 0.5rem 1rem;
+            background-color: var(--bg-button);
+            border: 1px solid var(--border-subtle);
+            border-radius: 2rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .type-filter-btn:hover, .type-filter-btn.active {
+            background-color: var(--bg-brand);
+            color: var(--text-brand);
+            border-color: var(--text-brand);
+        }
+
+        .sort-select {
+            margin-left: auto;
+            padding: 0.5rem 1rem;
+            background-color: var(--bg-button);
+            border: 1px solid var(--border-subtle);
+            border-radius: 2rem;
+            color: var(--text-contrast);
+            cursor: pointer;
+        }
+
+        .mods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .mod-card {
+            background-color: var(--bg-raised);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            transition: all 0.2s;
+            cursor: pointer;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .mod-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
+            border-color: var(--text-brand);
+        }
+
+        .mod-header {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .mod-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            background-color: var(--bg-button);
+            object-fit: cover;
+        }
+
+        .mod-title {
+            flex: 1;
+        }
+
+        .mod-name {
+            font-weight: 700;
+            color: var(--text-contrast);
+            font-size: 1.2rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .mod-author {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .mod-description {
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .mod-stats {
+            display: flex;
+            gap: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .mod-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .mod-stat svg {
+            width: 1rem;
+            height: 1rem;
+            stroke: currentColor;
+            fill: none;
+        }
+
+        .mod-loaders {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .loader-badge {
+            background-color: var(--bg-button);
+            border: 1px solid var(--border-subtle);
+            border-radius: 9999px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            grid-column: 1 / -1;
+            color: var(--text-secondary);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            min-width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.5rem;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.1s;
+            padding: 0 0.5rem;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background-color: var(--bg-button);
+            color: var(--text-contrast);
+        }
+
+        .page-btn.active {
+            background-color: var(--bg-brand);
+            color: var(--text-brand);
+            border-color: var(--text-brand);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Боковая панель как на YouTube -->
+        <div class="sidebar">
+            <div class="sidebar-logo" onclick="window.location.href='/minecraft/'">Deynik <span>Minecraft</span></div>
+            
+            <!-- Категория 1: Главное -->
+            <div class="sidebar-category">
+                <div class="sidebar-category-title">Главное</div>
+                <div class="sidebar-menu">
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/'">
+                        <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19.5v-9z"/><path d="M9 21v-6h6v6"/></svg>
+                        Рекомендации
+                    </button>
+                    <button class="sidebar-item active" onclick="window.location.href='/minecraft/search.html'">
+                        <svg viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        Поиск
+                    </button>
+                    <button class="sidebar-item" id="savedBtn">
+                        <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                        Сохраненные
+                    </button>
+                    <button class="sidebar-item" id="messengerBtn">
+                        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        Мессенджер
+                    </button>
+                </div>
+            </div>
+
+            <!-- Категория 2: Контент -->
+            <div class="sidebar-category">
+                <div class="sidebar-category-title">Контент</div>
+                <div class="sidebar-menu">
+                    <button class="sidebar-item" data-type="mod">
+                        <svg viewBox="0 0 24 24"><path d="M20 7h-4.5L15 4H9L8.5 7H4v2h16V7z"/><rect x="4" y="9" width="16" height="10" rx="1"/><circle cx="8" cy="13" r="1"/><circle cx="16" cy="13" r="1"/></svg>
+                        Моды
+                    </button>
+                    <button class="sidebar-item" data-type="shader">
+                        <svg viewBox="0 0 24 24"><path d="M12 3v1M5 8h1M18 8h1M8 21h8M12 8v8"/><circle cx="12" cy="15" r="3"/><path d="M8 11L5 8M16 11l3-3"/></svg>
+                        Шейдеры
+                    </button>
+                    <button class="sidebar-item" data-type="resourcepack">
+                        <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M9 9l6 6M15 9l-6 6"/></svg>
+                        Ресурспаки
+                    </button>
+                    <button class="sidebar-item" data-type="modpack">
+                        <svg viewBox="0 0 24 24"><path d="M4 4h16v2H4z"/><rect x="4" y="8" width="16" height="12" rx="1"/><path d="M10 12l2 2 4-4"/></svg>
+                        Сборки
+                    </button>
+                    <button class="sidebar-item" data-type="plugin">
+                        <svg viewBox="0 0 24 24"><path d="M20 12v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"/><rect x="4" y="4" width="16" height="8" rx="1"/><circle cx="12" cy="12" r="2"/></svg>
+                        Плагины
+                    </button>
+                    <button class="sidebar-item" data-type="datapack">
+                        <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8v8H8z"/><path d="M12 12l2-2-2-2"/></svg>
+                        Датапаки
+                    </button>
+                </div>
+            </div>
+
+            <!-- Пользовательская секция -->
+            <div class="user-section" id="userSection">
+                <div id="userInfo" style="display: none;">
+                    <div class="user-info">
+                        <div class="user-avatar" id="userAvatar"></div>
+                        <div class="user-details">
+                            <div class="user-name" id="userName"></div>
+                            <div class="user-nick" id="userNick"></div>
+                        </div>
+                    </div>
+                </div>
+                <button class="google-btn" id="googleSignInBtn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                    Войти через Google
+                </button>
+            </div>
+        </div>
+
+        <!-- Основной контент -->
+        <div class="main-content">
+            <div class="search-header">
+                <h1 class="search-title">Поиск <span>проектов</span></h1>
+                
+                <div class="search-wrapper">
+                    <svg class="search-icon" viewBox="0 0 24 24">
+                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <input type="text" class="search-input" placeholder="🔍 Найдется всё!" id="searchInput">
+                </div>
+
+                <div class="filters-section">
+                    <div class="type-filters">
+                        <button class="type-filter-btn active" data-type="all">Все</button>
+                        <button class="type-filter-btn" data-type="mod">Моды</button>
+                        <button class="type-filter-btn" data-type="shader">Шейдеры</button>
+                        <button class="type-filter-btn" data-type="resourcepack">Ресурспаки</button>
+                        <button class="type-filter-btn" data-type="modpack">Сборки</button>
+                        <button class="type-filter-btn" data-type="plugin">Плагины</button>
+                        <button class="type-filter-btn" data-type="datapack">Датапаки</button>
+                    </div>
+                    
+                    <select class="sort-select" id="sortSelect">
+                        <option value="relevance">По релевантности</option>
+                        <option value="downloads">По скачиваниям</option>
+                        <option value="newest">Сначала новые</option>
+                        <option value="updated">Недавно обновленные</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Сетка -->
+            <div id="modsGrid" class="mods-grid">
+                <div class="loading">⏳ Загрузка...</div>
+            </div>
+
+            <!-- Пагинация -->
+            <div class="pagination" id="pagination"></div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase конфигурация
+        const firebaseConfig = {
+            apiKey: "AIzaSyBk4nxZ1ldNQUCxsbgaeYTkm9stq0o9o2Q",
+            authDomain: "deygram-e4814.firebaseapp.com",
+            projectId: "deygram-e4814",
+            storageBucket: "deygram-e4814.firebasestorage.app",
+            messagingSenderId: "591207353726",
+            appId: "1:591207353726:web:d20f5e648d3daf86fcb72f"
+        };
+
+        // Инициализация Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // ========== НАСТРОЙКИ ==========
+        const API_BASE = 'https://api.modrinth.com/v2';
+        const TRANSLATE_API = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ru&dt=t&q=';
+
+        // Состояние
+        let currentPage = 0;
+        let currentType = 'all';
+        let currentSearch = '';
+        let currentSort = 'relevance';
+        let translateEnabled = true;
+        let totalHits = 0;
+        let cachedProjects = null;
+        let cachedTranslations = new Map();
+        const limit = 25;
+
+        // Элементы
+        const modsGrid = document.getElementById('modsGrid');
+        const searchInput = document.getElementById('searchInput');
+        const typeFilterBtns = document.querySelectorAll('.type-filter-btn');
+        const sortSelect = document.getElementById('sortSelect');
+        const paginationEl = document.getElementById('pagination');
+        const savedBtn = document.getElementById('savedBtn');
+        const messengerBtn = document.getElementById('messengerBtn');
+        const googleSignInBtn = document.getElementById('googleSignInBtn');
+        const userInfo = document.getElementById('userInfo');
+        const userName = document.getElementById('userName');
+        const userNick = document.getElementById('userNick');
+        const userAvatar = document.getElementById('userAvatar');
+
+        let currentUser = null;
+
+        // ========== АУТЕНТИФИКАЦИЯ ==========
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                currentUser = user;
+                userInfo.style.display = 'block';
+                googleSignInBtn.style.display = 'none';
+                
+                userName.textContent = user.displayName || 'Пользователь';
+                const nick = `@${user.email.split('@')[0]}_${Math.floor(Math.random() * 10000)}`;
+                userNick.textContent = nick;
+                userAvatar.textContent = (user.displayName || 'U')[0].toUpperCase();
+            } else {
+                currentUser = null;
+                userInfo.style.display = 'none';
+                googleSignInBtn.style.display = 'flex';
+            }
+        });
+
+        googleSignInBtn.addEventListener('click', () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider);
+        });
+
+        savedBtn.addEventListener('click', () => {
+            if (!currentUser) {
+                alert('Войдите, чтобы увидеть сохраненные проекты');
+                return;
+            }
+            window.location.href = '/minecraft/saved.html';
+        });
+
+        messengerBtn.addEventListener('click', () => {
+            if (!currentUser) {
+                alert('Войдите, чтобы использовать мессенджер');
+                return;
+            }
+            window.location.href = '/minecraft/messenger.html';
+        });
+
+        // ========== ПЕРЕКЛЮЧЕНИЕ ТИПОВ ==========
+        typeFilterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                typeFilterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentType = btn.dataset.type;
+                currentPage = 0;
+                loadMods();
+            });
+        });
+
+        // ========== СОРТИРОВКА ==========
+        sortSelect.addEventListener('change', () => {
+            currentSort = sortSelect.value;
+            currentPage = 0;
+            loadMods();
+        });
+
+        // ========== ПОИСК ==========
+        let searchTimeout;
+        searchInput.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                currentSearch = searchInput.value;
+                currentPage = 0;
+                if (currentSearch) {
+                    currentSort = 'relevance';
+                    sortSelect.value = 'relevance';
+                }
+                loadMods();
+            }, 500);
+        });
+
+        // ========== ПЕРЕВОД ==========
+        async function translateText(text) {
+            if (!text || text.length < 10) return text;
+            if (cachedTranslations.has(text)) return cachedTranslations.get(text);
+            
+            try {
+                const response = await fetch(TRANSLATE_API + encodeURIComponent(text));
+                const data = await response.json();
+                const translated = data[0][0][0];
+                cachedTranslations.set(text, translated);
+                return translated;
+            } catch (error) {
+                console.warn('Ошибка перевода:', error);
+                return text;
+            }
+        }
+
+        function getDescription(project) {
+            if (!translateEnabled) {
+                return project.description || 'No description available.';
+            }
+            
+            const cached = cachedTranslations.get(project.description);
+            return cached || project.description || 'Нет описания';
+        }
+
+        // ========== ЗАГРУЗКА ==========
+        async function loadMods() {
+            try {
+                modsGrid.innerHTML = '<div class="loading">⏳ Загрузка...</div>';
+
+                const facetsArray = [];
+                
+                if (currentType !== 'all') {
+                    facetsArray.push([`project_type:${currentType}`]);
+                }
+
+                let url = `${API_BASE}/search?limit=${limit}&offset=${currentPage * limit}`;
+                
+                if (facetsArray.length > 0) {
+                    url += `&facets=${encodeURIComponent(JSON.stringify(facetsArray))}`;
+                }
+                
+                if (currentSearch.trim()) {
+                    url += `&query=${encodeURIComponent(currentSearch.trim())}`;
+                }
+                
+                url += `&index=${currentSort}`;
+
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Ошибка ${response.status}`);
+                
+                const data = await response.json();
+                
+                totalHits = data.total_hits;
+                cachedProjects = data.hits;
+
+                if (!cachedProjects || cachedProjects.length === 0) {
+                    modsGrid.innerHTML = '<div class="loading">😕 Ничего не найдено</div>';
+                    return;
+                }
+
+                if (translateEnabled) {
+                    modsGrid.innerHTML = '<div class="loading">🔄 Переводим описания...</div>';
+                    
+                    for (const project of cachedProjects) {
+                        if (project.description && !cachedTranslations.has(project.description)) {
+                            await translateText(project.description);
+                        }
+                    }
+                }
+                
+                renderProjects();
+                updatePagination();
+
+            } catch (error) {
+                console.error('Ошибка:', error);
+                modsGrid.innerHTML = `<div class="loading">❌ Ошибка загрузки</div>`;
+            }
+        }
+
+        // ========== ОТРИСОВКА ==========
+        function renderProjects() {
+            if (!cachedProjects || cachedProjects.length === 0) {
+                modsGrid.innerHTML = '<div class="loading">😕 Ничего не найдено</div>';
+                return;
+            }
+
+            let html = '';
+            for (const project of cachedProjects) {
+                const description = getDescription(project);
+                const iconUrl = project.icon_url || 'https://via.placeholder.com/64/2c2c30/a0a0a8?text=Mod';
+                const updated = project.date_modified ? new Date(project.date_modified).toLocaleDateString('ru-RU') : 'неизвестно';
+                
+                html += `
+                    <div class="mod-card" onclick="window.location.href='/minecraft/${project.project_type}.html#${project.project_type}/${project.slug}'">
+                        <div class="mod-header">
+                            <img src="${iconUrl}" class="mod-icon" alt="${escapeHtml(project.title)}"
+                                 onerror="this.src='https://via.placeholder.com/64/2c2c30/a0a0a8?text=Mod'">
+                            <div class="mod-title">
+                                <div class="mod-name">${escapeHtml(project.title)}</div>
+                                <div class="mod-author">by ${escapeHtml(project.author || 'Неизвестен')}</div>
+                            </div>
+                        </div>
+                        <div class="mod-description">${escapeHtml(description)}</div>
+                        <div class="mod-stats">
+                            <span class="mod-stat">
+                                <svg viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-1m-4-4-4 4m0 0-4-4m4 4V4"/></svg>
+                                ${formatNumber(project.downloads)}
+                            </span>
+                            <span class="mod-stat">
+                                <svg viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2"/></svg>
+                                ${formatRelativeDate(project.date_modified)}
+                            </span>
+                        </div>
+                        <div class="mod-loaders">
+                            ${(project.categories || []).slice(0, 4).map(l => 
+                                `<span class="loader-badge">${escapeHtml(l)}</span>`
+                            ).join('')}
+                            ${(project.categories || []).length > 4 ? 
+                                `<span class="loader-badge">+${project.categories.length - 4}</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            modsGrid.innerHTML = html;
+        }
+
+        // ========== ФОРМАТИРОВАНИЕ ЧИСЕЛ ==========
+        function formatNumber(num) {
+            if (!num) return '0';
+            if (num >= 1_000_000) return (num / 1_000_000).toFixed(1) + 'M';
+            if (num >= 1_000) return (num / 1_000).toFixed(1) + 'k';
+            return num.toString();
+        }
+
+        // ========== ФОРМАТИРОВАНИЕ ДАТЫ ==========
+        function formatRelativeDate(dateString) {
+            if (!dateString) return 'неизвестно';
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays < 7) {
+                return `${diffDays} ${getDaysWord(diffDays)} назад`;
+            } else if (diffDays < 30) {
+                const weeks = Math.floor(diffDays / 7);
+                return `${weeks} ${getWeeksWord(weeks)} назад`;
+            } else if (diffDays < 365) {
+                const months = Math.floor(diffDays / 30);
+                return `${months} ${getMonthsWord(months)} назад`;
+            } else {
+                const years = Math.floor(diffDays / 365);
+                return `${years} ${getYearsWord(years)} назад`;
+            }
+        }
+
+        function getDaysWord(days) {
+            if (days === 1) return 'день';
+            if (days >= 2 && days <= 4) return 'дня';
+            return 'дней';
+        }
+
+        function getWeeksWord(weeks) {
+            if (weeks === 1) return 'неделю';
+            if (weeks >= 2 && weeks <= 4) return 'недели';
+            return 'недель';
+        }
+
+        function getMonthsWord(months) {
+            if (months === 1) return 'месяц';
+            if (months >= 2 && months <= 4) return 'месяца';
+            return 'месяцев';
+        }
+
+        function getYearsWord(years) {
+            if (years === 1) return 'год';
+            if (years >= 2 && years <= 4) return 'года';
+            return 'лет';
+        }
+
+        // ========== ПАГИНАЦИЯ ==========
+        function updatePagination() {
+            const totalPages = Math.ceil(totalHits / limit);
+            paginationEl.innerHTML = '';
+
+            if (totalPages <= 1) return;
+
+            const prevBtn = document.createElement('button');
+            prevBtn.className = 'page-btn';
+            prevBtn.innerHTML = '←';
+            prevBtn.disabled = currentPage === 0;
+            prevBtn.onclick = () => {
+                if (currentPage > 0) {
+                    currentPage--;
+                    loadMods();
+                    window.scrollTo(0, 0);
+                }
+            };
+            paginationEl.appendChild(prevBtn);
+
+            let start = Math.max(0, currentPage - 2);
+            let end = Math.min(totalPages, currentPage + 3);
+
+            for (let i = start; i < end; i++) {
+                const btn = document.createElement('button');
+                btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                btn.textContent = i + 1;
+                btn.onclick = () => {
+                    currentPage = i;
+                    loadMods();
+                    window.scrollTo(0, 0);
+                };
+                paginationEl.appendChild(btn);
+            }
+
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'page-btn';
+            nextBtn.innerHTML = '→';
+            nextBtn.disabled = currentPage >= totalPages - 1;
+            nextBtn.onclick = () => {
+                if (currentPage < totalPages - 1) {
+                    currentPage++;
+                    loadMods();
+                    window.scrollTo(0, 0);
+                }
+            };
+            paginationEl.appendChild(nextBtn);
+        }
+
+        // ========== ЗАЩИТА ОТ XSS ==========
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return String(unsafe)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // ========== ПОЛУЧЕНИЕ ПАРАМЕТРОВ ИЗ URL ==========
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            const type = params.get('type');
+            if (type) {
+                currentType = type;
+                typeFilterBtns.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.type === type) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+        }
+
+        // ========== СТАРТ ==========
+        getUrlParams();
+        loadMods();
+    </script>
+</body>
+</html>
