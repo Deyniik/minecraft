@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deynik Minecraft - Мод</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
         * {
             margin: 0;
@@ -17,12 +21,13 @@
             display: flex;
             justify-content: center;
             min-height: 100vh;
-            padding: 2rem 1rem;
+            padding: 0;
         }
 
-        .container {
-            max-width: 1000px;
+        .app-container {
+            display: flex;
             width: 100%;
+            max-width: 1800px;
         }
 
         :root {
@@ -52,8 +57,180 @@
             --color-beta: #fbbf24;
         }
 
-        body, .project-description, .info-grid, .tag, .version-number, .game-version {
-            font-weight: 450;
+        /* Боковая панель как на YouTube */
+        .sidebar {
+            width: 280px;
+            flex-shrink: 0;
+            background-color: var(--bg-raised);
+            border-right: 1px solid var(--border-subtle);
+            padding: 1.5rem 0.75rem;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--bg-button) var(--bg-raised);
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: var(--bg-raised);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--bg-button);
+            border-radius: 4px;
+        }
+
+        .sidebar-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-contrast);
+            margin-bottom: 2rem;
+            padding-left: 0.75rem;
+            cursor: pointer;
+        }
+
+        .sidebar-logo span {
+            color: var(--text-brand);
+        }
+
+        .sidebar-category {
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-category-title {
+            padding: 0.5rem 0.75rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.6rem 0.75rem;
+            border-radius: 0.75rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .sidebar-item:hover {
+            background-color: var(--bg-button);
+            color: var(--text-contrast);
+        }
+
+        .sidebar-item.active {
+            background-color: var(--bg-brand);
+            color: var(--text-brand);
+        }
+
+        .sidebar-item svg {
+            width: 1.5rem;
+            height: 1.5rem;
+            stroke: currentColor;
+            fill: none;
+        }
+
+        .user-section {
+            margin-top: auto;
+            padding: 1rem 0.75rem;
+            border-top: 1px solid var(--border-subtle);
+            margin-top: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            border-radius: 0.75rem;
+            background-color: var(--bg-button);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--text-brand);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .user-details {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .user-name {
+            color: var(--text-contrast);
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-nick {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--bg-button);
+            border: 1px solid var(--border-subtle);
+            border-radius: 2rem;
+            color: var(--text-contrast);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .google-btn:hover {
+            background-color: var(--bg-button-hover);
+            border-color: var(--text-brand);
+        }
+
+        .google-btn svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 2rem 2rem 2rem 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .nav-bar {
@@ -417,10 +594,25 @@
             box-shadow: 0 0 0 1px var(--text-brand);
         }
 
-        .loader-badge-filter[data-loader="fabric"] { background-color: var(--color-fabric); color: white; }
-        .loader-badge-filter[data-loader="forge"] { background-color: var(--color-forge); color: white; }
-        .loader-badge-filter[data-loader="neoforge"] { background-color: var(--color-neoforge); color: white; }
-        .loader-badge-filter[data-loader="quilt"] { background-color: var(--color-quilt); color: white; }
+        .loader-badge-filter[data-loader="fabric"] {
+            background-color: var(--color-fabric);
+            color: #000;
+        }
+
+        .loader-badge-filter[data-loader="forge"] {
+            background-color: var(--color-forge);
+            color: #000;
+        }
+
+        .loader-badge-filter[data-loader="neoforge"] {
+            background-color: var(--color-neoforge);
+            color: #000;
+        }
+
+        .loader-badge-filter[data-loader="quilt"] {
+            background-color: var(--color-quilt);
+            color: #000;
+        }
 
         .versions-table {
             width: 100%;
@@ -468,8 +660,15 @@
             flex-shrink: 0;
         }
 
-        .version-status.release { background-color: var(--color-release); color: #000; }
-        .version-status.beta { background-color: var(--color-beta); color: #000; }
+        .version-status.release {
+            background-color: var(--color-release);
+            color: #000;
+        }
+
+        .version-status.beta {
+            background-color: var(--color-beta);
+            color: #000;
+        }
 
         .version-number {
             font-weight: 600;
@@ -477,24 +676,33 @@
             font-size: 1rem;
         }
 
-        /* --- ИЗМЕНЕНИЯ ЗДЕСЬ --- */
         .loader-badge-table {
             display: inline-flex;
             align-items: center;
             padding: 0.25rem 0.75rem;
             border-radius: 9999px;
             font-size: 0.8rem;
-            font-weight: 600;
+            font-weight: 500;
             margin-right: 0.25rem;
             margin-bottom: 0.25rem;
-            background-color: rgba(128, 128, 128, 0.5) !important; /* Серый 50% */
+            color: #000;
         }
 
-        .loader-badge-table.fabric { color: var(--color-fabric); }
-        .loader-badge-table.forge { color: var(--color-forge); }
-        .loader-badge-table.neoforge { color: var(--color-neoforge); }
-        .loader-badge-table.quilt { color: var(--color-quilt); }
-        /* ----------------------- */
+        .loader-badge-table.fabric {
+            background-color: var(--color-fabric-alpha);
+        }
+
+        .loader-badge-table.forge {
+            background-color: var(--color-forge-alpha);
+        }
+
+        .loader-badge-table.neoforge {
+            background-color: var(--color-neoforge-alpha);
+        }
+
+        .loader-badge-table.quilt {
+            background-color: var(--color-quilt-alpha);
+        }
 
         .game-versions {
             display: flex;
@@ -587,28 +795,137 @@
         </div>
     </div>
 
-    <div class="container">
-        <div class="nav-bar">
-            <button class="back-btn" onclick="window.location.href='/minecraft/'">
-                <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                На главную
-            </button>
-            <div class="logo" onclick="window.location.href='/minecraft/'">Deynik <span>Minecraft</span></div>
+    <div class="app-container">
+        <!-- Боковая панель -->
+        <div class="sidebar">
+            <div class="sidebar-logo" onclick="window.location.href='/minecraft/'">Deynik <span>Minecraft</span></div>
+            
+            <!-- Категория 1: Главное -->
+            <div class="sidebar-category">
+                <div class="sidebar-category-title">Главное</div>
+                <div class="sidebar-menu">
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/'">
+                        <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19.5v-9z"/><path d="M9 21v-6h6v6"/></svg>
+                        Рекомендации
+                    </button>
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html'">
+                        <svg viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        Поиск
+                    </button>
+                    <button class="sidebar-item" id="savedBtn">
+                        <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                        Сохраненные
+                    </button>
+                    <button class="sidebar-item" id="messengerBtn">
+                        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        Мессенджер
+                    </button>
+                </div>
+            </div>
+
+            <!-- Категория 2: Контент -->
+            <div class="sidebar-category">
+                <div class="sidebar-category-title">Контент</div>
+                <div class="sidebar-menu">
+                    <button class="sidebar-item" data-type="mod">
+                        <svg viewBox="0 0 24 24"><path d="M20 7h-4.5L15 4H9L8.5 7H4v2h16V7z"/><rect x="4" y="9" width="16" height="10" rx="1"/><circle cx="8" cy="13" r="1"/><circle cx="16" cy="13" r="1"/></svg>
+                        Моды
+                    </button>
+                    <button class="sidebar-item" data-type="shader">
+                        <svg viewBox="0 0 24 24"><path d="M12 3v1M5 8h1M18 8h1M8 21h8M12 8v8"/><circle cx="12" cy="15" r="3"/><path d="M8 11L5 8M16 11l3-3"/></svg>
+                        Шейдеры
+                    </button>
+                    <button class="sidebar-item" data-type="resourcepack">
+                        <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M9 9l6 6M15 9l-6 6"/></svg>
+                        Ресурспаки
+                    </button>
+                    <button class="sidebar-item" data-type="modpack">
+                        <svg viewBox="0 0 24 24"><path d="M4 4h16v2H4z"/><rect x="4" y="8" width="16" height="12" rx="1"/><path d="M10 12l2 2 4-4"/></svg>
+                        Сборки
+                    </button>
+                    <button class="sidebar-item" data-type="plugin">
+                        <svg viewBox="0 0 24 24"><path d="M20 12v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"/><rect x="4" y="4" width="16" height="8" rx="1"/><circle cx="12" cy="12" r="2"/></svg>
+                        Плагины
+                    </button>
+                    <button class="sidebar-item" data-type="datapack">
+                        <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8v8H8z"/><path d="M12 12l2-2-2-2"/></svg>
+                        Датапаки
+                    </button>
+                </div>
+            </div>
+
+            <!-- Пользовательская секция -->
+            <div class="user-section" id="userSection">
+                <div id="userInfo" style="display: none;">
+                    <div class="user-info">
+                        <div class="user-avatar" id="userAvatar"></div>
+                        <div class="user-details">
+                            <div class="user-name" id="userName"></div>
+                            <div class="user-nick" id="userNick"></div>
+                        </div>
+                    </div>
+                </div>
+                <button class="google-btn" id="googleSignInBtn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                    Войти через Google
+                </button>
+            </div>
         </div>
 
-        <div id="projectContent">
-            <div class="loading">⏳ Загрузка...</div>
+        <!-- Основной контент -->
+        <div class="main-content">
+            <!-- Навигация -->
+            <div class="nav-bar">
+                <button class="back-btn" onclick="window.location.href='/minecraft/'">
+                    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    На главную
+                </button>
+                <div class="logo" onclick="window.location.href='/minecraft/'">Deynik <span>Minecraft</span></div>
+            </div>
+
+            <!-- Контейнер для данных -->
+            <div id="projectContent">
+                <div class="loading">⏳ Загрузка...</div>
+            </div>
         </div>
     </div>
 
     <script>
+        // Firebase конфигурация
+        const firebaseConfig = {
+            apiKey: "AIzaSyBk4nxZ1ldNQUCxsbgaeYTkm9stq0o9o2Q",
+            authDomain: "deygram-e4814.firebaseapp.com",
+            projectId: "deygram-e4814",
+            storageBucket: "deygram-e4814.firebasestorage.app",
+            messagingSenderId: "591207353726",
+            appId: "1:591207353726:web:d20f5e648d3daf86fcb72f"
+        };
+
+        // Инициализация Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // ========== НАСТРОЙКИ ==========
         const API_BASE = 'https://api.modrinth.com/v2';
         const TRANSLATE_API = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ru&dt=t&q=';
 
+        // ========== ПОЛУЧАЕМ SLUG ИЗ URL ==========
         function getProjectInfoFromUrl() {
             const hash = window.location.hash.substring(1);
             const parts = hash.split('/');
-            if (parts.length >= 2) return { type: parts[0], slug: parts[1] };
+            
+            if (parts.length >= 2) {
+                return {
+                    type: parts[0],
+                    slug: parts[1]
+                };
+            }
             return null;
         }
 
@@ -616,33 +933,101 @@
         const projectContent = document.getElementById('projectContent');
         
         if (!projectInfo) {
-            projectContent.innerHTML = `<div class="error">❌ Не указан проект</div>`;
+            projectContent.innerHTML = `
+                <div class="error">
+                    ❌ Не указан проект<br>
+                    <button onclick="window.location.href='/minecraft/'" style="color: var(--text-brand); margin-top: 1rem; padding: 0.5rem 1rem; background: none; border: 1px solid var(--text-brand); border-radius: 0.5rem; cursor: pointer;">Вернуться на главную</button>
+                </div>
+            `;
         }
 
         const projectType = projectInfo.type;
         const projectSlug = projectInfo.slug;
 
+        // Состояние
         let projectData = null;
         let allVersions = [];
         let filteredVersions = [];
         let cachedTranslations = new Map();
+        let translateEnabled = true;
         let selectedLoader = null;
         const VERSIONS_PER_PAGE = 10;
         let currentPage = 1;
         let availableLoaders = [];
+        let currentUser = null;
 
+        // Элементы
+        const savedBtn = document.getElementById('savedBtn');
+        const messengerBtn = document.getElementById('messengerBtn');
+        const googleSignInBtn = document.getElementById('googleSignInBtn');
+        const userInfo = document.getElementById('userInfo');
+        const userName = document.getElementById('userName');
+        const userNick = document.getElementById('userNick');
+        const userAvatar = document.getElementById('userAvatar');
+
+        // ========== АУТЕНТИФИКАЦИЯ ==========
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                currentUser = user;
+                userInfo.style.display = 'block';
+                googleSignInBtn.style.display = 'none';
+                
+                userName.textContent = user.displayName || 'Пользователь';
+                const nick = `@${user.email.split('@')[0]}_${Math.floor(Math.random() * 10000)}`;
+                userNick.textContent = nick;
+                userAvatar.textContent = (user.displayName || 'U')[0].toUpperCase();
+            } else {
+                currentUser = null;
+                userInfo.style.display = 'none';
+                googleSignInBtn.style.display = 'flex';
+            }
+        });
+
+        googleSignInBtn.addEventListener('click', () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider);
+        });
+
+        savedBtn.addEventListener('click', () => {
+            if (!currentUser) {
+                alert('Войдите, чтобы увидеть сохраненные проекты');
+                return;
+            }
+            window.location.href = '/minecraft/saved.html';
+        });
+
+        messengerBtn.addEventListener('click', () => {
+            if (!currentUser) {
+                alert('Войдите, чтобы использовать мессенджер');
+                return;
+            }
+            window.location.href = '/minecraft/messenger.html';
+        });
+
+        document.querySelectorAll('.sidebar-item[data-type]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                window.location.href = `/minecraft/search.html?type=${btn.dataset.type}`;
+            });
+        });
+
+        // ========== ПЕРЕВОД ==========
         async function translateText(text) {
             if (!text || text.length < 20) return text;
             if (cachedTranslations.has(text)) return cachedTranslations.get(text);
+            
             try {
                 const response = await fetch(TRANSLATE_API + encodeURIComponent(text));
                 const data = await response.json();
                 const translated = data[0][0][0];
                 cachedTranslations.set(text, translated);
                 return translated;
-            } catch (error) { return text; }
+            } catch (error) {
+                console.warn('Ошибка перевода:', error);
+                return text;
+            }
         }
 
+        // ========== ФУНКЦИЯ ДЛЯ ГАЛЕРЕИ ==========
         window.openModal = function(src) {
             document.getElementById('modalImage').src = src;
             document.getElementById('galleryModal').classList.add('show');
@@ -652,122 +1037,400 @@
             document.getElementById('galleryModal').classList.remove('show');
         };
 
+        // ========== ФУНКЦИЯ ДЛЯ ПРОКРУТКИ К ВЕРСИЯМ ==========
         window.scrollToVersions = function() {
             document.getElementById('versions-section').scrollIntoView({ behavior: 'smooth' });
         };
 
+        // ========== ФУНКЦИЯ ДЛЯ ВЫБОРА ЗАГРУЗЧИКА ==========
         window.toggleLoader = function(loader) {
-            selectedLoader = (selectedLoader === loader) ? null : loader;
+            if (selectedLoader === loader) {
+                selectedLoader = null;
+            } else {
+                selectedLoader = loader;
+            }
             currentPage = 1;
             applyFilters();
             renderProject();
         };
 
+        // ========== ФУНКЦИЯ ДЛЯ ПАГИНАЦИИ ==========
         window.goToPage = function(page) {
             currentPage = page;
             renderProject();
         };
 
+        // ========== ЗАГРУЗКА ДАННЫХ ==========
         async function loadProject() {
             try {
+                projectContent.innerHTML = '<div class="loading">⏳ Загрузка...</div>';
+                
+                // Загружаем основную информацию
                 const projectResponse = await fetch(`${API_BASE}/project/${projectSlug}`);
+                if (!projectResponse.ok) throw new Error('Проект не найден');
                 projectData = await projectResponse.json();
+
+                // Загружаем все версии
                 const versionsResponse = await fetch(`${API_BASE}/project/${projectSlug}/version`);
                 allVersions = await versionsResponse.json();
 
+                // Получаем уникальные загрузчики
                 const loadersSet = new Set();
-                allVersions.forEach(v => v.loaders.forEach(l => loadersSet.add(l)));
+                allVersions.forEach(version => {
+                    version.loaders.forEach(loader => loadersSet.add(loader));
+                });
                 availableLoaders = Array.from(loadersSet).sort();
 
-                if (projectData.description) await translateText(projectData.description);
+                // Переводим описание
+                if (projectData.description) {
+                    projectContent.innerHTML = '<div class="loading">🔄 Переводим описание...</div>';
+                    await translateText(projectData.description);
+                }
+
+                // Применяем фильтры
                 applyFilters();
+
+                // Отображаем
                 renderProject();
+
             } catch (error) {
-                projectContent.innerHTML = `<div class="error">❌ Ошибка: ${error.message}</div>`;
+                console.error('Ошибка:', error);
+                projectContent.innerHTML = `
+                    <div class="error">
+                        ❌ Ошибка: ${error.message}<br>
+                        <button onclick="window.location.href='/minecraft/'" style="color: var(--text-brand); margin-top: 1rem; padding: 0.5rem 1rem; background: none; border: 1px solid var(--text-brand); border-radius: 0.5rem; cursor: pointer;">Вернуться на главную</button>
+                    </div>
+                `;
             }
         }
 
+        // ========== ПРИМЕНЕНИЕ ФИЛЬТРОВ ==========
         function applyFilters() {
-            filteredVersions = allVersions.filter(v => !selectedLoader || v.loaders.includes(selectedLoader));
+            filteredVersions = allVersions.filter(version => {
+                if (selectedLoader && !version.loaders.includes(selectedLoader)) {
+                    return false;
+                }
+                return true;
+            });
         }
 
+        // ========== ФОРМАТИРОВАНИЕ ЧИСЕЛ ==========
         function formatNumber(num) {
-            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-            if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
-            return num || '0';
+            if (!num) return '0';
+            if (num >= 1_000_000) return (num / 1_000_000).toFixed(1) + 'M';
+            if (num >= 1_000) return (num / 1_000).toFixed(1) + 'k';
+            return num.toString();
         }
 
+        // ========== ФОРМАТИРОВАНИЕ ДАТЫ ==========
         function formatRelativeDate(dateString) {
-            const diffDays = Math.ceil(Math.abs(new Date() - new Date(dateString)) / (1000 * 60 * 60 * 24));
-            if (diffDays < 7) return `${diffDays} дн. назад`;
-            return new Date(dateString).toLocaleDateString();
-        }
-
-        function getVersionStatus(version) {
-            const str = (version.version_number + version.game_versions.join('')).toLowerCase();
-            return (str.includes('beta') || str.includes('pre') || str.includes('snapshot')) ? { type: 'beta', letter: 'B' } : { type: 'release', letter: 'R' };
-        }
-
-        function getLoaderClass(loader) {
-            const l = loader.toLowerCase();
-            if (l.includes('fabric')) return 'fabric';
-            if (l.includes('neoforge')) return 'neoforge';
-            if (l.includes('forge')) return 'forge';
-            if (l.includes('quilt')) return 'quilt';
-            return '';
-        }
-
-        function renderProject() {
-            const iconUrl = projectData.icon_url || '';
-            const description = cachedTranslations.get(projectData.description) || projectData.description || '';
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
             
+            if (diffDays < 7) {
+                return `${diffDays} ${getDaysWord(diffDays)} назад`;
+            } else if (diffDays < 30) {
+                const weeks = Math.floor(diffDays / 7);
+                return `${weeks} ${getWeeksWord(weeks)} назад`;
+            } else if (diffDays < 365) {
+                const months = Math.floor(diffDays / 30);
+                return `${months} ${getMonthsWord(months)} назад`;
+            } else {
+                const years = Math.floor(diffDays / 365);
+                return `${years} ${getYearsWord(years)} назад`;
+            }
+        }
+
+        function getDaysWord(days) {
+            if (days === 1) return 'день';
+            if (days >= 2 && days <= 4) return 'дня';
+            return 'дней';
+        }
+
+        function getWeeksWord(weeks) {
+            if (weeks === 1) return 'неделю';
+            if (weeks >= 2 && weeks <= 4) return 'недели';
+            return 'недель';
+        }
+
+        function getMonthsWord(months) {
+            if (months === 1) return 'месяц';
+            if (months >= 2 && months <= 4) return 'месяца';
+            return 'месяцев';
+        }
+
+        function getYearsWord(years) {
+            if (years === 1) return 'год';
+            if (years >= 2 && years <= 4) return 'года';
+            return 'лет';
+        }
+
+        // ========== ОПРЕДЕЛЕНИЕ СТАТУСА ВЕРСИИ ==========
+        function getVersionStatus(version) {
+            const versionStr = version.version_number.toLowerCase();
+            const gameVersions = version.game_versions.join(' ').toLowerCase();
+            
+            if (versionStr.includes('beta') || versionStr.includes('pre') || 
+                gameVersions.includes('beta') || gameVersions.includes('pre') ||
+                gameVersions.includes('snapshot') || gameVersions.includes('w')) {
+                return { type: 'beta', letter: 'B' };
+            }
+            return { type: 'release', letter: 'R' };
+        }
+
+        // ========== ПОЛУЧЕНИЕ ОПИСАНИЯ ==========
+        function getDescription() {
+            if (!projectData || !projectData.description) return 'Нет описания';
+            const cached = cachedTranslations.get(projectData.description);
+            return cached || projectData.description;
+        }
+
+        // ========== ПОЛУЧЕНИЕ ЦВЕТА ЗАГРУЗЧИКА ==========
+        function getLoaderClass(loader) {
+            switch(loader.toLowerCase()) {
+                case 'fabric': return 'fabric';
+                case 'forge': return 'forge';
+                case 'neoforge': return 'neoforge';
+                case 'quilt': return 'quilt';
+                default: return '';
+            }
+        }
+
+        // ========== ОТРИСОВКА ==========
+        function renderProject() {
+            const iconUrl = projectData.icon_url || 'https://via.placeholder.com/128/2c2c30/a0a0a8?text=Mod';
+            
+            // Получаем ссылки
+            const links = [];
+            if (projectData.source_url) links.push({ type: 'source', url: projectData.source_url, name: 'Исходный код' });
+            if (projectData.issues_url) links.push({ type: 'issues', url: projectData.issues_url, name: 'Сообщить о проблеме' });
+            if (projectData.wiki_url) links.push({ type: 'wiki', url: projectData.wiki_url, name: 'Wiki' });
+            if (projectData.discord_url) links.push({ type: 'discord', url: projectData.discord_url, name: 'Discord' });
+
+            const description = getDescription();
+
+            // Формируем фильтры загрузчиков
+            const loaderFilters = `
+                <div class="loader-badges">
+                    ${availableLoaders.map(loader => `
+                        <span class="loader-badge-filter ${getLoaderClass(loader)} ${selectedLoader === loader ? 'active' : ''}" 
+                              data-loader="${loader}" onclick="toggleLoader('${loader}')">${loader}</span>
+                    `).join('')}
+                </div>
+            `;
+
+            // Пагинация
             const totalPages = Math.ceil(filteredVersions.length / VERSIONS_PER_PAGE);
-            const paginatedVersions = filteredVersions.slice((currentPage - 1) * VERSIONS_PER_PAGE, currentPage * VERSIONS_PER_PAGE);
+            const startIndex = (currentPage - 1) * VERSIONS_PER_PAGE;
+            const endIndex = Math.min(startIndex + VERSIONS_PER_PAGE, filteredVersions.length);
+            const paginatedVersions = filteredVersions.slice(startIndex, endIndex);
 
-            let versionsTable = filteredVersions.length > 0 ? `
+            // Формируем кнопки пагинации
+            let paginationButtons = '';
+            if (totalPages > 1) {
+                paginationButtons += '<div class="pagination">';
+                
+                paginationButtons += `
+                    <button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} 
+                            onclick="goToPage(${currentPage - 1})">←</button>
+                `;
+                
+                let startPage = Math.max(1, currentPage - 2);
+                let endPage = Math.min(totalPages, currentPage + 2);
+                
+                for (let i = startPage; i <= endPage; i++) {
+                    paginationButtons += `
+                        <button class="page-btn ${i === currentPage ? 'active' : ''}" 
+                                onclick="goToPage(${i})">${i}</button>
+                    `;
+                }
+                
+                paginationButtons += `
+                    <button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} 
+                            onclick="goToPage(${currentPage + 1})">→</button>
+                `;
+                
+                paginationButtons += '</div>';
+            }
+
+            // Формируем таблицу версий
+            const versionsTable = filteredVersions.length > 0 ? `
                 <table class="versions-table">
-                    <thead><tr><th>Версия</th><th>Загрузчики</th><th>Версии</th><th>Дата</th><th></th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>Версия</th>
+                            <th>Загрузчики</th>
+                            <th>Версии</th>
+                            <th>Дата</th>
+                            <th></th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        ${paginatedVersions.map(v => {
-                            const status = getVersionStatus(v);
-                            return `<tr>
-                                <td><div class="version-cell"><div class="version-status ${status.type}">${status.letter}</div><span class="version-number">${escapeHtml(v.version_number)}</span></div></td>
+                        ${paginatedVersions.map(version => {
+                            const status = getVersionStatus(version);
+                            
+                            return `
+                            <tr>
                                 <td>
-                                    ${v.loaders
-                                        .filter(l => l.toLowerCase() !== 'datapack') /* УБРАН DATAPACK */
-                                        .map(l => `<span class="loader-badge-table ${getLoaderClass(l)}">${l}</span>`).join('')}
+                                    <div class="version-cell">
+                                        <div class="version-status ${status.type}">${status.letter}</div>
+                                        <span class="version-number">${escapeHtml(version.version_number)}</span>
+                                    </div>
                                 </td>
-                                <td><div class="game-versions">${v.game_versions.slice(0, 3).map(gv => `<span class="game-version">${gv}</span>`).join('')}</div></td>
-                                <td>${formatRelativeDate(v.date_published)}</td>
-                                <td><a href="${v.files[0]?.url}" class="download-btn" target="_blank">Скачать</a></td>
-                            </tr>`}).join('')}
+                                <td>
+                                    ${version.loaders.map(loader => 
+                                        `<span class="loader-badge-table ${getLoaderClass(loader)}">${loader}</span>`
+                                    ).join('')}
+                                </td>
+                                <td>
+                                    <div class="game-versions">
+                                        ${version.game_versions.slice(0, 3).map(gv => 
+                                            `<span class="game-version">${gv}</span>`
+                                        ).join('')}
+                                        ${version.game_versions.length > 3 ? 
+                                            `<span class="game-version">+${version.game_versions.length - 3}</span>` : ''}
+                                    </div>
+                                </td>
+                                <td>${formatRelativeDate(version.date_published)}</td>
+                                <td>
+                                    <a href="${version.files[0]?.url}" class="download-btn" target="_blank">
+                                        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+                                        Скачать
+                                    </a>
+                                </td>
+                            </tr>
+                        `}).join('')}
                     </tbody>
-                </table>` : '<div class="no-versions">Нет версий</div>';
+                </table>
+                ${paginationButtons}
+            ` : '<div class="no-versions">Нет версий</div>';
 
-            projectContent.innerHTML = `
+            let html = `
                 <div class="project-header">
-                    <img src="${iconUrl}" class="project-icon">
+                    <img src="${iconUrl}" class="project-icon" alt="${escapeHtml(projectData.title)}"
+                         onerror="this.src='https://via.placeholder.com/128/2c2c30/a0a0a8?text=Mod'">
                     <div class="project-info">
-                        <div class="project-name-row"><h1 class="project-name">${escapeHtml(projectData.title)}</h1><button class="download-top-btn" onclick="scrollToVersions()">Скачать</button></div>
-                        <div class="project-author">by ${escapeHtml(projectData.author)}</div>
+                        <div class="project-name-row">
+                            <h1 class="project-name">${escapeHtml(projectData.title)}</h1>
+                            <button class="download-top-btn" onclick="scrollToVersions()">
+                                <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+                                Скачать
+                            </button>
+                        </div>
+                        <div class="project-author">by ${escapeHtml(projectData.author || 'Неизвестен')}</div>
                         <div class="project-stats">
-                            <div class="stat-item"><div class="stat-value">${formatNumber(projectData.downloads)}</div><div class="stat-label">скачиваний</div></div>
-                            <div class="stat-item"><div class="stat-value">${formatRelativeDate(projectData.updated)}</div><div class="stat-label">обновлено</div></div>
+                            <div class="stat-item">
+                                <svg viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-1m-4-4-4 4m0 0-4-4m4 4V4"/></svg>
+                                <div>
+                                    <div class="stat-value">${formatNumber(projectData.downloads)}</div>
+                                    <div class="stat-label">скачиваний</div>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <svg viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2"/></svg>
+                                <div>
+                                    <div class="stat-value">${formatRelativeDate(projectData.updated)}</div>
+                                    <div class="stat-label">обновлено</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="project-description">${escapeHtml(description)}</div>
+
+                <div class="project-description">
+                    ${escapeHtml(description)}
+                </div>
+
+                ${projectData.gallery && projectData.gallery.length > 0 ? `
+                    <div class="gallery-section">
+                        <h3 class="section-title">🖼️ Галерея</h3>
+                        <div class="gallery">
+                            ${projectData.gallery.map(img => `
+                                <img src="${img.url}" class="gallery-image" onclick="openModal('${img.url}')">
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+
+                <div class="project-details">
+                    <div class="detail-section">
+                        <h3 class="section-title">📦 Информация</h3>
+                        <div class="info-grid">
+                            <div><strong>Лицензия:</strong> ${escapeHtml(projectData.license?.name || 'Не указана')}</div>
+                            <div><strong>Статус:</strong> ${escapeHtml(projectData.status || 'Неизвестно')}</div>
+                            <div><strong>Сторона клиента:</strong> ${escapeHtml(projectData.client_side || 'Неизвестно')}</div>
+                            <div><strong>Сторона сервера:</strong> ${escapeHtml(projectData.server_side || 'Неизвестно')}</div>
+                            <div><strong>Дата создания:</strong> ${formatRelativeDate(projectData.published)}</div>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <h3 class="section-title">🏷️ Категории</h3>
+                        <div class="tags">
+                            ${(projectData.categories || []).map(cat => 
+                                `<span class="tag">${escapeHtml(cat)}</span>`
+                            ).join('')}
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <h3 class="section-title">🔗 Ссылки</h3>
+                        <div class="link-list">
+                            <a href="https://modrinth.com/${projectType}/${projectSlug}" target="_blank" class="link-item">
+                                <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                Страница на Modrinth
+                            </a>
+                            ${links.map(link => `
+                                <a href="${escapeHtml(link.url)}" target="_blank" class="link-item">
+                                    <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+                                    ${escapeHtml(link.name)}
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+
                 <div class="versions-section" id="versions-section">
-                    <div class="versions-header"><h3 class="versions-title">📥 Версии</h3></div>
+                    <div class="versions-header">
+                        <h3 class="versions-title">📥 Версии</h3>
+                        ${loaderFilters}
+                    </div>
                     ${versionsTable}
-                </div>`;
+                </div>
+            `;
+
+            projectContent.innerHTML = html;
         }
 
+        // ========== ЗАЩИТА ОТ XSS ==========
         function escapeHtml(unsafe) {
-            return String(unsafe || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#039;"}[m]));
+            if (!unsafe) return '';
+            return String(unsafe)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
         }
 
-        if (projectInfo) loadProject();
+        // ========== СЛЕДИМ ЗА ИЗМЕНЕНИЕМ HASH ==========
+        window.addEventListener('hashchange', () => {
+            window.location.reload();
+        });
+
+        // Закрытие модального окна по ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Запуск
+        if (projectInfo) {
+            loadProject();
+        }
     </script>
 </body>
 </html>
