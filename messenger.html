@@ -240,7 +240,7 @@
             display: flex;
             flex-direction: column;
             height: 100%;
-            min-width: 0; /* Важно для переноса текста */
+            min-width: 0;
         }
 
         .chat-header {
@@ -292,6 +292,7 @@
             flex-direction: column;
             gap: 0.1rem;
             margin-top: 0.2rem;
+            position: relative;
         }
 
         .message-group:first-child {
@@ -341,8 +342,15 @@
         .message {
             display: flex;
             gap: 1rem;
-            padding: 0.05rem 0;
+            padding: 0.1rem 0;
             width: 100%;
+            position: relative;
+            border-radius: 0.3rem;
+            transition: background-color 0.2s;
+        }
+
+        .message:hover {
+            background-color: rgba(255, 255, 255, 0.03);
         }
 
         .message-avatar-placeholder {
@@ -354,7 +362,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            min-width: 0; /* Важно для переноса текста */
+            min-width: 0;
         }
 
         .message-text {
@@ -378,6 +386,142 @@
             max-height: 150px;
             border-radius: 8px;
             margin-top: 0.25rem;
+        }
+
+        /* Кнопка трех точек */
+        .message-menu-btn {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 28px;
+            height: 28px;
+            border-radius: 0.3rem;
+            background-color: var(--bg-button);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 5;
+        }
+
+        .message:hover .message-menu-btn {
+            display: flex;
+        }
+
+        .message-menu-btn:hover {
+            background-color: var(--bg-button-hover);
+            color: var(--text-brand);
+        }
+
+        /* Контекстное меню */
+        .context-menu {
+            position: fixed;
+            background-color: var(--bg-raised);
+            border: 1px solid var(--border-subtle);
+            border-radius: 0.5rem;
+            padding: 0.3rem 0;
+            min-width: 180px;
+            box-shadow: var(--card-shadow);
+            z-index: 1000;
+            display: none;
+        }
+
+        .context-menu.show {
+            display: block;
+        }
+
+        .context-menu-item {
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .context-menu-item:hover {
+            background-color: var(--bg-button);
+            color: var(--text-contrast);
+        }
+
+        .context-menu-item.delete:hover {
+            color: #ff4444;
+        }
+
+        .context-menu-item i {
+            width: 18px;
+            font-size: 0.9rem;
+        }
+
+        /* Реакции */
+        .reactions-container {
+            display: flex;
+            gap: 0.3rem;
+            margin-top: 0.3rem;
+            flex-wrap: wrap;
+        }
+
+        .reaction-badge {
+            background-color: var(--bg-button);
+            border: 1px solid var(--border-subtle);
+            border-radius: 1rem;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .reaction-badge:hover {
+            background-color: var(--bg-brand);
+            border-color: var(--text-brand);
+        }
+
+        .reaction-badge.active {
+            background-color: var(--bg-brand);
+            border-color: var(--text-brand);
+        }
+
+        .reaction-count {
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+        }
+
+        .reaction-picker {
+            position: absolute;
+            background-color: var(--bg-raised);
+            border: 1px solid var(--border-subtle);
+            border-radius: 2rem;
+            padding: 0.3rem;
+            display: flex;
+            gap: 0.2rem;
+            box-shadow: var(--card-shadow);
+            z-index: 10;
+        }
+
+        .reaction-emoji {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.2s;
+        }
+
+        .reaction-emoji:hover {
+            background-color: var(--bg-brand);
+            transform: scale(1.1);
         }
 
         .reply-indicator {
@@ -432,7 +576,7 @@
             max-height: 100px;
             outline: none;
             font-size: 0.9rem;
-            min-width: 0; /* Важно для адаптивности */
+            min-width: 0;
         }
 
         .chat-input:focus {
@@ -778,6 +922,96 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
+        /* Модальное окно для редактирования */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(3px);
+        }
+
+        .modal-content {
+            background-color: var(--bg-raised);
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: var(--text-contrast);
+        }
+
+        .modal-close {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .modal-close:hover {
+            color: var(--text-brand);
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--bg-button);
+            border: 1px solid var(--border-subtle);
+            border-radius: 0.5rem;
+            color: var(--text-contrast);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-input:focus {
+            outline: none;
+            border-color: var(--text-brand);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            border: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .modal-btn.primary {
+            background-color: var(--text-brand);
+            color: #000;
+        }
+
+        .modal-btn.primary:hover {
+            background-color: #fbbf24;
+        }
+
+        .modal-btn.secondary {
+            background-color: var(--bg-button);
+            color: var(--text-contrast);
+        }
+
+        .modal-btn.secondary:hover {
+            background-color: var(--bg-button-hover);
+        }
     </style>
 </head>
 <body>
@@ -906,6 +1140,40 @@
         </div>
     </div>
 
+    <!-- Контекстное меню -->
+    <div class="context-menu" id="contextMenu">
+        <div class="context-menu-item" id="menuReply">
+            <i class="fas fa-reply"></i> Ответить
+        </div>
+        <div class="context-menu-item" id="menuReact">
+            <i class="far fa-smile"></i> Реакция
+        </div>
+        <div class="context-menu-item" id="menuCopy">
+            <i class="far fa-copy"></i> Копировать
+        </div>
+        <div class="context-menu-item" id="menuEdit">
+            <i class="fas fa-edit"></i> Редактировать
+        </div>
+        <div class="context-menu-item delete" id="menuDelete">
+            <i class="fas fa-trash-alt"></i> Удалить
+        </div>
+    </div>
+
+    <!-- Модальное окно редактирования -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Редактировать сообщение</h3>
+                <span class="modal-close" id="closeEditModal">&times;</span>
+            </div>
+            <textarea class="modal-input" id="editInput" rows="3"></textarea>
+            <div class="modal-buttons">
+                <button class="modal-btn secondary" id="cancelEdit">Отмена</button>
+                <button class="modal-btn primary" id="saveEdit">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Firebase конфигурация
         const firebaseConfig = {
@@ -925,10 +1193,12 @@
         let currentUser = null;
         let unsubscribeMessages = null;
         let replyingToMessage = null;
+        let editingMessage = null;
         let userNickname = localStorage.getItem('userNickname') || '';
         let allUsers = [];
         let onlineUsers = new Set();
         let heartbeatInterval = null;
+        let currentMessageForMenu = null;
 
         // Элементы
         const messagesContainer = document.getElementById('messagesContainer');
@@ -954,6 +1224,12 @@
         const mentionsList = document.getElementById('mentionsList');
         const usersList = document.getElementById('usersList');
         const onlineCount = document.getElementById('onlineCount');
+        const contextMenu = document.getElementById('contextMenu');
+        const editModal = document.getElementById('editModal');
+        const editInput = document.getElementById('editInput');
+        const closeEditModal = document.getElementById('closeEditModal');
+        const cancelEdit = document.getElementById('cancelEdit');
+        const saveEdit = document.getElementById('saveEdit');
 
         // Эмодзи
         const emojiCategories = {
@@ -962,6 +1238,9 @@
             hearts: ["❤️", "🧡", "💛", "💚", "💙", "💜", "🖤", "🤍", "🤎", "💔", "❣️", "💕", "💞", "💓", "💗", "💖", "💘", "💝", "💟", "💌", "💋"],
             objects: ["🔔", "🎵", "🎶", "🎼", "🎧", "🎤", "🎷", "🎸", "🎹", "🎺", "🎻", "🥁", "📻", "📱", "💻", "🖥️", "🖨️", "🎥", "📹", "📼", "🔍", "🔎", "💡", "📔", "📒", "📕", "📗", "📘", "📙", "📚", "📖", "🔖", "🎯", "🧩", "🚀", "⭐", "🌟", "🎁", "🎉", "🎊", "🎈", "🎂", "🍰", "🧁", "🥧", "🍦", "🍨", "🍩", "🍪", "🎀", "🎗️", "🎟️", "🎫", "🏆", "🏅", "🥇", "🥈", "🥉", "⚽", "🏀", "🏈", "⚾", "🥎", "🎾", "🏐", "🏉", "🥏", "🎱", "🪀", "🏓", "🏸", "🏒", "🏑", "🥍", "🏏", "🎿", "⛷️", "🏂", "🪂", "🏋️", "🤼", "🤸", "⛹️", "🤾", "🏌️", "🏇", "🧘"]
         };
+
+        // Стандартные реакции
+        const quickReactions = ['👍', '❤️', '😂', '😮', '😢', '😡'];
 
         // ========== АУТЕНТИФИКАЦИЯ ==========
         auth.onAuthStateChanged(async (user) => {
@@ -1075,7 +1354,7 @@
                         onlineUsers.add(doc.id);
                     }
                 });
-                loadUsers(); // Перезагружаем список пользователей
+                loadUsers();
             });
         }
 
@@ -1083,17 +1362,15 @@
         function loadUsers() {
             db.collection('users').onSnapshot((snapshot) => {
                 allUsers = [];
-                const usersMap = new Map(); // Для удаления дубликатов
+                const usersMap = new Map();
                 
                 snapshot.forEach(doc => {
                     const user = doc.data();
-                    // Проверяем, есть ли уже такой пользователь
                     if (!usersMap.has(user.uid)) {
                         usersMap.set(user.uid, user);
                     }
                 });
                 
-                // Преобразуем Map обратно в массив
                 allUsers = Array.from(usersMap.values());
                 
                 let html = '';
@@ -1116,7 +1393,6 @@
                     }
                 });
                 
-                // Добавляем себя в начало списка
                 const currentUserData = allUsers.find(u => u.uid === currentUser?.uid);
                 if (currentUserData) {
                     html = `
@@ -1178,7 +1454,6 @@
             let messageGroup = [];
             let messageCount = 0;
             
-            // Группируем сообщения по пользователям (максимум 5 сообщений в группе)
             for (let i = 0; i < messages.length; i++) {
                 const msg = messages[i];
                 const nextMsg = messages[i + 1];
@@ -1186,9 +1461,7 @@
                 messageGroup.push(msg);
                 messageCount++;
                 
-                // Если следующее сообщение от другого пользователя или достигли лимита в 5 сообщений
                 if (!nextMsg || nextMsg.userId !== msg.userId || messageCount >= 5) {
-                    // Рендерим группу
                     const firstMsg = messageGroup[0];
                     const time = firstMsg.timestamp ? new Date(firstMsg.timestamp.toDate()).toLocaleTimeString('ru-RU', { 
                         hour: '2-digit', 
@@ -1197,13 +1470,11 @@
                     
                     const displayName = firstMsg.userName || 'Пользователь';
                     
-                    // Ищем пользователя в allUsers для получения photoURL
                     const userData = allUsers.find(u => u.uid === firstMsg.userId);
                     const photoURL = userData?.photoURL || '';
                     
-                    html += `<div class="message-group">`;
+                    html += `<div class="message-group" data-user="${firstMsg.userId}">`;
                     
-                    // Заголовок группы с аватаркой и ником
                     html += `
                         <div class="message-group-header">
                             <img class="group-avatar" src="${photoURL}" 
@@ -1216,28 +1487,46 @@
                         </div>
                     `;
                     
-                    // Рендерим все сообщения в группе
                     messageGroup.forEach(groupMsg => {
-                        // Ссылки
                         let messageText = groupMsg.text || '';
                         if (messageText) {
                             const urlRegex = /(https?:\/\/[^\s]+)/g;
                             messageText = messageText.replace(urlRegex, '<a href="$&" target="_blank">$&</a>');
                             
-                            // Упоминания
                             const mentionRegex = /@(\w+)/g;
                             messageText = messageText.replace(mentionRegex, '<span style="color: var(--text-brand); font-weight: 600;">$&</span>');
                         }
                         
-                        // GIF
                         const gifHtml = groupMsg.gif ? `<img src="${groupMsg.gif}" class="message-gif" alt="GIF">` : '';
                         
+                        // Реакции
+                        let reactionsHtml = '';
+                        if (groupMsg.reactions) {
+                            reactionsHtml = '<div class="reactions-container">';
+                            Object.entries(groupMsg.reactions).forEach(([emoji, users]) => {
+                                const userCount = Object.keys(users).length;
+                                const isActive = users[currentUser?.uid];
+                                reactionsHtml += `
+                                    <span class="reaction-badge ${isActive ? 'active' : ''}" 
+                                          data-emoji="${emoji}" 
+                                          data-message-id="${groupMsg.id}">
+                                        ${emoji} <span class="reaction-count">${userCount}</span>
+                                    </span>
+                                `;
+                            });
+                            reactionsHtml += '</div>';
+                        }
+                        
                         html += `
-                            <div class="message">
+                            <div class="message" data-message-id="${groupMsg.id}" data-user-id="${groupMsg.userId}">
                                 <div class="message-avatar-placeholder"></div>
                                 <div class="message-content">
                                     <div class="message-text">${messageText}</div>
                                     ${gifHtml}
+                                    ${reactionsHtml}
+                                </div>
+                                <div class="message-menu-btn">
+                                    <i class="fas fa-ellipsis-v"></i>
                                 </div>
                             </div>
                         `;
@@ -1245,13 +1534,242 @@
                     
                     html += `</div>`;
                     
-                    // Сбрасываем группу
                     messageGroup = [];
                     messageCount = 0;
                 }
             }
             
             messagesContainer.innerHTML = html;
+            
+            // Добавляем обработчики
+            addMessageEventListeners();
+        }
+
+        function addMessageEventListeners() {
+            // Обработчики для кнопки меню
+            document.querySelectorAll('.message-menu-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const messageDiv = btn.closest('.message');
+                    const messageId = messageDiv.dataset.messageId;
+                    const userId = messageDiv.dataset.userId;
+                    
+                    showContextMenu(e.clientX, e.clientY, messageId, userId);
+                });
+            });
+            
+            // Обработчики для реакций
+            document.querySelectorAll('.reaction-badge').forEach(badge => {
+                badge.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const messageId = badge.dataset.messageId;
+                    const emoji = badge.dataset.emoji;
+                    toggleReaction(messageId, emoji);
+                });
+            });
+            
+            // Контекстное меню на ПКМ
+            document.querySelectorAll('.message').forEach(msg => {
+                msg.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    const messageId = msg.dataset.messageId;
+                    const userId = msg.dataset.userId;
+                    
+                    showContextMenu(e.clientX, e.clientY, messageId, userId);
+                });
+            });
+        }
+
+        // ========== КОНТЕКСТНОЕ МЕНЮ ==========
+        function showContextMenu(x, y, messageId, userId) {
+            currentMessageForMenu = { id: messageId, userId: userId };
+            
+            // Показываем/скрываем пункты в зависимости от автора
+            const isOwn = userId === currentUser?.uid;
+            document.getElementById('menuEdit').style.display = isOwn ? 'flex' : 'none';
+            document.getElementById('menuDelete').style.display = isOwn ? 'flex' : 'none';
+            
+            contextMenu.style.left = x + 'px';
+            contextMenu.style.top = y + 'px';
+            contextMenu.classList.add('show');
+        }
+
+        // Закрытие контекстного меню
+        document.addEventListener('click', () => {
+            contextMenu.classList.remove('show');
+        });
+
+        // Обработчики меню
+        document.getElementById('menuReply').addEventListener('click', () => {
+            if (currentMessageForMenu) {
+                startReply(currentMessageForMenu.id, currentMessageForMenu.userId);
+            }
+            contextMenu.classList.remove('show');
+        });
+
+        document.getElementById('menuReact').addEventListener('click', () => {
+            if (currentMessageForMenu) {
+                showReactionPicker(currentMessageForMenu.id);
+            }
+            contextMenu.classList.remove('show');
+        });
+
+        document.getElementById('menuCopy').addEventListener('click', () => {
+            if (currentMessageForMenu) {
+                copyMessage(currentMessageForMenu.id);
+            }
+            contextMenu.classList.remove('show');
+        });
+
+        document.getElementById('menuEdit').addEventListener('click', () => {
+            if (currentMessageForMenu) {
+                editMessage(currentMessageForMenu.id);
+            }
+            contextMenu.classList.remove('show');
+        });
+
+        document.getElementById('menuDelete').addEventListener('click', () => {
+            if (currentMessageForMenu) {
+                deleteMessage(currentMessageForMenu.id);
+            }
+            contextMenu.classList.remove('show');
+        });
+
+        // ========== ФУНКЦИИ ДЛЯ СООБЩЕНИЙ ==========
+        async function toggleReaction(messageId, emoji) {
+            if (!currentUser) return;
+            
+            try {
+                const messageRef = db.collection('chat').doc(messageId);
+                const doc = await messageRef.get();
+                
+                if (doc.exists) {
+                    const message = doc.data();
+                    const reactions = message.reactions || {};
+                    const userReactions = reactions[emoji] || {};
+                    
+                    if (userReactions[currentUser.uid]) {
+                        delete userReactions[currentUser.uid];
+                        if (Object.keys(userReactions).length === 0) {
+                            delete reactions[emoji];
+                        } else {
+                            reactions[emoji] = userReactions;
+                        }
+                    } else {
+                        userReactions[currentUser.uid] = true;
+                        reactions[emoji] = userReactions;
+                    }
+                    
+                    await messageRef.update({ reactions });
+                }
+            } catch (error) {
+                console.error('Ошибка реакции:', error);
+            }
+        }
+
+        function showReactionPicker(messageId) {
+            const picker = document.createElement('div');
+            picker.className = 'reaction-picker';
+            
+            quickReactions.forEach(emoji => {
+                const btn = document.createElement('span');
+                btn.className = 'reaction-emoji';
+                btn.textContent = emoji;
+                btn.addEventListener('click', () => {
+                    toggleReaction(messageId, emoji);
+                    picker.remove();
+                });
+                picker.appendChild(btn);
+            });
+            
+            const msgDiv = document.querySelector(`[data-message-id="${messageId}"]`);
+            if (msgDiv) {
+                msgDiv.appendChild(picker);
+                
+                setTimeout(() => {
+                    picker.remove();
+                }, 5000);
+            }
+        }
+
+        async function copyMessage(messageId) {
+            try {
+                const doc = await db.collection('chat').doc(messageId).get();
+                if (doc.exists) {
+                    const text = doc.data().text || '';
+                    await navigator.clipboard.writeText(text);
+                    alert('Скопировано!');
+                }
+            } catch (error) {
+                console.error('Ошибка копирования:', error);
+            }
+        }
+
+        async function editMessage(messageId) {
+            try {
+                const doc = await db.collection('chat').doc(messageId).get();
+                if (doc.exists) {
+                    const text = doc.data().text || '';
+                    editingMessage = messageId;
+                    editInput.value = text;
+                    editModal.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+            }
+        }
+
+        saveEdit.addEventListener('click', async () => {
+            if (!editingMessage) return;
+            
+            const newText = editInput.value.trim();
+            if (!newText) return;
+            
+            try {
+                await db.collection('chat').doc(editingMessage).update({
+                    text: newText,
+                    edited: true
+                });
+                editModal.style.display = 'none';
+                editingMessage = null;
+            } catch (error) {
+                console.error('Ошибка редактирования:', error);
+                alert('Не удалось отредактировать');
+            }
+        });
+
+        async function deleteMessage(messageId) {
+            if (!confirm('Удалить сообщение?')) return;
+            
+            try {
+                await db.collection('chat').doc(messageId).delete();
+            } catch (error) {
+                console.error('Ошибка удаления:', error);
+                alert('Не удалось удалить');
+            }
+        }
+
+        // ========== ОТВЕТ НА СООБЩЕНИЕ ==========
+        function startReply(messageId, userId) {
+            const messageDiv = document.querySelector(`[data-message-id="${messageId}"]`);
+            const userDiv = messageDiv.closest('.message-group').querySelector('.group-username');
+            const userName = userDiv.textContent;
+            
+            replyingToMessage = { id: messageId, user: userName };
+            
+            replyIndicator.style.display = 'flex';
+            replyIndicator.innerHTML = `
+                <span>Ответ на <strong>${userName}</strong></span>
+                <button class="cancel-reply"><i class="fas fa-times"></i></button>
+            `;
+            
+            replyIndicator.querySelector('.cancel-reply').addEventListener('click', cancelReply);
+            messageInput.focus();
+        }
+
+        function cancelReply() {
+            replyingToMessage = null;
+            replyIndicator.style.display = 'none';
         }
 
         // ========== ОТПРАВКА СООБЩЕНИЙ ==========
@@ -1333,14 +1851,14 @@
                 text: text,
                 userId: currentUser.uid,
                 userName: displayName,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                reactions: {}
             };
             
             if (replyingToMessage) {
                 messageData.replyTo = {
                     messageId: replyingToMessage.id,
-                    userName: replyingToMessage.user,
-                    text: replyingToMessage.text
+                    userName: replyingToMessage.user
                 };
             }
             
@@ -1506,7 +2024,8 @@
                     gif: url,
                     userId: currentUser.uid,
                     userName: displayName,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    reactions: {}
                 });
                 gifPicker.classList.remove('show');
             } catch (error) {
@@ -1515,10 +2034,23 @@
             }
         }
 
-        function cancelReply() {
-            replyingToMessage = null;
-            replyIndicator.style.display = 'none';
-        }
+        // ========== МОДАЛЬНЫЕ ОКНА ==========
+        closeEditModal.addEventListener('click', () => {
+            editModal.style.display = 'none';
+            editingMessage = null;
+        });
+
+        cancelEdit.addEventListener('click', () => {
+            editModal.style.display = 'none';
+            editingMessage = null;
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === editModal) {
+                editModal.style.display = 'none';
+                editingMessage = null;
+            }
+        });
 
         // Инициализация
         initEmojiPicker();
