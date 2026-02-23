@@ -10,6 +10,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Все стили как в предыдущем ответе */
         * {
             margin: 0;
             padding: 0;
@@ -438,7 +439,7 @@
 
         .chat-input {
             flex: 1;
-            padding: 0.75rem;
+            padding: 0.75rem 0.75rem 0.75rem 90px;
             background-color: var(--bg-button);
             border: 1px solid var(--border-subtle);
             border-radius: 2rem;
@@ -498,6 +499,7 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
+            min-width: 120px;
         }
 
         .chat-send-btn:hover:not(:disabled) {
@@ -864,6 +866,15 @@
             transform: scale(1.1);
         }
 
+        .error-message {
+            color: #ff6b6b;
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 8px;
+            margin: 1rem;
+        }
+
         @media (max-width: 768px) {
             .chats-list {
                 display: none;
@@ -881,6 +892,15 @@
             
             .emoji-grid {
                 grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .chat-send-btn {
+                min-width: 60px;
+                padding: 0.75rem;
+            }
+            
+            .chat-send-btn span {
+                display: none;
             }
         }
     </style>
@@ -1002,7 +1022,7 @@
                         </button>
                         <input type="text" class="chat-input" id="messageInput" placeholder="Введите сообщение..." maxlength="500">
                         <button class="chat-send-btn" id="sendBtn" disabled>
-                            <i class="fas fa-paper-plane"></i> Отправить
+                            <i class="fas fa-paper-plane"></i> <span>Отправить</span>
                         </button>
                         
                         <div class="emoji-picker" id="emojiPicker">
@@ -1051,19 +1071,42 @@
             appId: "1:591207353726:web:d20f5e648d3daf86fcb72f"
         };
 
+        // Инициализация Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
         // Настройка Firestore для поддержки offline
         db.enablePersistence()
+            .then(() => {
+                console.log('Offline persistence enabled');
+            })
             .catch((err) => {
                 if (err.code == 'failed-precondition') {
-                    console.log('Множественные вкладки открыты, persistence работает только в одной вкладке');
+                    console.log('Multiple tabs open, persistence enabled in first tab only');
                 } else if (err.code == 'unimplemented') {
-                    console.log('Браузер не поддерживает persistence');
+                    console.log('Browser does not support persistence');
                 }
             });
+
+        // Функция для создания тестового сообщения если коллекция пуста
+        async function createInitialMessage() {
+            try {
+                const snapshot = await db.collection('messages').limit(1).get();
+                if (snapshot.empty) {
+                    console.log('Creating initial welcome message...');
+                    await db.collection('messages').add({
+                        text: 'Добро пожаловать в общий чат! 🎮',
+                        userId: 'system',
+                        userName: 'Система',
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                        reactions: {}
+                    });
+                }
+            } catch (error) {
+                console.error('Error creating initial message:', error);
+            }
+        }
 
         let currentUser = null;
         let unsubscribeMessages = null;
@@ -1110,7 +1153,7 @@
         };
 
         // ========== АУТЕНТИФИКАЦИЯ ==========
-        auth.onAuthStateChanged((user) => {
+        auth.onAuthStateChanged(async (user) => {
             if (user) {
                 currentUser = user;
                 userInfo.style.display = 'block';
@@ -1122,6 +1165,9 @@
                 userName.textContent = displayName;
                 userNick.textContent = nick;
                 userAvatar.textContent = displayName.charAt(0).toUpperCase();
+                
+                // Создаем приветственное сообщение если нужно
+                await createInitialMessage();
                 
                 loadMessages();
                 setupOnlineStatus();
@@ -1143,19 +1189,30 @@
         googleSignInBtn.addEventListener('click', () => {
             const provider = new firebase.auth.GoogleAuthProvider();
             auth.signInWithPopup(provider)
+                .then(() => {
+                    console.log('Successfully signed in');
+                })
                 .catch(error => {
                     console.error('Ошибка входа:', error);
-                    alert('Ошибка входа: ' + error.message);
+                    showError('Ошибка входа: ' + error.message);
                 });
         });
 
         savedBtn.addEventListener('click', () => {
             if (!currentUser) {
-                alert('Войдите, чтобы увидеть сохраненные проекты');
+                showError('Войдите, чтобы увидеть сохраненные проекты');
                 return;
             }
             window.location.href = '/minecraft/saved.html';
         });
+
+        messengerBtn.addEventListener('click', () => {
+            window.location.href = '/minecraft/messenger.html';
+        });
+
+        function showError(message) {
+            messagesContainer.innerHTML = `<div class="error-message">❌ ${message}</div>`;
+        }
 
         // ========== ONLINE СТАТУС ==========
         function setupOnlineStatus() {
@@ -1169,14 +1226,14 @@
                 displayName: userNickname || currentUser.displayName || 'Пользователь',
                 lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
                 online: true
-            });
+            }).catch(error => console.error('Error setting online status:', error));
             
             // Удаляем при закрытии
             window.addEventListener('beforeunload', () => {
                 userRef.update({
                     online: false,
                     lastSeen: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                }).catch(error => console.error('Error updating online status:', error));
             });
             
             // Слушаем изменения онлайн статусов
@@ -1187,14 +1244,14 @@
                     onlineUsers.clear();
                     snapshot.forEach(doc => {
                         const data = doc.data();
-                        if (data.online && data.uid !== currentUser?.uid) {
+                        if (data.online) {
                             onlineUsers.add(data.uid);
                         }
                     });
                     
-                    // Добавляем текущего пользователя
-                    onlineUsers.add(currentUser.uid);
                     onlineCount.textContent = `${onlineUsers.size} онлайн`;
+                }, error => {
+                    console.error('Error loading online users:', error);
                 });
         }
 
@@ -1227,7 +1284,7 @@
                     updateLastMessagePreview(lastMsg);
                 }, (error) => {
                     console.error('Ошибка загрузки сообщений:', error);
-                    messagesContainer.innerHTML = '<div class="no-messages">❌ Ошибка загрузки сообщений</div>';
+                    messagesContainer.innerHTML = '<div class="error-message">❌ Ошибка загрузки сообщений. Проверьте подключение к интернету.</div>';
                 });
         }
 
@@ -1369,7 +1426,7 @@
             if (!text || !currentUser) return;
 
             sendBtn.disabled = true;
-            sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Отправка...</span>';
 
             const displayName = userNickname || currentUser.displayName || 'Пользователь';
 
@@ -1396,10 +1453,10 @@
                 cancelReply();
             } catch (error) {
                 console.error('Ошибка отправки:', error);
-                alert('Не удалось отправить сообщение');
+                showError('Не удалось отправить сообщение: ' + error.message);
             } finally {
                 sendBtn.disabled = true;
-                sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Отправить';
+                sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> <span>Отправить</span>';
             }
         }
 
@@ -1638,7 +1695,7 @@
                 cancelReply();
             } catch (error) {
                 console.error('Ошибка отправки GIF:', error);
-                alert('Не удалось отправить GIF');
+                showError('Не удалось отправить GIF');
             }
         }
 
