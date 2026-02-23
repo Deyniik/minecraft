@@ -14,7 +14,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
@@ -44,11 +44,6 @@
             --bg-brand: rgba(251, 191, 36, 0.15);
             --border-subtle: #2c2c32;
             --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
-            --discord-bg: #1e1f22;
-            --discord-sidebar: #2b2d31;
-            --discord-chat: #313338;
-            --discord-input: #383a40;
-            --discord-hover: #3d3f45;
             --online-green: #23a55a;
         }
 
@@ -56,14 +51,14 @@
         .sidebar {
             width: 240px;
             flex-shrink: 0;
-            background-color: var(--discord-sidebar);
+            background-color: var(--bg-body);
             padding: 1.5rem 0.5rem;
             height: 100vh;
             position: sticky;
             top: 0;
             overflow-y: auto;
             scrollbar-width: thin;
-            scrollbar-color: var(--bg-button) var(--discord-sidebar);
+            scrollbar-color: var(--bg-button) var(--bg-body);
             border-right: 1px solid var(--border-subtle);
         }
 
@@ -72,7 +67,7 @@
         }
 
         .sidebar::-webkit-scrollbar-track {
-            background: var(--discord-sidebar);
+            background: var(--bg-body);
         }
 
         .sidebar::-webkit-scrollbar-thumb {
@@ -229,144 +224,35 @@
         }
 
         .messenger-container {
-            background-color: var(--discord-bg);
+            background-color: var(--bg-raised);
             border-radius: 1rem;
             border: 1px solid var(--border-subtle);
             height: calc(100vh - 2rem);
             display: flex;
-            overflow: hidden;
-        }
-
-        /* Левая панель с чатами */
-        .chats-panel {
-            width: 240px;
-            border-right: 1px solid var(--border-subtle);
-            display: flex;
             flex-direction: column;
-            background-color: var(--discord-sidebar);
         }
 
-        .chats-header {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-subtle);
-        }
-
-        .chats-search {
-            position: relative;
-            margin-bottom: 0.5rem;
-        }
-
-        .chats-search input {
-            width: 100%;
-            padding: 0.5rem 0.5rem 0.5rem 2rem;
-            background-color: var(--bg-button);
-            border: 1px solid var(--border-subtle);
-            border-radius: 0.3rem;
-            color: var(--text-contrast);
-            font-size: 0.85rem;
-        }
-
-        .chats-search input:focus {
-            border-color: var(--text-brand);
-            outline: none;
-        }
-
-        .chats-search i {
-            position: absolute;
-            left: 0.7rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .chats-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0.5rem;
-        }
-
-        .chat-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem;
-            border-radius: 0.3rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 0.25rem;
-        }
-
-        .chat-item:hover {
-            background-color: var(--bg-button);
-        }
-
-        .chat-item.active {
-            background-color: var(--bg-brand);
-        }
-
-        .chat-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background-color: var(--text-brand);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #000;
-            font-weight: bold;
-            font-size: 1rem;
-            flex-shrink: 0;
-        }
-
-        .chat-info {
-            flex: 1;
-            overflow: hidden;
-        }
-
-        .chat-name {
-            color: var(--text-contrast);
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-bottom: 0.25rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .chat-last-message {
-            color: var(--text-secondary);
-            font-size: 0.75rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* Основная область чата (Discord стиль) */
         .chat-area {
             flex: 1;
             display: flex;
             flex-direction: column;
-            background-color: var(--discord-chat);
+            height: 100%;
         }
 
         .chat-header {
             padding: 1rem;
             border-bottom: 1px solid var(--border-subtle);
+            font-weight: 600;
+            color: var(--text-contrast);
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            background-color: var(--discord-chat);
+            background-color: var(--bg-raised);
+            border-radius: 1rem 1rem 0 0;
         }
 
         .chat-header i {
             color: var(--text-brand);
-        }
-
-        .chat-header-title {
-            color: var(--text-contrast);
-            font-weight: 600;
-            font-size: 1rem;
         }
 
         .messages-container {
@@ -375,9 +261,10 @@
             padding: 1rem;
             display: flex;
             flex-direction: column;
-            gap: 0.25rem;
+            gap: 1rem;
             scrollbar-width: thin;
-            scrollbar-color: rgba(251, 191, 36, 0.3) var(--discord-chat);
+            scrollbar-color: rgba(251, 191, 36, 0.3) #1c1c1f;
+            background-color: var(--bg-raised);
         }
 
         .messages-container::-webkit-scrollbar {
@@ -385,7 +272,7 @@
         }
 
         .messages-container::-webkit-scrollbar-track {
-            background: var(--discord-chat);
+            background: #1c1c1f;
         }
 
         .messages-container::-webkit-scrollbar-thumb {
@@ -393,17 +280,11 @@
             border-radius: 2px;
         }
 
-        /* Сообщение в стиле Discord */
+        /* Discord стиль сообщений - ВСЕ СЛЕВА */
         .message {
             display: flex;
             gap: 1rem;
             padding: 0.25rem 0;
-            transition: background-color 0.2s;
-            border-radius: 0.3rem;
-        }
-
-        .message:hover {
-            background-color: rgba(255, 255, 255, 0.03);
         }
 
         .message-avatar {
@@ -418,7 +299,6 @@
             font-weight: bold;
             font-size: 1.1rem;
             flex-shrink: 0;
-            margin-left: 0.5rem;
         }
 
         .message-content {
@@ -439,11 +319,6 @@
             font-weight: 600;
             color: var(--text-brand);
             font-size: 1rem;
-            cursor: pointer;
-        }
-
-        .message-username:hover {
-            text-decoration: underline;
         }
 
         .message-time {
@@ -458,108 +333,17 @@
             word-wrap: break-word;
         }
 
+        .message a {
+            color: var(--text-brand);
+            text-decoration: underline;
+            word-break: break-all;
+        }
+
         .message-gif {
             max-width: 200px;
             max-height: 150px;
             border-radius: 8px;
             margin-top: 0.25rem;
-        }
-
-        .message a {
-            color: var(--text-brand);
-            text-decoration: none;
-        }
-
-        .message a:hover {
-            text-decoration: underline;
-        }
-
-        /* Панель пользователей справа (как в Discord) */
-        .users-panel {
-            width: 240px;
-            border-left: 1px solid var(--border-subtle);
-            background-color: var(--discord-sidebar);
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-
-        .users-header {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-subtle);
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        .users-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0.5rem;
-        }
-
-        .user-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.3rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 0.25rem;
-            position: relative;
-        }
-
-        .user-item:hover {
-            background-color: var(--bg-button);
-        }
-
-        .user-item-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background-color: var(--text-brand);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #000;
-            font-weight: bold;
-            font-size: 0.9rem;
-            position: relative;
-        }
-
-        .online-indicator {
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: var(--online-green);
-            border: 2px solid var(--discord-sidebar);
-        }
-
-        .user-item-info {
-            flex: 1;
-            overflow: hidden;
-        }
-
-        .user-item-name {
-            color: var(--text-contrast);
-            font-weight: 500;
-            font-size: 0.9rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .user-item-nick {
-            color: var(--text-secondary);
-            font-size: 0.7rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         .reply-indicator {
@@ -599,15 +383,16 @@
             padding: 1rem;
             border-top: 1px solid var(--border-subtle);
             position: relative;
-            background-color: var(--discord-chat);
+            background-color: var(--bg-raised);
+            border-radius: 0 0 1rem 1rem;
         }
 
         .chat-input {
             flex: 1;
             padding: 0.75rem 0.75rem 0.75rem 90px;
-            background-color: var(--discord-input);
-            border: none;
-            border-radius: 0.5rem;
+            background-color: var(--bg-button);
+            border: 1px solid var(--border-subtle);
+            border-radius: 2rem;
             color: var(--text-contrast);
             resize: none;
             max-height: 100px;
@@ -616,7 +401,7 @@
         }
 
         .chat-input:focus {
-            outline: 1px solid var(--text-brand);
+            border-color: var(--text-brand);
         }
 
         .emoji-btn, .gif-btn {
@@ -639,11 +424,11 @@
         }
 
         .emoji-btn {
-            left: 28px;
+            left: 24px;
         }
 
         .gif-btn {
-            left: 64px;
+            left: 60px;
         }
 
         .emoji-btn:hover, .gif-btn:hover {
@@ -652,21 +437,19 @@
         }
 
         .chat-send-btn {
-            background: var(--text-brand);
-            border: none;
-            color: #000;
+            background: rgba(251, 191, 36, 0.3);
+            border: 1px solid var(--text-brand);
+            color: white;
             padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
+            border-radius: 2rem;
             cursor: pointer;
             font-size: 0.9rem;
             transition: all 0.3s ease;
             min-width: 100px;
-            font-weight: 600;
         }
 
         .chat-send-btn:hover:not(:disabled) {
-            background: #fbbf24;
-            transform: scale(1.02);
+            background: rgba(251, 191, 36, 0.5);
         }
 
         .chat-send-btn:disabled {
@@ -678,15 +461,16 @@
             position: absolute;
             bottom: 70px;
             left: 20px;
-            background: var(--discord-input);
+            background: rgba(40, 40, 40, 0.95);
             border: 1px solid var(--border-subtle);
-            border-radius: 0.5rem;
+            border-radius: 12px;
             padding: 15px;
             width: 320px;
             max-width: 90vw;
             z-index: 100;
             display: none;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
         }
 
         .emoji-picker.show, .gif-picker.show {
@@ -695,11 +479,11 @@
 
         .emoji-search, .gif-search {
             width: 100%;
-            background: var(--bg-button);
+            background: rgba(60, 60, 60, 0.8);
             border: 1px solid var(--border-subtle);
             color: white;
             padding: 8px 12px;
-            border-radius: 0.3rem;
+            border-radius: 6px;
             font-size: 0.9rem;
             outline: none;
             margin-bottom: 12px;
@@ -765,7 +549,7 @@
             width: 100%;
             height: 100px;
             object-fit: cover;
-            border-radius: 0.3rem;
+            border-radius: 8px;
             cursor: pointer;
         }
 
@@ -782,7 +566,7 @@
         }
 
         .gif-trending-btn {
-            background: var(--bg-button);
+            background: rgba(60, 60, 60, 0.8);
             border: 1px solid var(--border-subtle);
             color: #B3B3B3;
             padding: 5px 12px;
@@ -796,27 +580,14 @@
             color: white;
         }
 
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-secondary);
-        }
-
-        .no-messages {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-secondary);
-            font-style: italic;
-        }
-
         .mentions-list {
             position: absolute;
             bottom: 100%;
             left: 90px;
             right: 120px;
-            background: var(--discord-input);
+            background: rgba(40, 40, 40, 0.95);
             border: 1px solid var(--border-subtle);
-            border-radius: 0.3rem;
+            border-radius: 8px;
             max-height: 200px;
             overflow-y: auto;
             z-index: 100;
@@ -862,6 +633,112 @@
         .mention-nick {
             color: var(--text-secondary);
             font-size: 0.8rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .no-messages {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        /* Правая панель с пользователями */
+        .users-panel {
+            width: 240px;
+            border-left: 1px solid var(--border-subtle);
+            background-color: var(--bg-body);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            bottom: 1rem;
+            border-radius: 1rem;
+        }
+
+        .users-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .users-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.25rem;
+            position: relative;
+        }
+
+        .user-item:hover {
+            background-color: var(--bg-button);
+        }
+
+        .user-item-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--text-brand);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .online-indicator {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--online-green);
+            border: 2px solid var(--bg-body);
+        }
+
+        .user-item-info {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .user-item-name {
+            color: var(--text-contrast);
+            font-weight: 500;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-item-nick {
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     </style>
 </head>
@@ -929,26 +806,11 @@
         </div>
 
         <!-- Основной контент -->
-        <div class="main-content">
-            <div class="messenger-container">
-                <!-- Левая панель с чатами -->
-                <div class="chats-panel">
-                    <div class="chats-header">
-                        <div class="chats-search">
-                            <i class="fas fa-search"></i>
-                            <input type="text" id="userSearch" placeholder="Поиск...">
-                        </div>
-                    </div>
-                    <div class="chats-list" id="chatsList">
-                        <div class="loading">Загрузка чатов...</div>
-                    </div>
-                </div>
-
-                <!-- Основная область чата (Discord стиль) -->
+        <div class="main-content" style="position: relative;">
+            <div class="messenger-container" style="margin-right: 260px;">
                 <div class="chat-area">
                     <div class="chat-header">
-                        <i class="fas fa-hashtag"></i>
-                        <div class="chat-header-title">Основной чат</div>
+                        <i class="fas fa-hashtag"></i> Основной чат
                     </div>
                     
                     <div class="messages-container" id="messagesContainer">
@@ -992,15 +854,15 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Правая панель с пользователями (как в Discord) -->
-                <div class="users-panel">
-                    <div class="users-header">
-                        <i class="fas fa-users" style="margin-right: 0.5rem;"></i> ПОЛЬЗОВАТЕЛИ — <span id="onlineCount">0</span>
-                    </div>
-                    <div class="users-list" id="usersList">
-                        <div class="loading">Загрузка пользователей...</div>
-                    </div>
+            <!-- Правая панель с пользователями -->
+            <div class="users-panel">
+                <div class="users-header">
+                    <i class="fas fa-users" style="margin-right: 0.5rem;"></i> ПОЛЬЗОВАТЕЛИ — <span id="onlineCount">0</span>
+                </div>
+                <div class="users-list" id="usersList">
+                    <div class="loading">Загрузка пользователей...</div>
                 </div>
             </div>
         </div>
@@ -1050,10 +912,8 @@
         const gifResults = document.getElementById('gifResults');
         const emojiCategoryBtns = document.querySelectorAll('.emoji-category');
         const gifTrendingBtns = document.querySelectorAll('.gif-trending-btn');
-        const chatsList = document.getElementById('chatsList');
-        const usersList = document.getElementById('usersList');
-        const userSearch = document.getElementById('userSearch');
         const mentionsList = document.getElementById('mentionsList');
+        const usersList = document.getElementById('usersList');
         const onlineCount = document.getElementById('onlineCount');
 
         // Эмодзи
@@ -1201,25 +1061,7 @@
                 
                 usersList.innerHTML = html;
                 onlineCount.textContent = onlineUsers.size;
-                
-                // Загружаем список чатов
-                loadChats();
             });
-        }
-
-        // ========== ЗАГРУЗКА ЧАТОВ ==========
-        function loadChats() {
-            let html = `
-                <div class="chat-item active" data-chat="general">
-                    <div class="chat-avatar"><i class="fas fa-hashtag"></i></div>
-                    <div class="chat-info">
-                        <div class="chat-name">Основной чат</div>
-                        <div class="chat-last-message">Общий чат</div>
-                    </div>
-                </div>
-            `;
-            
-            chatsList.innerHTML = html;
         }
 
         // ========== ЗАГРУЗКА СООБЩЕНИЙ ==========
