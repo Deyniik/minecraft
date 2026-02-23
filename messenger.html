@@ -228,30 +228,157 @@
             border: 1px solid var(--border-subtle);
             height: calc(100vh - 2rem);
             display: flex;
-            flex-direction: column;
+            overflow: hidden;
         }
 
+        /* Левая панель с чатами */
+        .chats-panel {
+            width: 300px;
+            border-right: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-body);
+        }
+
+        .chats-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .chats-search {
+            position: relative;
+            margin-bottom: 0.5rem;
+        }
+
+        .chats-search input {
+            width: 100%;
+            padding: 0.5rem 0.5rem 0.5rem 2rem;
+            background-color: var(--bg-button);
+            border: 1px solid var(--border-subtle);
+            border-radius: 2rem;
+            color: var(--text-contrast);
+            font-size: 0.85rem;
+        }
+
+        .chats-search input:focus {
+            border-color: var(--text-brand);
+            outline: none;
+        }
+
+        .chats-search i {
+            position: absolute;
+            left: 0.7rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .chats-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+
+        .chat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.25rem;
+        }
+
+        .chat-item:hover {
+            background-color: var(--bg-button);
+        }
+
+        .chat-item.active {
+            background-color: var(--bg-brand);
+        }
+
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--text-brand);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .chat-info {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .chat-name {
+            color: var(--text-contrast);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-last-message {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-badge {
+            background-color: var(--text-brand);
+            color: #000;
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 0.2rem 0.5rem;
+            border-radius: 1rem;
+            margin-left: auto;
+        }
+
+        /* Основная область чата */
         .chat-area {
             flex: 1;
             display: flex;
             flex-direction: column;
-            height: 100%;
         }
 
         .chat-header {
             padding: 1rem;
             border-bottom: 1px solid var(--border-subtle);
-            font-weight: 600;
-            color: var(--text-contrast);
             display: flex;
             align-items: center;
             gap: 0.5rem;
             background-color: var(--bg-raised);
-            border-radius: 1rem 1rem 0 0;
         }
 
         .chat-header i {
             color: var(--text-brand);
+        }
+
+        .chat-header-info {
+            flex: 1;
+        }
+
+        .chat-header-title {
+            color: var(--text-contrast);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .chat-header-meta {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
         }
 
         .messages-container {
@@ -263,7 +390,6 @@
             gap: 0.5rem;
             scrollbar-width: thin;
             scrollbar-color: rgba(251, 191, 36, 0.3) #1c1c1f;
-            background-color: var(--bg-raised);
         }
 
         .messages-container::-webkit-scrollbar {
@@ -300,6 +426,11 @@
             font-weight: bold;
             color: var(--text-brand);
             margin-right: 5px;
+            cursor: pointer;
+        }
+
+        .message-user:hover {
+            text-decoration: underline;
         }
 
         .message-time {
@@ -317,10 +448,6 @@
             color: var(--text-brand);
             text-decoration: underline;
             word-break: break-all;
-        }
-
-        .message a:hover {
-            color: #fbbf24;
         }
 
         .message-gif {
@@ -368,12 +495,11 @@
             border-top: 1px solid var(--border-subtle);
             position: relative;
             background-color: var(--bg-raised);
-            border-radius: 0 0 1rem 1rem;
         }
 
         .chat-input {
             flex: 1;
-            padding: 0.75rem 0.75rem 0.75rem 80px;
+            padding: 0.75rem 0.75rem 0.75rem 90px;
             background-color: var(--bg-button);
             border: 1px solid var(--border-subtle);
             border-radius: 2rem;
@@ -408,11 +534,11 @@
         }
 
         .emoji-btn {
-            left: 24px;
+            left: 28px;
         }
 
         .gif-btn {
-            left: 60px;
+            left: 64px;
         }
 
         .emoji-btn:hover, .gif-btn:hover {
@@ -564,6 +690,61 @@
             color: white;
         }
 
+        .mentions-list {
+            position: absolute;
+            bottom: 100%;
+            left: 90px;
+            right: 120px;
+            background: rgba(40, 40, 40, 0.95);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .mentions-list.show {
+            display: block;
+        }
+
+        .mention-item {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mention-item:hover {
+            background: rgba(251, 191, 36, 0.2);
+        }
+
+        .mention-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: var(--text-brand);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .mention-name {
+            flex: 1;
+            color: var(--text-contrast);
+        }
+
+        .mention-nick {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
         .loading {
             text-align: center;
             padding: 2rem;
@@ -575,6 +756,12 @@
             padding: 2rem;
             color: var(--text-secondary);
             font-style: italic;
+        }
+
+        .user-nick-display {
+            color: var(--text-brand);
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
         }
     </style>
 </head>
@@ -662,9 +849,28 @@
         <!-- Основной контент -->
         <div class="main-content">
             <div class="messenger-container">
+                <!-- Левая панель с чатами -->
+                <div class="chats-panel">
+                    <div class="chats-header">
+                        <div class="chats-search">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="userSearch" placeholder="Поиск пользователей...">
+                        </div>
+                        <div class="user-nick-display" id="currentUserNick">Загрузка...</div>
+                    </div>
+                    <div class="chats-list" id="chatsList">
+                        <div class="loading">Загрузка чатов...</div>
+                    </div>
+                </div>
+
+                <!-- Основная область чата -->
                 <div class="chat-area">
                     <div class="chat-header">
-                        <i class="fas fa-hashtag"></i> Основной чат
+                        <i class="fas fa-hashtag"></i>
+                        <div class="chat-header-info">
+                            <div class="chat-header-title" id="currentChatTitle">Основной чат</div>
+                            <div class="chat-header-meta" id="currentChatMeta">онлайн</div>
+                        </div>
                     </div>
                     
                     <div class="messages-container" id="messagesContainer">
@@ -680,8 +886,10 @@
                         <button class="gif-btn" id="gifBtn">
                             GIF
                         </button>
-                        <input type="text" class="chat-input" id="messageInput" placeholder="Введите сообщение..." maxlength="500">
+                        <input type="text" class="chat-input" id="messageInput" placeholder="Введите сообщение... (@упомянуть)" maxlength="500">
                         <button class="chat-send-btn" id="sendBtn" disabled>Отправить</button>
+                        
+                        <div class="mentions-list" id="mentionsList"></div>
                         
                         <div class="emoji-picker" id="emojiPicker">
                             <input type="text" class="emoji-search" id="emojiSearch" placeholder="Поиск эмодзи...">
@@ -730,6 +938,9 @@
         let unsubscribeMessages = null;
         let replyingToMessage = null;
         let userNickname = localStorage.getItem('userNickname') || '';
+        let currentChat = 'general'; // 'general' или userId для личных сообщений
+        let allUsers = [];
+        let onlineUsers = new Set();
 
         // Элементы
         const messagesContainer = document.getElementById('messagesContainer');
@@ -752,6 +963,11 @@
         const gifResults = document.getElementById('gifResults');
         const emojiCategoryBtns = document.querySelectorAll('.emoji-category');
         const gifTrendingBtns = document.querySelectorAll('.gif-trending-btn');
+        const chatsList = document.getElementById('chatsList');
+        const userSearch = document.getElementById('userSearch');
+        const mentionsList = document.getElementById('mentionsList');
+        const currentUserNick = document.getElementById('currentUserNick');
+        const currentChatMeta = document.getElementById('currentChatMeta');
 
         // Эмодзи
         const emojiCategories = {
@@ -774,8 +990,22 @@
                 userName.textContent = displayName;
                 userNick.textContent = nick;
                 userAvatar.textContent = displayName.charAt(0).toUpperCase();
+                currentUserNick.textContent = nick;
                 
+                // Сохраняем пользователя в коллекцию users
+                await db.collection('users').doc(user.uid).set({
+                    uid: user.uid,
+                    displayName: displayName,
+                    nick: nick,
+                    email: user.email,
+                    lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+                    online: true
+                }, { merge: true });
+                
+                loadUsers();
+                loadChats();
                 loadMessages();
+                setupOnlineStatus();
                 
                 // Создаем приветственное сообщение если чат пуст
                 const snapshot = await db.collection('chat').limit(1).get();
@@ -792,6 +1022,7 @@
                 userInfo.style.display = 'none';
                 googleSignInBtn.style.display = 'flex';
                 messagesContainer.innerHTML = '<div class="no-messages">🔒 Войдите, чтобы видеть сообщения</div>';
+                currentUserNick.textContent = 'Не авторизован';
                 
                 if (unsubscribeMessages) {
                     unsubscribeMessages();
@@ -812,6 +1043,155 @@
             window.location.href = '/minecraft/saved.html';
         });
 
+        // ========== ONLINE СТАТУС ==========
+        function setupOnlineStatus() {
+            if (!currentUser) return;
+            
+            const userRef = db.collection('onlineUsers').doc(currentUser.uid);
+            
+            userRef.set({
+                uid: currentUser.uid,
+                displayName: userNickname || currentUser.displayName || 'Пользователь',
+                lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+                online: true
+            });
+            
+            window.addEventListener('beforeunload', () => {
+                userRef.update({
+                    online: false,
+                    lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            });
+            
+            db.collection('onlineUsers').onSnapshot((snapshot) => {
+                onlineUsers.clear();
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (data.online) {
+                        onlineUsers.add(data.uid);
+                    }
+                });
+                updateOnlineCount();
+            });
+        }
+
+        function updateOnlineCount() {
+            if (currentChat === 'general') {
+                currentChatMeta.textContent = `${onlineUsers.size} онлайн`;
+            }
+        }
+
+        // ========== ЗАГРУЗКА ПОЛЬЗОВАТЕЛЕЙ ==========
+        function loadUsers() {
+            db.collection('users').onSnapshot((snapshot) => {
+                allUsers = [];
+                snapshot.forEach(doc => {
+                    allUsers.push(doc.data());
+                });
+            });
+        }
+
+        // ========== ЗАГРУЗКА ЧАТОВ ==========
+        function loadChats() {
+            let html = `
+                <div class="chat-item active" data-chat="general">
+                    <div class="chat-avatar">
+                        <i class="fas fa-hashtag"></i>
+                    </div>
+                    <div class="chat-info">
+                        <div class="chat-name">Основной чат</div>
+                        <div class="chat-last-message" id="generalLastMessage">Общий чат</div>
+                    </div>
+                    <span class="chat-badge">${onlineUsers.size}</span>
+                </div>
+            `;
+            
+            // Здесь можно добавить личные чаты с пользователями
+            // Для демо пока только общий чат
+            
+            chatsList.innerHTML = html;
+            
+            document.querySelectorAll('.chat-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    document.querySelectorAll('.chat-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    currentChat = item.dataset.chat;
+                    loadMessages();
+                });
+            });
+        }
+
+        // ========== ПОИСК ПОЛЬЗОВАТЕЛЕЙ ==========
+        userSearch.addEventListener('input', () => {
+            const query = userSearch.value.toLowerCase();
+            if (query.startsWith('@')) {
+                const searchTerm = query.slice(1);
+                const filtered = allUsers.filter(user => 
+                    user.nick && user.nick.toLowerCase().includes(searchTerm)
+                );
+                showUserSearchResults(filtered);
+            }
+        });
+
+        function showUserSearchResults(users) {
+            // Показываем результаты поиска в выпадающем списке
+            // Можно добавить отдельный UI для результатов
+        }
+
+        // ========== УПОМИНАНИЯ ==========
+        messageInput.addEventListener('input', () => {
+            const text = messageInput.value;
+            const lastAt = text.lastIndexOf('@');
+            
+            if (lastAt !== -1 && lastAt === text.length - 1) {
+                // Только что написали @
+                showMentions('');
+            } else if (lastAt !== -1 && text[lastAt] === '@') {
+                const searchTerm = text.slice(lastAt + 1);
+                const atIndex = searchTerm.indexOf(' ');
+                const term = atIndex === -1 ? searchTerm : searchTerm.slice(0, atIndex);
+                showMentions(term);
+            } else {
+                mentionsList.classList.remove('show');
+            }
+        });
+
+        function showMentions(searchTerm) {
+            const filtered = allUsers.filter(user => 
+                user.nick && user.nick.toLowerCase().includes(searchTerm.toLowerCase())
+            ).slice(0, 5);
+            
+            if (filtered.length === 0) {
+                mentionsList.classList.remove('show');
+                return;
+            }
+            
+            let html = '';
+            filtered.forEach(user => {
+                html += `
+                    <div class="mention-item" data-nick="${user.nick}">
+                        <div class="mention-avatar">${user.displayName.charAt(0)}</div>
+                        <div class="mention-name">${user.displayName}</div>
+                        <div class="mention-nick">${user.nick}</div>
+                    </div>
+                `;
+            });
+            
+            mentionsList.innerHTML = html;
+            mentionsList.classList.add('show');
+            
+            document.querySelectorAll('.mention-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const nick = item.dataset.nick;
+                    const text = messageInput.value;
+                    const lastAt = text.lastIndexOf('@');
+                    messageInput.value = text.substring(0, lastAt) + nick + ' ';
+                    mentionsList.classList.remove('show');
+                    messageInput.focus();
+                });
+            });
+        }
+
         // ========== ЗАГРУЗКА СООБЩЕНИЙ ==========
         function loadMessages() {
             if (unsubscribeMessages) {
@@ -820,25 +1200,33 @@
 
             messagesContainer.innerHTML = '<div class="loading">Загрузка сообщений...</div>';
 
-            unsubscribeMessages = db.collection('chat')
-                .orderBy('timestamp', 'asc')
-                .onSnapshot((snapshot) => {
-                    const messages = [];
-                    snapshot.forEach(doc => {
-                        messages.push({ id: doc.id, ...doc.data() });
-                    });
-                    
-                    if (messages.length === 0) {
-                        messagesContainer.innerHTML = '<div class="no-messages">💬 Нет сообщений. Будьте первым!</div>';
-                        return;
-                    }
+            let query;
+            if (currentChat === 'general') {
+                query = db.collection('chat').orderBy('timestamp', 'asc');
+            } else {
+                // Для личных сообщений фильтруем по участникам
+                query = db.collection('privateMessages')
+                    .where('participants', 'array-contains', currentUser.uid)
+                    .orderBy('timestamp', 'asc');
+            }
 
-                    renderMessages(messages);
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                }, (error) => {
-                    console.error('Ошибка:', error);
-                    messagesContainer.innerHTML = '<div class="no-messages">❌ Ошибка загрузки</div>';
+            unsubscribeMessages = query.onSnapshot((snapshot) => {
+                const messages = [];
+                snapshot.forEach(doc => {
+                    messages.push({ id: doc.id, ...doc.data() });
                 });
+                
+                if (messages.length === 0) {
+                    messagesContainer.innerHTML = '<div class="no-messages">💬 Нет сообщений. Будьте первым!</div>';
+                    return;
+                }
+
+                renderMessages(messages);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, (error) => {
+                console.error('Ошибка:', error);
+                messagesContainer.innerHTML = '<div class="no-messages">❌ Ошибка загрузки</div>';
+            });
         }
 
         function renderMessages(messages) {
@@ -858,6 +1246,10 @@
                 if (messageText) {
                     const urlRegex = /(https?:\/\/[^\s]+)/g;
                     messageText = messageText.replace(urlRegex, '<a href="$&" target="_blank">$&</a>');
+                    
+                    // Упоминания
+                    const mentionRegex = /@(\w+)/g;
+                    messageText = messageText.replace(mentionRegex, '<span style="color: var(--text-brand); font-weight: bold;">$&</span>');
                 }
                 
                 // GIF
@@ -875,7 +1267,7 @@
                     <div class="message ${isOwn ? 'own' : ''}">
                         <div class="message-content">
                             ${replyHtml}
-                            <span class="message-user">${displayName}</span>
+                            <span class="message-user" data-user="${msg.userId}">${displayName}</span>
                             <span class="message-time">${time}</span>
                             <div class="message-text">${messageText}</div>
                             ${gifHtml}
@@ -885,6 +1277,43 @@
             });
             
             messagesContainer.innerHTML = html;
+            
+            // Добавляем обработчик для клика по имени пользователя
+            document.querySelectorAll('.message-user').forEach(el => {
+                el.addEventListener('click', () => {
+                    const userId = el.dataset.user;
+                    if (userId && userId !== currentUser?.uid) {
+                        // Начать личный чат с пользователем
+                        startPrivateChat(userId);
+                    }
+                });
+            });
+        }
+
+        function startPrivateChat(userId) {
+            // Создаем или открываем личный чат с пользователем
+            const chatId = [currentUser.uid, userId].sort().join('_');
+            currentChat = chatId;
+            loadMessages();
+            
+            // Добавляем чат в список
+            const user = allUsers.find(u => u.uid === userId);
+            if (user) {
+                const chatItem = document.createElement('div');
+                chatItem.className = 'chat-item active';
+                chatItem.dataset.chat = chatId;
+                chatItem.innerHTML = `
+                    <div class="chat-avatar">${user.displayName.charAt(0)}</div>
+                    <div class="chat-info">
+                        <div class="chat-name">${user.displayName}</div>
+                        <div class="chat-last-message">Личные сообщения</div>
+                    </div>
+                `;
+                chatsList.appendChild(chatItem);
+                
+                document.querySelectorAll('.chat-item').forEach(i => i.classList.remove('active'));
+                chatItem.classList.add('active');
+            }
         }
 
         // ========== ОТПРАВКА СООБЩЕНИЙ ==========
@@ -923,7 +1352,14 @@
             }
             
             try {
-                await db.collection('chat').add(messageData);
+                if (currentChat === 'general') {
+                    await db.collection('chat').add(messageData);
+                } else {
+                    // Добавляем в личные сообщения
+                    messageData.participants = [currentUser.uid, currentChat.split('_')[1]];
+                    await db.collection('privateMessages').add(messageData);
+                }
+                
                 messageInput.value = '';
                 sendBtn.disabled = true;
                 cancelReply();
@@ -931,6 +1367,25 @@
                 console.error('Ошибка:', error);
                 alert('Не удалось отправить сообщение');
             }
+        }
+
+        // ========== ОТВЕТ НА СООБЩЕНИЕ ==========
+        function startReply(messageId, user, text) {
+            replyingToMessage = { id: messageId, user: user, text: text };
+            
+            replyIndicator.style.display = 'flex';
+            replyIndicator.innerHTML = `
+                <span>Ответ на <strong>${user}</strong>: ${text.substring(0, 50)}${text.length > 50 ? '...' : ''}</span>
+                <button class="cancel-reply"><i class="fas fa-times"></i></button>
+            `;
+            
+            replyIndicator.querySelector('.cancel-reply').addEventListener('click', cancelReply);
+            messageInput.focus();
+        }
+
+        function cancelReply() {
+            replyingToMessage = null;
+            replyIndicator.style.display = 'none';
         }
 
         // ========== ЭМОДЗИ ==========
@@ -1080,12 +1535,22 @@
             const displayName = userNickname || currentUser.displayName || 'Пользователь';
             
             try {
-                await db.collection('chat').add({
-                    gif: url,
-                    userId: currentUser.uid,
-                    userName: displayName,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                if (currentChat === 'general') {
+                    await db.collection('chat').add({
+                        gif: url,
+                        userId: currentUser.uid,
+                        userName: displayName,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } else {
+                    await db.collection('privateMessages').add({
+                        gif: url,
+                        userId: currentUser.uid,
+                        userName: displayName,
+                        participants: [currentUser.uid, currentChat.split('_')[1]],
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
                 gifPicker.classList.remove('show');
             } catch (error) {
                 console.error('Ошибка:', error);
