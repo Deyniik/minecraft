@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deynik Minecraft - Мессенджер</title>
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
@@ -35,13 +34,9 @@
             --bg-body: #0f0f11;
             --bg-raised: #1c1c1f;
             --bg-button: #2c2c30;
-            --bg-button-hover: #3a3a40;
-            --bg-selected: #3b3b45;
             --text-contrast: #ffffff;
-            --text-primary: #e0e0e0;
             --text-secondary: #a0a0a8;
             --text-brand: #fbbf24;
-            --bg-brand: rgba(251, 191, 36, 0.15);
             --border-subtle: #2c2c32;
         }
 
@@ -51,9 +46,6 @@
             background-color: var(--bg-body);
             padding: 1.5rem 0.5rem;
             height: 100vh;
-            position: sticky;
-            top: 0;
-            overflow-y: auto;
             border-right: 1px solid var(--border-subtle);
         }
 
@@ -70,24 +62,6 @@
             color: var(--text-brand);
         }
 
-        .sidebar-category {
-            margin-bottom: 1.5rem;
-        }
-
-        .sidebar-category-title {
-            padding: 0.5rem 0.5rem;
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        .sidebar-menu {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-        }
-
         .sidebar-item {
             display: flex;
             align-items: center;
@@ -96,29 +70,22 @@
             border-radius: 0.5rem;
             color: var(--text-secondary);
             cursor: pointer;
-            transition: all 0.2s;
             border: none;
             background: none;
             width: 100%;
             text-align: left;
             font-size: 0.9rem;
+            margin-bottom: 0.25rem;
         }
 
         .sidebar-item:hover {
-            background-color: var(--bg-button);
-            color: var(--text-contrast);
+            background-color: #2c2c30;
+            color: white;
         }
 
         .sidebar-item.active {
-            background-color: var(--bg-brand);
+            background-color: rgba(251, 191, 36, 0.15);
             color: var(--text-brand);
-        }
-
-        .sidebar-item svg {
-            width: 1.3rem;
-            height: 1.3rem;
-            stroke: currentColor;
-            fill: none;
         }
 
         .user-section {
@@ -131,10 +98,9 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            margin-bottom: 1rem;
             padding: 0.5rem;
             border-radius: 0.5rem;
-            background-color: var(--bg-button);
+            background-color: #2c2c30;
         }
 
         .user-avatar {
@@ -147,26 +113,6 @@
             justify-content: center;
             color: #000;
             font-weight: bold;
-            font-size: 1rem;
-        }
-
-        .user-details {
-            flex: 1;
-            overflow: hidden;
-        }
-
-        .user-name {
-            color: var(--text-contrast);
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-size: 0.9rem;
-        }
-
-        .user-nick {
-            color: var(--text-secondary);
-            font-size: 0.75rem;
         }
 
         .google-btn {
@@ -176,27 +122,20 @@
             gap: 0.5rem;
             width: 100%;
             padding: 0.6rem;
-            background-color: var(--bg-button);
+            background-color: #2c2c30;
             border: 1px solid var(--border-subtle);
             border-radius: 2rem;
-            color: var(--text-contrast);
+            color: white;
             cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .google-btn:hover {
-            background-color: var(--bg-button-hover);
-            border-color: var(--text-brand);
         }
 
         .main-content {
             flex: 1;
-            min-width: 0;
             padding: 1rem;
         }
 
         .messenger-container {
-            background-color: var(--bg-raised);
+            background-color: #1c1c1f;
             border-radius: 1rem;
             border: 1px solid var(--border-subtle);
             height: calc(100vh - 2rem);
@@ -223,37 +162,18 @@
             font-weight: bold;
             margin-bottom: 1rem;
             padding: 0.5rem;
-            background: var(--bg-button);
+            background: #2c2c30;
             border-radius: 0.5rem;
             text-align: center;
         }
 
-        .chats-search {
-            position: relative;
-        }
-
         .chats-search input {
             width: 100%;
-            padding: 0.5rem 0.5rem 0.5rem 2rem;
-            background-color: var(--bg-button);
+            padding: 0.5rem;
+            background-color: #2c2c30;
             border: 1px solid var(--border-subtle);
             border-radius: 2rem;
-            color: var(--text-contrast);
-            font-size: 0.85rem;
-        }
-
-        .chats-search input:focus {
-            border-color: var(--text-brand);
-            outline: none;
-        }
-
-        .chats-search i {
-            position: absolute;
-            left: 0.7rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-            font-size: 0.9rem;
+            color: white;
         }
 
         .chats-list {
@@ -269,16 +189,15 @@
             padding: 0.75rem;
             border-radius: 0.5rem;
             cursor: pointer;
-            transition: all 0.2s;
             margin-bottom: 0.25rem;
         }
 
         .chat-item:hover {
-            background-color: var(--bg-button);
+            background-color: #2c2c30;
         }
 
         .chat-item.active {
-            background-color: var(--bg-brand);
+            background-color: rgba(251, 191, 36, 0.15);
         }
 
         .chat-avatar {
@@ -291,28 +210,6 @@
             justify-content: center;
             color: #000;
             font-weight: bold;
-            font-size: 1.2rem;
-            flex-shrink: 0;
-        }
-
-        .chat-info {
-            flex: 1;
-            overflow: hidden;
-        }
-
-        .chat-name {
-            color: var(--text-contrast);
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .chat-last-message {
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         .chat-area {
@@ -327,26 +224,10 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            background-color: var(--bg-raised);
         }
 
         .chat-header i {
             color: var(--text-brand);
-        }
-
-        .chat-header-info {
-            flex: 1;
-        }
-
-        .chat-header-title {
-            color: var(--text-contrast);
-            font-weight: 600;
-            font-size: 1rem;
-        }
-
-        .chat-header-meta {
-            color: var(--text-secondary);
-            font-size: 0.8rem;
         }
 
         .messages-container {
@@ -377,18 +258,6 @@
             font-weight: bold;
             color: var(--text-brand);
             margin-right: 5px;
-            cursor: pointer;
-        }
-
-        .message-time {
-            font-size: 0.7rem;
-            color: #888;
-            margin-left: 5px;
-            float: right;
-        }
-
-        .message-text {
-            word-break: break-word;
         }
 
         .message-input-area {
@@ -396,22 +265,15 @@
             gap: 0.5rem;
             padding: 1rem;
             border-top: 1px solid var(--border-subtle);
-            background-color: var(--bg-raised);
         }
 
         .chat-input {
             flex: 1;
             padding: 0.75rem;
-            background-color: var(--bg-button);
+            background-color: #2c2c30;
             border: 1px solid var(--border-subtle);
             border-radius: 2rem;
-            color: var(--text-contrast);
-            font-size: 0.9rem;
-        }
-
-        .chat-input:focus {
-            border-color: var(--text-brand);
-            outline: none;
+            color: white;
         }
 
         .chat-send-btn {
@@ -421,7 +283,6 @@
             padding: 0.75rem 1.5rem;
             border-radius: 2rem;
             cursor: pointer;
-            font-size: 0.9rem;
             min-width: 100px;
         }
 
@@ -435,61 +296,25 @@
             padding: 2rem;
             color: var(--text-secondary);
         }
-
-        .no-messages {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-secondary);
-            font-style: italic;
-        }
     </style>
 </head>
 <body>
     <div class="app-container">
         <div class="sidebar">
-            <div class="sidebar-logo" onclick="window.location.href='/minecraft/'">Deynik <span>Minecraft</span></div>
+            <div class="sidebar-logo">Deynik <span>Minecraft</span></div>
             
-            <div class="sidebar-category">
-                <div class="sidebar-category-title">Главное</div>
-                <div class="sidebar-menu">
-                    <button class="sidebar-item" onclick="window.location.href='/minecraft/'">
-                        <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19.5v-9z"/><path d="M9 21v-6h6v6"/></svg>
-                        Рекомендации
-                    </button>
-                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html'">
-                        <svg viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                        Поиск
-                    </button>
-                    <button class="sidebar-item" id="savedBtn">
-                        <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-                        Сохраненные
-                    </button>
-                    <button class="sidebar-item active" id="messengerBtn">
-                        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                        Мессенджер
-                    </button>
-                </div>
-            </div>
-
-            <div class="sidebar-category">
-                <div class="sidebar-category-title">Контент</div>
-                <div class="sidebar-menu">
-                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html?type=mod'">Моды</button>
-                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html?type=shader'">Шейдеры</button>
-                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html?type=resourcepack'">Ресурспаки</button>
-                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html?type=modpack'">Сборки</button>
-                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html?type=plugin'">Плагины</button>
-                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html?type=datapack'">Датапаки</button>
-                </div>
-            </div>
+            <div class="sidebar-item active">Мессенджер</div>
+            <div class="sidebar-item">Рекомендации</div>
+            <div class="sidebar-item">Поиск</div>
+            <div class="sidebar-item">Сохраненные</div>
 
             <div class="user-section" id="userSection">
                 <div id="userInfo" style="display: none;">
                     <div class="user-info">
                         <div class="user-avatar" id="userAvatar"></div>
-                        <div class="user-details">
-                            <div class="user-name" id="userName"></div>
-                            <div class="user-nick" id="userNick"></div>
+                        <div>
+                            <div id="userName"></div>
+                            <div style="color: var(--text-secondary); font-size: 0.8rem;" id="userNick"></div>
                         </div>
                     </div>
                 </div>
@@ -503,8 +328,7 @@
                     <div class="chats-header">
                         <div class="user-nick-display" id="currentUserNick">Загрузка...</div>
                         <div class="chats-search">
-                            <i class="fas fa-search"></i>
-                            <input type="text" id="userSearch" placeholder="Поиск по @никам...">
+                            <input type="text" placeholder="Поиск...">
                         </div>
                     </div>
                     <div class="chats-list" id="chatsList">
@@ -515,10 +339,7 @@
                 <div class="chat-area">
                     <div class="chat-header">
                         <i class="fas fa-hashtag"></i>
-                        <div class="chat-header-info">
-                            <div class="chat-header-title" id="currentChatTitle">Основной чат</div>
-                            <div class="chat-header-meta" id="currentChatMeta">0 онлайн</div>
-                        </div>
+                        <span>Основной чат</span>
                     </div>
                     
                     <div class="messages-container" id="messagesContainer">
@@ -526,7 +347,7 @@
                     </div>
                     
                     <div class="message-input-area">
-                        <input type="text" class="chat-input" id="messageInput" placeholder="Введите сообщение..." maxlength="500">
+                        <input type="text" class="chat-input" id="messageInput" placeholder="Введите сообщение...">
                         <button class="chat-send-btn" id="sendBtn" disabled>Отправить</button>
                     </div>
                 </div>
@@ -549,9 +370,9 @@
         const db = firebase.firestore();
 
         let currentUser = null;
-        let unsubscribeMessages = null;
         let userNickname = localStorage.getItem('userNickname') || '';
 
+        // Элементы
         const messagesContainer = document.getElementById('messagesContainer');
         const messageInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
@@ -561,9 +382,7 @@
         const userInfo = document.getElementById('userInfo');
         const googleSignInBtn = document.getElementById('googleSignInBtn');
         const currentUserNick = document.getElementById('currentUserNick');
-        const currentChatMeta = document.getElementById('currentChatMeta');
         const chatsList = document.getElementById('chatsList');
-        const userSearch = document.getElementById('userSearch');
 
         // ========== АВТОРИЗАЦИЯ ==========
         auth.onAuthStateChanged(async (user) => {
@@ -580,37 +399,24 @@
                 userAvatar.textContent = displayName.charAt(0).toUpperCase();
                 currentUserNick.textContent = nick;
                 
-                // Сохраняем в users (коллекция существует)
+                // Сохраняем в users
                 await db.collection('users').doc(user.uid).set({
                     uid: user.uid,
                     displayName: displayName,
                     nick: nick,
-                    email: user.email,
-                    lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+                    email: user.email
                 }, { merge: true });
                 
-                loadMessages();
-                loadOnlineUsers();
-                loadUsers();
+                // Загружаем сообщения БЕЗ orderBy (чтобы избежать ошибки с timestamp)
+                loadMessagesSimple();
+                loadChats();
                 
-                // Приветственное сообщение если чат пуст
-                const snapshot = await db.collection('chat').limit(1).get();
-                if (snapshot.empty) {
-                    db.collection('chat').add({
-                        text: 'Добро пожаловать в общий чат! 🎮',
-                        userId: 'system',
-                        userName: 'Система',
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                }
             } else {
                 currentUser = null;
                 userInfo.style.display = 'none';
                 googleSignInBtn.style.display = 'flex';
-                messagesContainer.innerHTML = '<div class="no-messages">🔒 Войдите, чтобы видеть сообщения</div>';
+                messagesContainer.innerHTML = '<div class="loading">🔒 Войдите в систему</div>';
                 currentUserNick.textContent = 'Не авторизован';
-                
-                if (unsubscribeMessages) unsubscribeMessages();
             }
         });
 
@@ -618,136 +424,76 @@
             auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
         });
 
-        savedBtn.addEventListener('click', () => {
-            if (!currentUser) {
-                alert('Войдите, чтобы увидеть сохраненные проекты');
-                return;
-            }
-            window.location.href = '/minecraft/saved.html';
-        });
-
-        // ========== ОНЛАЙН ПОЛЬЗОВАТЕЛИ ==========
-        function loadOnlineUsers() {
-            db.collection('onlineUsers').onSnapshot((snapshot) => {
-                const online = [];
-                snapshot.forEach(doc => {
-                    if (doc.data().online) online.push(doc.id);
-                });
-                currentChatMeta.textContent = `${online.size} онлайн`;
-            });
-            
-            if (currentUser) {
-                db.collection('onlineUsers').doc(currentUser.uid).set({
-                    online: true,
-                    lastSeen: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                
-                window.addEventListener('beforeunload', () => {
-                    db.collection('onlineUsers').doc(currentUser.uid).update({
-                        online: false
-                    });
-                });
-            }
-        }
-
-        // ========== ЗАГРУЗКА ПОЛЬЗОВАТЕЛЕЙ ==========
-        function loadUsers() {
-            db.collection('users').onSnapshot((snapshot) => {
-                const users = [];
-                snapshot.forEach(doc => users.push(doc.data()));
-                
-                // Показываем Основной чат + всех пользователей
-                let html = `
-                    <div class="chat-item active" data-chat="general">
-                        <div class="chat-avatar"><i class="fas fa-hashtag"></i></div>
-                        <div class="chat-info">
-                            <div class="chat-name">Основной чат</div>
-                            <div class="chat-last-message">Общий чат</div>
-                        </div>
+        // ========== ЗАГРУЗКА ЧАТОВ ==========
+        function loadChats() {
+            chatsList.innerHTML = `
+                <div class="chat-item active">
+                    <div class="chat-avatar"><i class="fas fa-hashtag"></i></div>
+                    <div class="chat-info">
+                        <div style="color: white;">Основной чат</div>
                     </div>
-                `;
-                
-                users.forEach(u => {
-                    if (u.uid !== currentUser?.uid) {
-                        html += `
-                            <div class="chat-item" data-user="${u.uid}" data-nick="${u.nick}">
-                                <div class="chat-avatar">${u.displayName.charAt(0)}</div>
-                                <div class="chat-info">
-                                    <div class="chat-name">${u.displayName}</div>
-                                    <div class="chat-last-message">${u.nick}</div>
-                                </div>
-                            </div>
-                        `;
-                    }
-                });
-                
-                chatsList.innerHTML = html;
-                
-                document.querySelectorAll('.chat-item').forEach(item => {
-                    item.addEventListener('click', () => {
-                        document.querySelectorAll('.chat-item').forEach(i => i.classList.remove('active'));
-                        item.classList.add('active');
-                    });
-                });
-            });
+                </div>
+            `;
         }
 
-        // ========== ПОИСК ПОЛЬЗОВАТЕЛЕЙ ==========
-        userSearch.addEventListener('input', () => {
-            const query = userSearch.value.toLowerCase();
-            document.querySelectorAll('.chat-item').forEach(item => {
-                const nick = item.dataset.nick;
-                if (nick && nick.toLowerCase().includes(query)) {
-                    item.style.display = 'flex';
-                } else if (!item.dataset.nick) {
-                    item.style.display = 'flex'; // Основной чат всегда виден
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        });
-
-        // ========== ЗАГРУЗКА СООБЩЕНИЙ ==========
-        function loadMessages() {
-            if (unsubscribeMessages) unsubscribeMessages();
-
+        // ========== ПРОСТАЯ ЗАГРУЗКА СООБЩЕНИЙ ==========
+        function loadMessagesSimple() {
             messagesContainer.innerHTML = '<div class="loading">Загрузка сообщений...</div>';
-
-            unsubscribeMessages = db.collection('chat')
-                .orderBy('timestamp', 'asc')
-                .onSnapshot((snapshot) => {
-                    const messages = [];
-                    snapshot.forEach(doc => messages.push({ id: doc.id, ...doc.data() }));
-                    
-                    if (messages.length === 0) {
-                        messagesContainer.innerHTML = '<div class="no-messages">💬 Нет сообщений</div>';
-                        return;
-                    }
-
-                    let html = '';
-                    messages.forEach(msg => {
-                        const isOwn = msg.userId === currentUser?.uid;
-                        const time = msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString('ru-RU', { 
-                            hour: '2-digit', minute: '2-digit' 
-                        }) : '';
-                        
-                        html += `
-                            <div class="message ${isOwn ? 'own' : ''}">
-                                <span class="message-user">${msg.userName || 'Пользователь'}</span>
-                                <span class="message-time">${time}</span>
-                                <div class="message-text">${msg.text || ''}</div>
-                            </div>
-                        `;
-                    });
-                    
-                    messagesContainer.innerHTML = html;
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Сначала проверим, есть ли вообще сообщения
+            db.collection('chat').get().then((snapshot) => {
+                if (snapshot.empty) {
+                    messagesContainer.innerHTML = '<div class="loading">Нет сообщений. Напишите первое!</div>';
+                    return;
+                }
+                
+                // Если есть сообщения, покажем их
+                let messages = [];
+                snapshot.forEach(doc => {
+                    messages.push({ id: doc.id, ...doc.data() });
                 });
+                
+                // Попробуем отсортировать, но если нет timestamp - покажем как есть
+                try {
+                    messages.sort((a, b) => {
+                        if (a.timestamp && b.timestamp) {
+                            return a.timestamp - b.timestamp;
+                        }
+                        return 0;
+                    });
+                } catch (e) {
+                    console.log('Сортировка не удалась, показываем как есть');
+                }
+                
+                let html = '';
+                messages.forEach(msg => {
+                    const isOwn = msg.userId === currentUser?.uid;
+                    let time = '';
+                    
+                    if (msg.timestamp && msg.timestamp.toDate) {
+                        time = msg.timestamp.toDate().toLocaleTimeString();
+                    }
+                    
+                    html += `
+                        <div class="message ${isOwn ? 'own' : ''}">
+                            <span class="message-user">${msg.userName || 'Пользователь'}</span>
+                            <span style="float: right; color: #888; font-size: 0.7rem;">${time}</span>
+                            <div>${msg.text || ''}</div>
+                        </div>
+                    `;
+                });
+                
+                messagesContainer.innerHTML = html;
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }).catch((error) => {
+                console.error('Ошибка:', error);
+                messagesContainer.innerHTML = '<div class="loading">❌ Ошибка загрузки</div>';
+            });
         }
 
         // ========== ОТПРАВКА СООБЩЕНИЙ ==========
         messageInput.addEventListener('input', () => {
-            sendBtn.disabled = messageInput.value.trim() === '';
+            sendBtn.disabled = !messageInput.value.trim();
         });
 
         messageInput.addEventListener('keypress', (e) => {
@@ -775,9 +521,13 @@
                 
                 messageInput.value = '';
                 sendBtn.disabled = true;
+                
+                // Перезагружаем сообщения
+                loadMessagesSimple();
+                
             } catch (error) {
                 console.error('Ошибка:', error);
-                alert('Не удалось отправить сообщение');
+                alert('Ошибка: ' + error.message);
             }
         }
     </script>
