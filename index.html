@@ -236,13 +236,13 @@
             padding: 2rem;
             display: flex;
             flex-direction: column;
-            align-items: center; /* Центрируем контент */
+            align-items: center;
         }
 
         .content-wrapper {
             width: 100%;
-            max-width: 680px; /* Уменьшенная ширина постов */
-            margin: 0 auto; /* Центрирование */
+            max-width: 580px; /* СИЛЬНО УМЕНЬШЕНО - теперь посты узкие */
+            margin: 0 auto;
         }
 
         .feed-header {
@@ -355,7 +355,6 @@
             overflow: hidden;
             cursor: pointer;
             width: 100%;
-            /* Убраны все эффекты при наведении */
         }
 
         .post-header {
@@ -462,7 +461,7 @@
             display: block;
             max-height: 55vh;
             object-fit: contain;
-            pointer-events: none; /* Отключаем клики по изображению */
+            pointer-events: none;
             user-drag: none;
             -webkit-user-drag: none;
         }
@@ -485,7 +484,7 @@
             z-index: 10;
             transition: background-color 0.2s;
             line-height: 1;
-            padding-bottom: 6px; /* Смещаем иконки вниз для центрирования */
+            padding-bottom: 6px;
         }
 
         .carousel-btn:hover {
@@ -552,7 +551,7 @@
             object-fit: contain;
             background-color: #000;
             border-bottom: 1px solid var(--border-subtle);
-            pointer-events: none; /* Отключаем клики по изображению */
+            pointer-events: none;
         }
 
         .post-actions {
@@ -1131,13 +1130,11 @@
             const projectUrl = `${window.location.origin}/minecraft/${post.project_type}.html#${post.project_type}/${post.slug}`;
             const imageUrl = post.icon_url || 'https://via.placeholder.com/512/2c2c30/a0a0a8?text=Mod';
             
-            // Устанавливаем нормальные метатеги
             ogTitle.setAttribute('content', `${post.title} - Minecraft ${projectTypeNames[post.project_type]}`);
             ogDescription.setAttribute('content', `Скачать ${post.title} для Minecraft. Автор: ${post.author || 'Неизвестен'}`);
             ogImage.setAttribute('content', imageUrl);
             ogUrl.setAttribute('content', projectUrl);
             
-            // Обновляем превью
             sharePreview.innerHTML = `
                 <img src="${post.icon_url || 'https://via.placeholder.com/48/2c2c30/a0a0a8?text=Mod'}" alt="">
                 <div class="share-preview-info">
@@ -1264,9 +1261,7 @@
                 isDown = false;
                 track.classList.remove('dragging');
                 
-                // Проверяем, был ли это клик или свайп
                 if (!isDragging) {
-                    // Если не было перемещения - открываем модалку
                     const slide = e.target.closest('.carousel-slide');
                     if (slide) {
                         const img = slide.querySelector('img');
