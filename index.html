@@ -34,7 +34,7 @@
         .app-container {
             display: flex;
             width: 100%;
-            max-width: 100%; /* Убрано ограничение, чтобы панель была прижата влево */
+            max-width: 100%;
         }
 
         :root {
@@ -68,7 +68,7 @@
             height: 100vh;
             position: sticky;
             top: 0;
-            left: 0; /* Прижато влево */
+            left: 0;
             overflow-y: auto;
             scrollbar-width: thin;
             scrollbar-color: var(--bg-button) var(--bg-body);
@@ -233,9 +233,16 @@
         .main-content {
             flex: 1;
             min-width: 0;
-            padding: 2rem 2rem 2rem 1rem;
-            max-width: 720px; /* Уменьшено еще больше */
-            margin: 0 auto 0 0; /* Прижато к левому краю */
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Центрируем контент */
+        }
+
+        .content-wrapper {
+            width: 100%;
+            max-width: 680px; /* Уменьшенная ширина постов */
+            margin: 0 auto; /* Центрирование */
         }
 
         .feed-header {
@@ -338,6 +345,7 @@
             display: flex;
             flex-direction: column;
             gap: 2rem;
+            width: 100%;
         }
 
         .feed-post {
@@ -347,11 +355,7 @@
             overflow: hidden;
             cursor: pointer;
             width: 100%;
-            transition: border-color 0.2s; /* Убрана тень, оставлено только изменение границы */
-        }
-
-        .feed-post:hover {
-            border-color: var(--text-brand);
+            /* Убраны все эффекты при наведении */
         }
 
         .post-header {
@@ -413,7 +417,7 @@
             margin-top: 0.2rem;
         }
 
-        /* Улучшенная карусель */
+        /* Карусель */
         .carousel-container {
             position: relative;
             width: 100%;
@@ -458,8 +462,7 @@
             display: block;
             max-height: 55vh;
             object-fit: contain;
-            cursor: pointer;
-            pointer-events: auto;
+            pointer-events: none; /* Отключаем клики по изображению */
             user-drag: none;
             -webkit-user-drag: none;
         }
@@ -474,7 +477,7 @@
             background-color: rgba(0, 0, 0, 0.6);
             border: none;
             color: white;
-            font-size: 28px;
+            font-size: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -482,8 +485,7 @@
             z-index: 10;
             transition: background-color 0.2s;
             line-height: 1;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
+            padding-bottom: 6px; /* Смещаем иконки вниз для центрирования */
         }
 
         .carousel-btn:hover {
@@ -500,10 +502,14 @@
 
         .carousel-btn.prev::before {
             content: "←";
+            transform: translateY(2px);
+            display: block;
         }
 
         .carousel-btn.next::before {
             content: "→";
+            transform: translateY(2px);
+            display: block;
         }
 
         .carousel-btn span {
@@ -546,7 +552,7 @@
             object-fit: contain;
             background-color: #000;
             border-bottom: 1px solid var(--border-subtle);
-            cursor: pointer;
+            pointer-events: none; /* Отключаем клики по изображению */
         }
 
         .post-actions {
@@ -911,33 +917,35 @@
         </div>
 
         <!-- Основной контент -->
-        <div class="main-content" id="mainContent">
-            <div class="feed-header">
-                <h1 class="feed-title">Рекомендации <span>для вас</span></h1>
-                <div class="filter-chips">
-                    <span class="filter-chip active" data-filter="all">Всё</span>
-                    <span class="filter-chip" data-filter="mod">Моды</span>
-                    <span class="filter-chip" data-filter="shader">Шейдеры</span>
-                    <span class="filter-chip" data-filter="resourcepack">Ресурспаки</span>
-                    <span class="filter-chip" data-filter="modpack">Сборки</span>
-                    <span class="filter-chip" data-filter="plugin">Плагины</span>
-                    <span class="filter-chip" data-filter="datapack">Датапаки</span>
-                </div>
-            </div>
-
-            <!-- Истории с топ модами -->
-            <div class="stories-container" id="storiesContainer">
-                <div class="stories-track" id="storiesTrack">
-                    <!-- Заполняется динамически -->
-                </div>
-            </div>
-
-            <div class="feed" id="feed">
-                <div class="loading" id="initialLoading">
-                    <div class="material-progress">
-                        <div class="material-progress-bar"></div>
+        <div class="main-content">
+            <div class="content-wrapper">
+                <div class="feed-header">
+                    <h1 class="feed-title">Рекомендации <span>для вас</span></h1>
+                    <div class="filter-chips">
+                        <span class="filter-chip active" data-filter="all">Всё</span>
+                        <span class="filter-chip" data-filter="mod">Моды</span>
+                        <span class="filter-chip" data-filter="shader">Шейдеры</span>
+                        <span class="filter-chip" data-filter="resourcepack">Ресурспаки</span>
+                        <span class="filter-chip" data-filter="modpack">Сборки</span>
+                        <span class="filter-chip" data-filter="plugin">Плагины</span>
+                        <span class="filter-chip" data-filter="datapack">Датапаки</span>
                     </div>
-                    <div class="friendly-text">Собираем для вас подборку ✨</div>
+                </div>
+
+                <!-- Истории с топ модами -->
+                <div class="stories-container" id="storiesContainer">
+                    <div class="stories-track" id="storiesTrack">
+                        <!-- Заполняется динамически -->
+                    </div>
+                </div>
+
+                <div class="feed" id="feed">
+                    <div class="loading" id="initialLoading">
+                        <div class="material-progress">
+                            <div class="material-progress-bar"></div>
+                        </div>
+                        <div class="friendly-text">Собираем для вас подборку ✨</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1012,7 +1020,6 @@
                 userNick.textContent = nick;
                 userAvatar.textContent = (user.displayName || 'U')[0].toUpperCase();
                 
-                // Загружаем сохраненные проекты
                 await loadSavedProjects();
             } else {
                 currentUser = null;
@@ -1086,7 +1093,6 @@
         async function loadTopProjects() {
             try {
                 const promises = [];
-                // Загружаем по одному проекту каждого типа с большим количеством скачиваний
                 for (const type of projectTypes) {
                     const url = `${API_BASE}/search?limit=1&index=downloads&facets=${encodeURIComponent(JSON.stringify([[`project_type:${type}`]]))}`;
                     promises.push(
@@ -1122,10 +1128,14 @@
             currentSharePost = post;
             
             // Обновляем Open Graph метатеги для предпросмотра
-            ogTitle.setAttribute('content', post.title);
-            ogDescription.setAttribute('content', `Мод для Minecraft от ${post.author}`);
-            ogImage.setAttribute('content', post.icon_url || 'https://via.placeholder.com/512/2c2c30/a0a0a8?text=Mod');
-            ogUrl.setAttribute('content', `${window.location.origin}/minecraft/${post.project_type}.html#${post.project_type}/${post.slug}`);
+            const projectUrl = `${window.location.origin}/minecraft/${post.project_type}.html#${post.project_type}/${post.slug}`;
+            const imageUrl = post.icon_url || 'https://via.placeholder.com/512/2c2c30/a0a0a8?text=Mod';
+            
+            // Устанавливаем нормальные метатеги
+            ogTitle.setAttribute('content', `${post.title} - Minecraft ${projectTypeNames[post.project_type]}`);
+            ogDescription.setAttribute('content', `Скачать ${post.title} для Minecraft. Автор: ${post.author || 'Неизвестен'}`);
+            ogImage.setAttribute('content', imageUrl);
+            ogUrl.setAttribute('content', projectUrl);
             
             // Обновляем превью
             sharePreview.innerHTML = `
@@ -1143,7 +1153,6 @@
             if (currentSharePost) {
                 const url = `${window.location.origin}/minecraft/${currentSharePost.project_type}.html#${currentSharePost.project_type}/${currentSharePost.slug}`;
                 
-                // Копируем ссылку
                 const textarea = document.createElement('textarea');
                 textarea.value = url;
                 document.body.appendChild(textarea);
@@ -1151,7 +1160,6 @@
                 document.execCommand('copy');
                 document.body.removeChild(textarea);
                 
-                // Закрываем модалку
                 shareModal.classList.remove('show');
                 currentSharePost = null;
             }
@@ -1233,40 +1241,51 @@
             const dots = container.querySelectorAll('.carousel-dot');
             if (!track || dots.length === 0) return;
 
-            // Исправленный свайп мышью
             let isDown = false;
             let startX;
             let scrollLeft;
+            let isDragging = false;
 
             track.addEventListener('mousedown', (e) => {
                 isDown = true;
+                isDragging = false;
                 track.classList.add('dragging');
                 startX = e.pageX - track.offsetLeft;
                 scrollLeft = track.scrollLeft;
-                e.preventDefault(); // Предотвращаем перетаскивание изображения
+                e.preventDefault();
             });
 
             track.addEventListener('mouseleave', () => {
-                if (isDown) {
-                    isDown = false;
-                    track.classList.remove('dragging');
-                }
-            });
-
-            track.addEventListener('mouseup', () => {
                 isDown = false;
                 track.classList.remove('dragging');
+            });
+
+            track.addEventListener('mouseup', (e) => {
+                isDown = false;
+                track.classList.remove('dragging');
+                
+                // Проверяем, был ли это клик или свайп
+                if (!isDragging) {
+                    // Если не было перемещения - открываем модалку
+                    const slide = e.target.closest('.carousel-slide');
+                    if (slide) {
+                        const img = slide.querySelector('img');
+                        if (img) {
+                            window.openModal(img.src);
+                        }
+                    }
+                }
             });
 
             track.addEventListener('mousemove', (e) => {
                 if (!isDown) return;
                 e.preventDefault();
+                isDragging = true;
                 const x = e.pageX - track.offsetLeft;
                 const walk = (x - startX) * 1.5;
                 track.scrollLeft = scrollLeft - walk;
             });
 
-            // Предотвращаем перетаскивание изображений
             track.querySelectorAll('img').forEach(img => {
                 img.addEventListener('dragstart', (e) => e.preventDefault());
             });
