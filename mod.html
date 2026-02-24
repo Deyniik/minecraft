@@ -13,7 +13,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -61,16 +60,6 @@
             
             --color-release: #2bde73;
             --color-beta: #fbbf24;
-            
-            /* Modrinth цвета */
-            --color-platform-fabric: #dbb69b;
-            --color-platform-forge: #959eef;
-            --color-platform-neoforge: #f99e6b;
-            --color-platform-quilt: #c796f9;
-            --color-brand-highlight: rgba(251, 191, 36, 0.3);
-            --color-button-bg: #2c2c30;
-            --color-base: #a0a0a8;
-            --surface-5: #2c2c32;
         }
 
         /* Боковая панель */
@@ -247,7 +236,7 @@
             flex: 1;
             min-width: 0;
             padding: 1rem 2rem;
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
         }
 
@@ -356,69 +345,40 @@
 
         .action-buttons {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.75rem;
             flex-wrap: wrap;
         }
 
-        .btn-wrapper {
-            --_bg: transparent;
-            --_text: var(--color-base);
-            --_hover-bg: var(--color-button-bg);
-            --_hover-text: var(--color-base);
-            --_box-shadow: none;
-            --_height: 2.25rem;
-            --_width: 2.25rem;
-            --_radius: 0.75rem;
-            --_padding-x: calc(0.5rem - 0.125rem);
-            --_padding-y: 0.5rem;
-            --_gap: 0.375rem;
-            --_font-weight: 600;
-            --_icon-size: 1.25rem;
-            
-            background: var(--_bg);
-            border-radius: var(--_radius);
-            height: var(--_height);
-            width: var(--_width);
+        .action-top-btn {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
+            gap: 0.5rem;
+            background-color: var(--bg-brand);
+            color: var(--text-brand);
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.2s;
             border: none;
-            color: var(--_text);
-            font-weight: var(--_font-weight);
-            gap: var(--_gap);
-            padding: var(--_padding-y) var(--_padding-x);
+            white-space: nowrap;
         }
 
-        .btn-wrapper:hover {
-            background: var(--_hover-bg);
-            color: var(--_hover-text);
+        .action-top-btn:hover {
+            background-color: var(--text-brand);
+            color: var(--bg-body);
         }
 
-        .btn-wrapper.text-base {
-            font-size: 0.95rem;
+        .action-top-btn.saved {
+            background-color: var(--text-brand);
+            color: var(--bg-body);
         }
 
-        .btn-wrapper a, .btn-wrapper button {
-            color: inherit;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: var(--_gap);
-            width: 100%;
-            height: 100%;
-            justify-content: center;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-wrapper svg {
-            width: var(--_icon-size);
-            height: var(--_icon-size);
+        .action-top-btn svg {
+            width: 1.1rem;
+            height: 1.1rem;
             stroke: currentColor;
-            fill: none;
         }
 
         .project-author {
@@ -610,415 +570,244 @@
             stroke: currentColor;
         }
 
-        /* Modrinth стиль для версий */
-        .normal-page__content {
-            width: 100%;
-        }
-
-        .overflow-x-auto {
-            overflow-x: auto;
-        }
-
-        .experimental-styles-within {
-            position: relative;
-        }
-
-        .relative {
-            position: relative;
-        }
-
-        .flex {
-            display: flex;
-        }
-
-        .w-fit {
-            width: fit-content;
-        }
-
-        .rounded-full {
-            border-radius: 9999px;
-        }
-
-        .bg-bg-raised {
-            background-color: var(--bg-raised);
-        }
-
-        .p-1 {
-            padding: 0.25rem;
-        }
-
-        .text-sm {
-            font-size: 0.875rem;
-        }
-
-        .font-bold {
-            font-weight: 700;
-        }
-
-        .card-shadow {
-            box-shadow: var(--card-shadow);
-        }
-
-        .mb-4 {
-            margin-bottom: 1rem;
-        }
-
-        .z-\[1\] {
-            z-index: 1;
-        }
-
-        .flex-row {
-            flex-direction: row;
-        }
-
-        .items-center {
-            align-items: center;
-        }
-
-        .gap-2 {
-            gap: 0.5rem;
-        }
-
-        .px-4 {
-            padding-left: 1rem;
-            padding-right: 1rem;
-        }
-
-        .py-2 {
-            padding-top: 0.5rem;
-            padding-bottom: 0.5rem;
-        }
-
-        .focus\:rounded-full:focus {
-            border-radius: 9999px;
-        }
-
-        .text-nowrap {
-            white-space: nowrap;
-        }
-
-        .text-contrast {
-            color: var(--text-contrast);
-        }
-
-        .text-button-textSelected {
-            color: var(--text-brand);
-        }
-
-        .pointer-events-none {
-            pointer-events: none;
-        }
-
-        .absolute {
-            position: absolute;
-        }
-
-        .h-\[calc\(100\%-0\.5rem\)\] {
-            height: calc(100% - 0.5rem);
-        }
-
-        .overflow-hidden {
-            overflow: hidden;
-        }
-
-        .bg-button-bgSelected {
-            background-color: var(--bg-brand);
-        }
-
-        .navtabs-transition {
-            transition: left 200ms, right 200ms, width 200ms;
-        }
-
         .versions-section {
+            background-color: var(--bg-raised);
+            border-radius: 1rem;
+            border: 1px solid var(--border-subtle);
+            overflow: hidden;
             margin-bottom: 2rem;
         }
 
-        .flex-col {
-            flex-direction: column;
+        .versions-header {
+            padding: 1.2rem;
+            border-bottom: 1px solid var(--border-subtle);
         }
 
-        .gap-3 {
+        .versions-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-contrast);
+            margin-bottom: 1rem;
+        }
+
+        .loader-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .loader-badge-filter {
+            padding: 0.3rem 0.8rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .loader-badge-filter:hover {
+            filter: brightness(1.2);
+        }
+
+        .loader-badge-filter.active {
+            border-color: var(--text-brand);
+            box-shadow: 0 0 0 1px var(--text-brand);
+        }
+
+        .loader-badge-filter[data-loader="fabric"] {
+            background-color: var(--color-fabric);
+            color: #000;
+        }
+
+        .loader-badge-filter[data-loader="forge"] {
+            background-color: var(--color-forge);
+            color: #000;
+        }
+
+        .loader-badge-filter[data-loader="neoforge"] {
+            background-color: var(--color-neoforge);
+            color: #000;
+        }
+
+        .loader-badge-filter[data-loader="quilt"] {
+            background-color: var(--color-quilt);
+            color: #000;
+        }
+
+        .versions-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .versions-table th {
+            text-align: left;
+            padding: 0.8rem 1.2rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-subtle);
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .versions-table td {
+            padding: 0.8rem 1.2rem;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .versions-table tr:hover td {
+            background-color: var(--bg-button);
+        }
+
+        .version-cell {
+            display: flex;
+            align-items: center;
             gap: 0.75rem;
         }
 
-        .flex-wrap {
-            flex-wrap: wrap;
-        }
-
-        .justify-between {
-            justify-content: space-between;
-        }
-
-        .justify-end {
-            justify-content: flex-end;
-        }
-
-        .items-start {
-            align-items: flex-start;
-        }
-
-        .sm\:items-center {
+        .version-status {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
             align-items: center;
-        }
-
-        .z-\[1\] {
-            z-index: 1;
-        }
-
-        .cursor-help {
-            cursor: help;
-        }
-
-        .hover\:underline:hover {
-            text-decoration: underline;
-        }
-
-        .bg-\[--_bg-color\,var\(--color-button-bg\)\] {
-            background-color: var(--color-button-bg);
-        }
-
-        .border-\[--_bg-color\,var\(--surface-5\)\] {
-            border-color: var(--surface-5);
-        }
-
-        .border-\[1px\] {
-            border-width: 1px;
-        }
-
-        .border-solid {
-            border-style: solid;
-        }
-
-        .px-2 {
-            padding-left: 0.5rem;
-            padding-right: 0.5rem;
-        }
-
-        .py-1 {
-            padding-top: 0.25rem;
-            padding-bottom: 0.25rem;
-        }
-
-        .leading-none {
-            line-height: 1;
-        }
-
-        .font-normal {
-            font-weight: 400;
-        }
-
-        .inline-flex {
-            display: inline-flex;
-        }
-
-        .gap-1 {
-            gap: 0.25rem;
-        }
-
-        .text-\[--_color\,var\(--color-secondary\)\] {
-            color: var(--color-secondary);
-        }
-
-        .shrink-0 {
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
             flex-shrink: 0;
         }
 
-        .h-4 {
-            height: 1rem;
+        .version-status.release {
+            background-color: var(--color-release);
+            color: #000;
         }
 
-        .w-4 {
-            width: 1rem;
+        .version-status.beta {
+            background-color: var(--color-beta);
+            color: #000;
         }
 
-        .transition-transform {
-            transition: transform 0.2s;
+        .version-number {
+            font-weight: 600;
+            color: var(--text-contrast);
+            font-size: 0.95rem;
         }
 
-        .active\:scale-\[0\.95\]:active {
-            transform: scale(0.95);
-        }
-
-        .cursor-pointer {
-            cursor: pointer;
-        }
-
-        .versions-grid-row {
-            display: grid;
-            grid-template-columns: min-content auto auto auto auto min-content;
-            gap: 1rem;
-            padding: 0.75rem 0;
+        .loader-badge-table {
+            display: inline-flex;
             align-items: center;
-        }
-
-        .versions-grid-row.supports-grid {
-            grid-template-columns: min-content auto auto auto auto auto min-content;
-        }
-
-        .w-9 {
-            width: 2.25rem;
-        }
-
-        .h-9 {
-            height: 2.25rem;
-        }
-
-        .bg-bg-orange {
-            background-color: rgba(251, 191, 36, 0.2);
-        }
-
-        .text-brand-orange {
-            color: var(--text-brand);
-        }
-
-        .bg-bg-green {
-            background-color: rgba(43, 222, 115, 0.2);
-        }
-
-        .text-brand-green {
-            color: #2bde73;
-        }
-
-        .group {
-            position: relative;
-        }
-
-        .group:hover .group-hover\:underline {
-            text-decoration: underline;
-        }
-
-        .absolute.inset-\[calc\(-1rem-2px\)_-2rem\] {
-            top: calc(-1rem - 2px);
-            right: -2rem;
-            bottom: calc(-1rem - 2px);
-            left: -2rem;
-        }
-
-        .before\:absolute::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-        }
-
-        .before\:transition-all::before {
-            transition: all 0.2s;
-        }
-
-        .hover\:before\:backdrop-brightness-110:hover::before {
-            backdrop-filter: brightness(1.1);
-        }
-
-        .text-xs {
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
             font-size: 0.75rem;
-        }
-
-        .font-medium {
             font-weight: 500;
+            margin-right: 0.2rem;
+            margin-bottom: 0.2rem;
+            color: #000;
         }
 
-        .h-px {
-            height: 1px;
+        .loader-badge-table.fabric {
+            background-color: var(--color-fabric-alpha);
         }
 
-        .w-full {
-            width: 100%;
+        .loader-badge-table.forge {
+            background-color: var(--color-forge-alpha);
         }
 
-        .bg-surface-5 {
-            background-color: var(--surface-5);
+        .loader-badge-table.neoforge {
+            background-color: var(--color-neoforge-alpha);
         }
 
-        .max-sm\:hidden {
-            display: none;
+        .loader-badge-table.quilt {
+            background-color: var(--color-quilt-alpha);
         }
 
-        .max-sm\:flex-row {
-            flex-direction: row;
+        .game-versions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
         }
 
-        .max-sm\:justify-start {
-            justify-content: flex-start;
+        .game-version {
+            background-color: var(--bg-button);
+            border: 1px solid var(--border-subtle);
+            border-radius: 0.25rem;
+            padding: 0.1rem 0.3rem;
+            font-size: 0.7rem;
+            color: var(--text-primary);
         }
 
-        .max-sm\:gap-3 {
-            gap: 0.75rem;
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background-color: var(--bg-brand);
+            color: var(--text-brand);
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+            white-space: nowrap;
+            font-size: 0.85rem;
         }
 
-        .sm\:contents {
-            display: contents;
+        .download-btn:hover {
+            background-color: var(--text-brand);
+            color: var(--bg-body);
         }
 
-        .xl\:hidden {
-            display: none;
+        .download-btn svg {
+            width: 0.9rem;
+            height: 0.9rem;
+            stroke: currentColor;
         }
 
-        .xl\:self-center {
-            align-self: center;
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1.2rem;
+            flex-wrap: wrap;
         }
 
-        .xl\:contents {
-            display: contents;
+        .page-btn {
+            min-width: 2.2rem;
+            height: 2.2rem;
+            border-radius: 0.5rem;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.1s;
+            padding: 0 0.5rem;
+            font-size: 0.9rem;
         }
 
-        .max-\[400px\]\:flex-col {
-            flex-direction: column;
+        .page-btn:hover:not(:disabled) {
+            background-color: var(--bg-button);
+            color: var(--text-contrast);
         }
 
-        .max-\[400px\]\:justify-start {
-            justify-content: flex-start;
+        .page-btn.active {
+            background-color: var(--bg-brand);
+            color: var(--text-brand);
+            border-color: var(--text-brand);
         }
 
-        .mt-3 {
-            margin-top: 0.75rem;
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
-        .ml-auto {
-            margin-left: auto;
-        }
-
-        .page-number-container {
-            display: inline-block;
-        }
-
-        .rotate-90 {
-            transform: rotate(90deg);
-        }
-
-        .grid {
-            display: grid;
-        }
-
-        .place-content-center {
-            place-content: center;
-        }
-
-        .\!text-brand {
-            color: var(--text-brand) !important;
-        }
-
-        /* Адаптивность */
-        @media (min-width: 640px) {
-            .max-sm\:hidden {
-                display: block;
-            }
-            .sm\:contents {
-                display: flex;
-            }
-            .versions-grid-row {
-                grid-template-columns: min-content minmax(150px, auto) minmax(100px, auto) minmax(100px, auto) minmax(80px, auto) min-content;
-            }
-        }
-
-        @media (min-width: 1280px) {
-            .xl\:hidden {
-                display: block;
-            }
-            .xl\:contents {
-                display: flex;
-            }
-            .versions-grid-row.supports-grid {
-                grid-template-columns: min-content minmax(150px, auto) minmax(100px, auto) minmax(100px, auto) minmax(80px, auto) minmax(80px, auto) minmax(80px, auto) min-content;
-            }
+        .no-versions {
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--text-secondary);
         }
     </style>
 </head>
@@ -1126,22 +915,6 @@
             <!-- Контейнер для данных -->
             <div id="projectContent">
                 <div class="loading">⏳ Загрузка...</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Модальное окно для поделиться -->
-    <div class="modal" id="shareModal">
-        <div class="modal-content" style="max-width: 400px; padding: 1.5rem;">
-            <span class="close" onclick="document.getElementById('shareModal').classList.remove('show')">&times;</span>
-            <h3 style="margin-bottom: 1rem; color: var(--text-contrast);">Поделиться проектом</h3>
-            <div style="display: flex; flex-direction: column; gap: 1rem;">
-                <button class="btn-wrapper text-base" style="--_width: 100%; --_radius: 0.75rem; --_padding-x: 1rem; justify-content: flex-start;" onclick="copyShareLink()">
-                    <i class="fas fa-copy"></i> Скопировать ссылку
-                </button>
-                <button class="btn-wrapper text-base" style="--_width: 100%; --_radius: 0.75rem; --_padding-x: 1rem; justify-content: flex-start;" onclick="shareInMessenger()">
-                    <i class="fas fa-comment"></i> Отправить в чат
-                </button>
             </div>
         </div>
     </div>
@@ -1331,6 +1104,7 @@
                         projectsData: projectsData
                     }, { merge: true });
                     
+                    // Показываем уведомление
                     showNotification('Проект сохранен!');
                 } else {
                     savedProjects.delete(projectSlug);
@@ -1356,39 +1130,8 @@
         }
 
         function showNotification(message) {
+            // Простое уведомление, можно заменить на что-то красивее
             alert(message);
-        }
-
-        // ========== ПОДЕЛИТЬСЯ ==========
-        function showShareModal() {
-            document.getElementById('shareModal').classList.add('show');
-        }
-
-        function copyShareLink() {
-            navigator.clipboard.writeText(window.location.href).then(() => {
-                alert('Ссылка скопирована!');
-                document.getElementById('shareModal').classList.remove('show');
-            });
-        }
-
-        function shareInMessenger() {
-            if (!currentUser) {
-                alert('Войдите, чтобы поделиться в чате');
-                return;
-            }
-            
-            // Сохраняем информацию о шаре в localStorage для мессенджера
-            const shareData = {
-                type: 'project',
-                projectType: projectType,
-                projectSlug: projectSlug,
-                title: projectData.title,
-                icon: projectData.icon_url,
-                timestamp: Date.now()
-            };
-            
-            localStorage.setItem('pendingShare', JSON.stringify(shareData));
-            window.location.href = '/minecraft/messenger.html';
         }
 
         // ========== ПЕРЕВОД ==========
@@ -1617,16 +1360,11 @@
             // Формируем кнопки пагинации
             let paginationButtons = '';
             if (totalPages > 1) {
-                paginationButtons += '<div class="flex mt-3"><div class="flex items-center gap-1 ml-auto">';
+                paginationButtons += '<div class="pagination">';
                 
                 paginationButtons += `
-                    <div class="page-number-container">
-                        <div class="btn-wrapper text-base" style="--_bg: transparent; --_text: var(--color-base); --_hover-bg: var(--color-button-bg); --_hover-text: var(--color-base); --_box-shadow: none; --_height: 2.25rem; --_width: 2.25rem; --_radius: 99999px;">
-                            <a onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'style="pointer-events: none; opacity: 0.5;"' : ''}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
-                            </a>
-                        </div>
-                    </div>
+                    <button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} 
+                            onclick="goToPage(${currentPage - 1})">←</button>
                 `;
                 
                 let startPage = Math.max(1, currentPage - 2);
@@ -1634,144 +1372,70 @@
                 
                 for (let i = startPage; i <= endPage; i++) {
                     paginationButtons += `
-                        <div class="page-number-container">
-                            <div class="btn-wrapper text-base" style="--_bg: ${i === currentPage ? 'var(--color-brand-highlight)' : 'transparent'}; --_text: ${i === currentPage ? 'var(--text-brand)' : 'var(--color-base)'}; --_hover-bg: var(--color-button-bg); --_hover-text: var(--color-base); --_box-shadow: none; --_height: 2.25rem; --_width: 2.25rem; --_radius: 99999px;">
-                                <a onclick="goToPage(${i})" ${i === currentPage ? 'class="!text-brand"' : ''}>${i}</a>
-                            </div>
-                        </div>
-                    `;
-                }
-                
-                if (endPage < totalPages) {
-                    paginationButtons += `
-                        <div class="page-number-container">
-                            <div class="rotate-90 grid place-content-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
-                            </div>
-                        </div>
-                        <div class="page-number-container">
-                            <div class="btn-wrapper text-base" style="--_bg: transparent; --_text: var(--color-base); --_hover-bg: var(--color-button-bg); --_hover-text: var(--color-base); --_box-shadow: none; --_height: 2.25rem; --_width: 2.25rem; --_radius: 99999px;">
-                                <a onclick="goToPage(${totalPages})">${totalPages}</a>
-                            </div>
-                        </div>
+                        <button class="page-btn ${i === currentPage ? 'active' : ''}" 
+                                onclick="goToPage(${i})">${i}</button>
                     `;
                 }
                 
                 paginationButtons += `
-                    <div class="page-number-container">
-                        <div class="btn-wrapper text-base" style="--_bg: transparent; --_text: var(--color-base); --_hover-bg: var(--color-button-bg); --_hover-text: var(--color-base); --_box-shadow: none; --_height: 2.25rem; --_width: 2.25rem; --_radius: 99999px;">
-                            <a onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'style="pointer-events: none; opacity: 0.5;"' : ''} aria-label="Next Page">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
-                            </a>
-                        </div>
-                    </div>
+                    <button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} 
+                            onclick="goToPage(${currentPage + 1})">→</button>
                 `;
                 
-                paginationButtons += '</div></div>';
+                paginationButtons += '</div>';
             }
 
-            // Формируем таблицу версий в стиле Modrinth
-            let versionsHtml = '';
-            
-            paginatedVersions.forEach((version, index) => {
-                const status = getVersionStatus(version);
-                
-                // Форматирование даты
-                const date = new Date(version.date_published);
-                const now = new Date();
-                const diffTime = Math.abs(now - date);
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                
-                let dateText = '';
-                if (diffDays < 7) {
-                    dateText = `${diffDays} ${getDaysWord(diffDays)} назад`;
-                } else if (diffDays < 30) {
-                    const weeks = Math.floor(diffDays / 7);
-                    dateText = `${weeks} ${getWeeksWord(weeks)} назад`;
-                } else if (diffDays < 365) {
-                    const months = Math.floor(diffDays / 30);
-                    dateText = `${months} ${getMonthsWord(months)} назад`;
-                } else {
-                    const years = Math.floor(diffDays / 365);
-                    dateText = `${years} ${getYearsWord(years)} назад`;
-                }
-                
-                // Форматирование скачиваний
-                const downloads = formatNumber(version.downloads || 0);
-                
-                versionsHtml += `
-                    <div class="versions-grid-row group relative">
-                        <a href="${version.files[0]?.url}" target="_blank" class="absolute inset-[calc(-1rem-2px)_-2rem] before:absolute before:inset-0 before:transition-all before:content-[''] hover:before:backdrop-brightness-110"></a>
-                        <div class="flex flex-col justify-center gap-2 sm:contents">
-                            <div class="flex flex-row items-center gap-2 sm:contents">
-                                <div class="self-center">
-                                    <div class="relative z-[1] cursor-pointer">
-                                        <div class="flex text-sm w-9 h-9 font-bold justify-center items-center rounded-full ${status.type === 'beta' ? 'bg-bg-orange text-brand-orange' : 'bg-bg-green text-brand-green'}">${status.letter}</div>
+            // Формируем таблицу версий
+            const versionsTable = filteredVersions.length > 0 ? `
+                <table class="versions-table">
+                    <thead>
+                        <tr>
+                            <th>Версия</th>
+                            <th>Загрузчики</th>
+                            <th>Версии игры</th>
+                            <th>Дата</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${paginatedVersions.map(version => {
+                            const status = getVersionStatus(version);
+                            
+                            return `
+                            <tr>
+                                <td>
+                                    <div class="version-cell">
+                                        <div class="version-status ${status.type}">${status.letter}</div>
+                                        <span class="version-number">${escapeHtml(version.version_number)}</span>
                                     </div>
-                                </div>
-                                <div class="pointer-events-none relative z-[1] flex flex-col justify-center group-hover:underline">
-                                    <div class="font-bold text-contrast">${escapeHtml(version.version_number)}</div>
-                                    <div class="text-xs font-medium">${escapeHtml(version.name || '')}</div>
-                                </div>
-                            </div>
-                            <div class="flex flex-col justify-center gap-2 sm:contents">
-                                <div class="flex flex-row flex-wrap items-center gap-1 xl:contents">
-                                    <div class="flex items-center">
-                                        <div class="flex flex-wrap gap-1">
-                                            ${version.game_versions.slice(0, 2).map(gv => 
-                                                `<button class="bg-[--_bg-color,var(--color-button-bg)] text-nowrap border-[--_bg-color,var(--surface-5)] border-[1px] border-solid px-2 py-1 leading-none rounded-full font-normal text-sm inline-flex items-center gap-1 text-[--_color,var(--color-secondary)] transition-transform active:scale-[0.95] cursor-pointer hover:underline z-[1]">${gv}</button>`
-                                            ).join('')}
-                                            ${version.game_versions.length > 2 ? 
-                                                `<span class="text-sm text-secondary">+${version.game_versions.length - 2}</span>` : ''}
-                                        </div>
+                                </td>
+                                <td>
+                                    ${version.loaders.map(loader => 
+                                        `<span class="loader-badge-table ${getLoaderClass(loader)}">${loader}</span>`
+                                    ).join('')}
+                                </td>
+                                <td>
+                                    <div class="game-versions">
+                                        ${version.game_versions.slice(0, 3).map(gv => 
+                                            `<span class="game-version">${gv}</span>`
+                                        ).join('')}
+                                        ${version.game_versions.length > 3 ? 
+                                            `<span class="game-version">+${version.game_versions.length - 3}</span>` : ''}
                                     </div>
-                                    <div class="flex items-center">
-                                        <div class="flex flex-wrap gap-1">
-                                            ${version.loaders.map(loader => 
-                                                `<button class="bg-[--_bg-color,var(--color-button-bg)] text-nowrap border-[--_bg-color,var(--surface-5)] border-[1px] border-solid px-2 py-1 leading-none rounded-full font-normal text-sm inline-flex items-center gap-1 text-[--_color,var(--color-secondary)] transition-transform active:scale-[0.95] cursor-pointer hover:underline z-[1]" style="--_color: var(--color-platform-${loader.toLowerCase()});">
-                                                    ${loader === 'fabric' ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7h-4.5L15 4H9L8.5 7H4v2h16V7z"/><rect x="4" y="9" width="16" height="10" rx="1"/><circle cx="8" cy="13" r="1"/><circle cx="16" cy="13" r="1"/></svg>' : ''}
-                                                    ${loader}
-                                                </button>`
-                                            ).join('')}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="flex flex-col justify-center gap-1 max-sm:flex-row max-sm:justify-start max-sm:gap-3 xl:contents">
-                                    <div class="z-[1] flex cursor-help items-center gap-1 text-nowrap font-medium xl:self-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" class="xl:hidden">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2"></path>
-                                        </svg> 
-                                        ${dateText}
-                                    </div>
-                                    <div class="pointer-events-none z-[1] flex items-center gap-1 font-medium xl:self-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="xl:hidden">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-1m-4-4-4 4m0 0-4-4m4 4V4"></path>
-                                        </svg> 
-                                        ${downloads}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex items-start justify-end gap-1 sm:items-center z-[1] max-[400px]:flex-col max-[400px]:justify-start">
-                            <div class="btn-wrapper text-base" style="--_bg: transparent; --_text: var(--color-base); --_hover-bg: var(--color-button-bg); --_hover-text: var(--color-base); --_box-shadow: none; --_height: 2.25rem; --_width: 2.25rem; --_radius: 99999px;">
-                                <a href="${version.files[0]?.url}" target="_blank" class="hover:!bg-button-bg" aria-label="Download">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-1m-4-4-4 4m0 0-4-4m4 4V4"></path>
-                                    </svg>
-                                </a>
-                            </div>
-                            <div class="btn-wrapper text-base" style="--_bg: transparent; --_text: var(--color-base); --_hover-bg: var(--color-button-bg); --_hover-text: var(--color-base); --_box-shadow: none; --_height: 2.25rem; --_width: 2.25rem; --_radius: 99999px;">
-                                <button class="hover:!bg-button-bg" aria-label="More options">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    ${index < paginatedVersions.length - 1 ? '<div class="versions-grid-row h-px w-full bg-surface-5"></div>' : ''}
-                `;
-            });
+                                </td>
+                                <td>${formatRelativeDate(version.date_published)}</td>
+                                <td>
+                                    <a href="${version.files[0]?.url}" class="download-btn" target="_blank">
+                                        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+                                        Скачать
+                                    </a>
+                                </td>
+                            </tr>
+                        `}).join('')}
+                    </tbody>
+                </table>
+                ${paginationButtons}
+            ` : '<div class="no-versions">Нет версий</div>';
 
             // Проверяем, сохранен ли проект
             const isSaved = savedProjects.has(projectSlug);
@@ -1784,26 +1448,14 @@
                         <div class="project-name-row">
                             <h1 class="project-name">${escapeHtml(projectData.title)}</h1>
                             <div class="action-buttons">
-                                <!-- Кнопка поделиться (квадратная, без текста) -->
-                                <div class="btn-wrapper text-base" style="--_width: 2.5rem; --_radius: 0.75rem;">
-                                    <button onclick="showShareModal()" title="Поделиться">
-                                        <i class="fas fa-share-alt"></i>
-                                    </button>
-                                </div>
-                                <!-- Кнопка сохранить -->
-                                <div class="btn-wrapper text-base ${isSaved ? 'saved' : ''}" style="--_width: auto; --_padding-x: 1rem; --_bg: ${isSaved ? 'var(--text-brand)' : 'transparent'}; --_text: ${isSaved ? 'var(--bg-body)' : 'var(--text-brand)'};">
-                                    <button id="saveProjectBtn" onclick="toggleSave()" class="${isSaved ? 'saved' : ''}">
-                                        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-                                        ${isSaved ? 'Сохранено' : 'Сохранить'}
-                                    </button>
-                                </div>
-                                <!-- Кнопка скачать -->
-                                <div class="btn-wrapper text-base" style="--_width: auto; --_padding-x: 1rem; --_bg: var(--bg-brand); --_text: var(--text-brand);">
-                                    <button onclick="scrollToVersions()">
-                                        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
-                                        Скачать
-                                    </button>
-                                </div>
+                                <button class="action-top-btn ${isSaved ? 'saved' : ''}" id="saveProjectBtn" onclick="toggleSave()">
+                                    <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                                    ${isSaved ? 'Сохранено' : 'Сохранить'}
+                                </button>
+                                <button class="action-top-btn" onclick="scrollToVersions()">
+                                    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+                                    Скачать
+                                </button>
                             </div>
                         </div>
                         <div class="project-author">by ${escapeHtml(projectData.author || 'Неизвестен')}</div>
@@ -1884,68 +1536,7 @@
                         <h3 class="versions-title">📥 Версии</h3>
                         ${loaderFilters}
                     </div>
-                    
-                    <div class="normal-page__content">
-                        <div class="overflow-x-auto">
-                            <div class="experimental-styles-within relative flex w-fit overflow-x-auto rounded-full bg-bg-raised p-1 text-sm font-bold card-shadow mb-4">
-                                <a class="button-animation z-[1] flex flex-row items-center gap-2 px-4 py-2 focus:rounded-full">
-                                    <span class="text-nowrap text-contrast">Description</span>
-                                </a>
-                                <a class="button-animation z-[1] flex flex-row items-center gap-2 px-4 py-2 focus:rounded-full">
-                                    <span class="text-nowrap text-contrast">Changelog</span>
-                                </a>
-                                <a class="button-animation z-[1] flex flex-row items-center gap-2 px-4 py-2 focus:rounded-full" aria-current="page">
-                                    <span class="text-nowrap text-button-textSelected">Versions</span>
-                                </a>
-                                <div class="pointer-events-none absolute h-[calc(100%-0.5rem)] overflow-hidden rounded-full p-1 bg-button-bgSelected navtabs-transition" style="inset: 4px 4px 4px 222px; opacity: 1;" aria-hidden="true"></div>
-                            </div>
-                        </div>
-                        
-                        <section class="experimental-styles-within overflow-visible">
-                            <div class="flex flex-col gap-3 mb-3">
-                                <div class="flex flex-wrap justify-between gap-2">
-                                    <div class="experimental-styles-within flex flex-col gap-3">
-                                        <div class="flex flex-wrap items-center gap-2">
-                                            <div class="btn-wrapper text-base" style="--_bg: var(--color-button-bg); --_text: var(--color-base); --_hover-bg: var(--color-button-bg); --_hover-text: var(--color-base); --_box-shadow: var(--shadow-button); --_height: 2.25rem; --_width: auto; --_radius: 0.75rem; --_padding-x: calc(0.75rem - 0.125rem); --_padding-y: 0.5rem; --_gap: 0.375rem; --_font-weight: 600; --_icon-size: 1.25rem;">
-                                                <button>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 3H2l8 9.46V19l4 2v-8.54z"></path></svg>
-                                                    Game versions
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="m19 9-7 7-7-7"></path></svg>
-                                                </button>
-                                            </div>
-                                            <div class="btn-wrapper text-base" style="--_bg: var(--color-button-bg); --_text: var(--color-base); --_hover-bg: var(--color-button-bg); --_hover-text: var(--color-base); --_box-shadow: var(--shadow-button); --_height: 2.25rem; --_width: auto; --_radius: 0.75rem; --_padding-x: calc(0.75rem - 0.125rem); --_padding-y: 0.5rem; --_gap: 0.375rem; --_font-weight: 600; --_icon-size: 1.25rem;">
-                                                <button>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 3H2l8 9.46V19l4 2v-8.54z"></path></svg>
-                                                    Channels
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="m19 9-7 7-7-7"></path></svg>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="flex flex-col gap-4 rounded-2xl bg-bg-raised px-6 pb-8 pt-4 supports-[grid-template-columns:subgrid]:grid supports-[grid-template-columns:subgrid]:grid-cols-[1fr_min-content] sm:px-8 supports-[grid-template-columns:subgrid]:sm:grid-cols-[min-content_auto_auto_auto_min-content] supports-[grid-template-columns:subgrid]:xl:grid-cols-[min-content_auto_auto_auto_auto_auto_min-content] no-environment">
-                                <div class="versions-grid-row">
-                                    <div class="w-9 max-sm:hidden"></div>
-                                    <div class="text-sm font-bold text-contrast max-sm:hidden">Name</div>
-                                    <div class="text-sm font-bold text-contrast max-sm:hidden sm:max-xl:collapse sm:max-xl:hidden">Game version</div>
-                                    <div class="text-sm font-bold text-contrast max-sm:hidden sm:max-xl:collapse sm:max-xl:hidden">Platforms</div>
-                                    <div class="text-sm font-bold text-contrast max-sm:hidden sm:max-xl:collapse sm:max-xl:hidden">Published</div>
-                                    <div class="text-sm font-bold text-contrast max-sm:hidden sm:max-xl:collapse sm:max-xl:hidden">Downloads</div>
-                                    <div class="text-sm font-bold text-contrast max-sm:hidden xl:collapse xl:hidden">Compatibility</div>
-                                    <div class="text-sm font-bold text-contrast max-sm:hidden xl:collapse xl:hidden">Stats</div>
-                                    <div class="w-9 max-sm:hidden"></div>
-                                </div>
-                                
-                                <div class="versions-grid-row h-px w-full bg-surface-5 max-sm:!hidden"></div>
-                                
-                                ${versionsHtml || '<div class="no-versions">Нет версий</div>'}
-                            </div>
-                            
-                            ${paginationButtons}
-                        </section>
-                    </div>
+                    ${versionsTable}
                 </div>
             `;
 
@@ -1972,7 +1563,6 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeModal();
-                document.getElementById('shareModal').classList.remove('show');
             }
         });
 
