@@ -233,7 +233,7 @@
         .main-content {
             flex: 1;
             min-width: 0;
-            padding: 2rem 2rem 2rem 1rem; /* Уменьшен левый отступ */
+            padding: 2rem;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -242,7 +242,7 @@
         .content-wrapper {
             width: 100%;
             max-width: 580px;
-            margin: 0 0 0 auto; /* Прижато к левому краю */
+            margin: 0 auto; /* Центрирование */
         }
 
         .feed-header {
@@ -263,24 +263,8 @@
             display: flex;
             gap: 0.5rem;
             margin-top: 1rem;
-            flex-wrap: nowrap; /* Запрещаем перенос на новую строку */
-            overflow-x: auto; /* Добавляем горизонтальный скролл при необходимости */
-            padding-bottom: 0.5rem;
-            scrollbar-width: thin;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .filter-chips::-webkit-scrollbar {
-            height: 3px;
-        }
-
-        .filter-chips::-webkit-scrollbar-track {
-            background: var(--border-subtle);
-        }
-
-        .filter-chips::-webkit-scrollbar-thumb {
-            background: var(--text-brand);
-            border-radius: 3px;
+            flex-wrap: wrap; /* Возвращаем перенос */
+            justify-content: flex-start;
         }
 
         .filter-chip {
@@ -292,72 +276,13 @@
             cursor: pointer;
             transition: all 0.2s;
             font-size: 0.85rem;
-            white-space: nowrap; /* Запрещаем перенос текста внутри чипа */
-            flex-shrink: 0; /* Запрещаем сжатие */
+            white-space: nowrap;
         }
 
         .filter-chip:hover, .filter-chip.active {
             background-color: var(--bg-brand);
             color: var(--text-brand);
             border-color: var(--text-brand);
-        }
-
-        /* Истории как в Instagram */
-        .stories-container {
-            margin-bottom: 2rem;
-            overflow-x: auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            padding: 0.5rem 0;
-        }
-
-        .stories-container::-webkit-scrollbar {
-            display: none;
-        }
-
-        .stories-track {
-            display: flex;
-            gap: 1rem;
-            width: fit-content;
-        }
-
-        .story-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.3rem;
-            cursor: pointer;
-            width: 80px;
-            flex-shrink: 0;
-        }
-
-        .story-avatar {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, var(--text-brand), #ff8c00);
-            padding: 3px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .story-avatar img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--bg-body);
-        }
-
-        .story-name {
-            color: var(--text-secondary);
-            font-size: 0.75rem;
-            text-align: center;
-            max-width: 70px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
 
         .feed {
@@ -949,12 +874,6 @@
                         <span class="filter-chip" data-filter="datapack">Датапаки</span>
                     </div>
                 </div>
-
-                <!-- Истории с топ модами (убраны, так как не грузились) -->
-                <!-- <div class="stories-container" id="storiesContainer">
-                    <div class="stories-track" id="storiesTrack">
-                    </div>
-                </div> -->
 
                 <div class="feed" id="feed">
                     <div class="loading" id="initialLoading">
