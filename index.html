@@ -236,13 +236,14 @@
             padding: 2rem;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start; /* Изменено с center на flex-start */
         }
 
         .content-wrapper {
             width: 100%;
             max-width: 580px;
-            margin: 0 auto; /* Центрирование */
+            margin-left: 0; /* Убрано auto, теперь прижато к левому краю main-content */
+            margin-right: auto;
         }
 
         .feed-header {
@@ -263,7 +264,7 @@
             display: flex;
             gap: 0.5rem;
             margin-top: 1rem;
-            flex-wrap: wrap; /* Возвращаем перенос */
+            flex-wrap: wrap;
             justify-content: flex-start;
         }
 
