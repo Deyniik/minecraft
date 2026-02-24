@@ -236,13 +236,13 @@
             padding: 2rem;
             display: flex;
             flex-direction: column;
-            align-items: flex-start; /* Изменено с center на flex-start */
+            align-items: flex-start;
         }
 
         .content-wrapper {
             width: 100%;
             max-width: 580px;
-            margin-left: 0; /* Убрано auto, теперь прижато к левому краю main-content */
+            margin-left: 200px; /* Отступ от боковой панели 200px */
             margin-right: auto;
         }
 
@@ -627,6 +627,27 @@
             color: var(--text-brand);
             font-weight: 500;
             font-size: 1.1rem;
+        }
+
+        /* Анимация загрузки новых постов */
+        .loading-more {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .loading-more .material-progress {
+            width: 160px;
+            height: 3px;
+        }
+
+        .loading-more .friendly-text {
+            font-size: 0.9rem;
+            color: var(--text-brand);
         }
 
         .modal {
@@ -1269,6 +1290,20 @@
             const oldLoading = document.getElementById('loading-more');
             if (oldLoading) oldLoading.remove();
 
+            // Показываем анимацию загрузки
+            if (!reset) {
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'loading-more';
+                loadingDiv.id = 'loading-more';
+                loadingDiv.innerHTML = `
+                    <div class="material-progress">
+                        <div class="material-progress-bar"></div>
+                    </div>
+                    <div class="friendly-text">Загружаем еще проекты 🔍</div>
+                `;
+                feedEl.appendChild(loadingDiv);
+            }
+
             try {
                 const promises = [];
                 const typesToFetch = currentFilter === 'all' ? projectTypes : [currentFilter];
@@ -1298,6 +1333,10 @@
                 const translatePromises = validPosts.map(p => p.description && !cachedTranslations.has(p.description) ? translateText(p.description) : Promise.resolve());
                 await Promise.all(translatePromises);
 
+                // Убираем анимацию загрузки
+                const loadingMore = document.getElementById('loading-more');
+                if (loadingMore) loadingMore.remove();
+
                 if (validPosts.length === 0) {
                     hasMore = false;
                 } else {
@@ -1308,6 +1347,9 @@
 
             } catch (error) {
                 console.error('Ошибка загрузки:', error);
+                
+                const loadingMore = document.getElementById('loading-more');
+                if (loadingMore) loadingMore.remove();
             } finally {
                 isLoading = false;
                 
