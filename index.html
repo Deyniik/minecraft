@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deynik Minecraft - Рекомендации</title>
     <!-- Open Graph метатеги для предпросмотра в соцсетях -->
-    <meta property="og:title" content="Deynik Minecraft - Рекомендации модов и шейдеров">
-    <meta property="og:description" content="Лучшие проекты для Minecraft в одном месте">
-    <meta property="og:image" content="https://i.pinimg.com/originals/7d/04/0e/7d040e94931427709008aaeda14db9c8.gif">
-    <meta property="og:url" content="https://deyniik.github.io/minecraft/">
+    <meta property="og:title" content="Deynik Minecraft" id="og-title">
+    <meta property="og:description" content="Лучшие проекты для Minecraft" id="og-description">
+    <meta property="og:image" content="" id="og-image">
+    <meta property="og:url" content="" id="og-url">
     <meta name="twitter:card" content="summary_large_image">
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -34,7 +34,7 @@
         .app-container {
             display: flex;
             width: 100%;
-            max-width: 1600px;
+            max-width: 100%; /* Убрано ограничение, чтобы панель была прижата влево */
         }
 
         :root {
@@ -59,15 +59,16 @@
             --color-datapack: #f472b6;
         }
 
-        /* Боковая панель - увеличена на 10% */
+        /* Боковая панель - прижата максимально влево */
         .sidebar {
-            width: 264px; /* было 240px, стало 264px (110%) */
+            width: 264px;
             flex-shrink: 0;
             background-color: var(--bg-body);
-            padding: 1.65rem 0.55rem; /* пропорционально увеличено */
+            padding: 1.65rem 0.55rem;
             height: 100vh;
             position: sticky;
             top: 0;
+            left: 0; /* Прижато влево */
             overflow-y: auto;
             scrollbar-width: thin;
             scrollbar-color: var(--bg-button) var(--bg-body);
@@ -75,7 +76,7 @@
         }
 
         .sidebar::-webkit-scrollbar {
-            width: 6.6px; /* увеличено */
+            width: 6.6px;
         }
 
         .sidebar::-webkit-scrollbar-track {
@@ -84,15 +85,15 @@
 
         .sidebar::-webkit-scrollbar-thumb {
             background: var(--bg-button);
-            border-radius: 4.4px; /* увеличено */
+            border-radius: 4.4px;
         }
 
         .sidebar-logo {
-            font-size: 1.65rem; /* увеличено */
+            font-size: 1.65rem;
             font-weight: 800;
             color: var(--text-contrast);
-            margin-bottom: 2.2rem; /* увеличено */
-            padding-left: 0.55rem; /* увеличено */
+            margin-bottom: 2.2rem;
+            padding-left: 0.55rem;
             cursor: pointer;
         }
 
@@ -101,30 +102,30 @@
         }
 
         .sidebar-category {
-            margin-bottom: 1.65rem; /* увеличено */
+            margin-bottom: 1.65rem;
         }
 
         .sidebar-category-title {
-            padding: 0.55rem 0.55rem; /* увеличено */
+            padding: 0.55rem 0.55rem;
             color: var(--text-secondary);
-            font-size: 0.88rem; /* увеличено */
+            font-size: 0.88rem;
             text-transform: uppercase;
-            letter-spacing: 0.55px; /* увеличено */
+            letter-spacing: 0.55px;
             font-weight: 600;
         }
 
         .sidebar-menu {
             display: flex;
             flex-direction: column;
-            gap: 0.275rem; /* увеличено */
+            gap: 0.275rem;
         }
 
         .sidebar-item {
             display: flex;
             align-items: center;
-            gap: 1.1rem; /* увеличено */
-            padding: 0.55rem 0.825rem; /* увеличено */
-            border-radius: 0.55rem; /* увеличено */
+            gap: 1.1rem;
+            padding: 0.55rem 0.825rem;
+            border-radius: 0.55rem;
             color: var(--text-secondary);
             cursor: pointer;
             transition: all 0.2s;
@@ -132,7 +133,7 @@
             background: none;
             width: 100%;
             text-align: left;
-            font-size: 0.99rem; /* увеличено */
+            font-size: 0.99rem;
             font-weight: 500;
         }
 
@@ -147,32 +148,32 @@
         }
 
         .sidebar-item svg {
-            width: 1.43rem; /* увеличено */
-            height: 1.43rem; /* увеличено */
+            width: 1.43rem;
+            height: 1.43rem;
             stroke: currentColor;
             fill: none;
         }
 
         .user-section {
             margin-top: auto;
-            padding: 1.1rem 0.55rem; /* увеличено */
+            padding: 1.1rem 0.55rem;
             border-top: 1px solid var(--border-subtle);
-            margin-top: 1.1rem; /* увеличено */
+            margin-top: 1.1rem;
         }
 
         .user-info {
             display: flex;
             align-items: center;
-            gap: 0.825rem; /* увеличено */
-            margin-bottom: 1.1rem; /* увеличено */
-            padding: 0.55rem; /* увеличено */
-            border-radius: 0.55rem; /* увеличено */
+            gap: 0.825rem;
+            margin-bottom: 1.1rem;
+            padding: 0.55rem;
+            border-radius: 0.55rem;
             background-color: var(--bg-button);
         }
 
         .user-avatar {
-            width: 39.6px; /* увеличено */
-            height: 39.6px; /* увеличено */
+            width: 39.6px;
+            height: 39.6px;
             border-radius: 50%;
             background-color: var(--text-brand);
             display: flex;
@@ -180,7 +181,7 @@
             justify-content: center;
             color: #000;
             font-weight: bold;
-            font-size: 1.1rem; /* увеличено */
+            font-size: 1.1rem;
         }
 
         .user-details {
@@ -194,29 +195,29 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            font-size: 0.99rem; /* увеличено */
+            font-size: 0.99rem;
         }
 
         .user-nick {
             color: var(--text-secondary);
-            font-size: 0.825rem; /* увеличено */
+            font-size: 0.825rem;
         }
 
         .google-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.55rem; /* увеличено */
+            gap: 0.55rem;
             width: 100%;
-            padding: 0.66rem; /* увеличено */
+            padding: 0.66rem;
             background-color: var(--bg-button);
             border: 1px solid var(--border-subtle);
-            border-radius: 2.2rem; /* увеличено */
+            border-radius: 2.2rem;
             color: var(--text-contrast);
             cursor: pointer;
             transition: all 0.2s;
             font-weight: 500;
-            font-size: 0.99rem; /* увеличено */
+            font-size: 0.99rem;
         }
 
         .google-btn:hover {
@@ -225,16 +226,16 @@
         }
 
         .google-btn svg {
-            width: 1.21rem; /* увеличено */
-            height: 1.21rem; /* увеличено */
+            width: 1.21rem;
+            height: 1.21rem;
         }
 
         .main-content {
             flex: 1;
             min-width: 0;
-            padding: 2rem 2rem 2rem 2rem;
-            max-width: 750px; /* уменьшено с 800px */
-            margin: 0 auto;
+            padding: 2rem 2rem 2rem 1rem;
+            max-width: 720px; /* Уменьшено еще больше */
+            margin: 0 auto 0 0; /* Прижато к левому краю */
         }
 
         .feed-header {
@@ -255,6 +256,7 @@
             display: flex;
             gap: 0.5rem;
             margin-top: 1rem;
+            flex-wrap: wrap;
         }
 
         .filter-chip {
@@ -274,6 +276,64 @@
             border-color: var(--text-brand);
         }
 
+        /* Истории как в Instagram */
+        .stories-container {
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding: 0.5rem 0;
+        }
+
+        .stories-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .stories-track {
+            display: flex;
+            gap: 1rem;
+            width: fit-content;
+        }
+
+        .story-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            cursor: pointer;
+            width: 80px;
+            flex-shrink: 0;
+        }
+
+        .story-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--text-brand), #ff8c00);
+            padding: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .story-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--bg-body);
+        }
+
+        .story-name {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            text-align: center;
+            max-width: 70px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
         .feed {
             display: flex;
             flex-direction: column;
@@ -285,13 +345,13 @@
             border-radius: 1rem;
             border: 1px solid var(--border-subtle);
             overflow: hidden;
-            transition: box-shadow 0.2s;
             cursor: pointer;
             width: 100%;
+            transition: border-color 0.2s; /* Убрана тень, оставлено только изменение границы */
         }
 
         .feed-post:hover {
-            box-shadow: var(--card-shadow);
+            border-color: var(--text-brand);
         }
 
         .post-header {
@@ -303,8 +363,8 @@
         }
 
         .post-icon {
-            width: 44px; /* увеличено */
-            height: 44px; /* увеличено */
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             background-color: var(--bg-button);
             object-fit: cover;
@@ -316,7 +376,7 @@
         }
 
         .post-title {
-            font-size: 1.1rem; /* увеличено */
+            font-size: 1.1rem;
             font-weight: 700;
             color: var(--text-contrast);
             line-height: 1.3;
@@ -332,9 +392,9 @@
         .post-type {
             display: inline-flex;
             align-items: center;
-            padding: 0.15rem 0.5rem; /* увеличено */
+            padding: 0.15rem 0.5rem;
             border-radius: 9999px;
-            font-size: 0.7rem; /* увеличено */
+            font-size: 0.7rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -349,8 +409,8 @@
 
         .post-author {
             color: var(--text-secondary);
-            font-size: 0.9rem; /* увеличено */
-            margin-top: 0.2rem; /* увеличено */
+            font-size: 0.9rem;
+            margin-top: 0.2rem;
         }
 
         /* Улучшенная карусель */
@@ -396,65 +456,77 @@
         .carousel-slide img {
             width: 100%;
             display: block;
-            max-height: 55vh; /* увеличено */
+            max-height: 55vh;
             object-fit: contain;
             cursor: pointer;
             pointer-events: auto;
+            user-drag: none;
+            -webkit-user-drag: none;
         }
 
         .carousel-btn {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            width: 40px; /* увеличено */
-            height: 40px; /* увеличено */
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background-color: rgba(0, 0, 0, 0.6); /* немного ярче */
-            border: 2px solid rgba(255, 255, 255, 0.2); /* добавлена обводка */
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 24px; /* увеличено */
+            background-color: rgba(0, 0, 0, 0.6);
+            border: none;
+            color: white;
+            font-size: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             z-index: 10;
-            transition: all 0.2s;
-            backdrop-filter: blur(4px);
+            transition: background-color 0.2s;
             line-height: 1;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
         }
 
         .carousel-btn:hover {
             background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            border-color: var(--text-brand); /* обводка становится брендовой */
-            transform: translateY(-50%) scale(1.1); /* эффект увеличения */
         }
 
         .carousel-btn.prev {
-            left: 12px; /* увеличено */
+            left: 12px;
         }
 
         .carousel-btn.next {
-            right: 12px; /* увеличено */
+            right: 12px;
+        }
+
+        .carousel-btn.prev::before {
+            content: "←";
+        }
+
+        .carousel-btn.next::before {
+            content: "→";
+        }
+
+        .carousel-btn span {
+            display: none;
         }
 
         .carousel-dots {
             position: absolute;
-            bottom: 12px; /* увеличено */
+            bottom: 12px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 6px; /* увеличено */
+            gap: 6px;
             z-index: 10;
             background-color: rgba(0, 0, 0, 0.5);
-            padding: 5px 10px; /* увеличено */
+            padding: 5px 10px;
             border-radius: 20px;
             backdrop-filter: blur(2px);
         }
 
         .carousel-dot {
-            width: 6px; /* увеличено */
-            height: 6px; /* увеличено */
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             background-color: rgba(255, 255, 255, 0.5);
             transition: all 0.2s;
@@ -463,32 +535,31 @@
 
         .carousel-dot.active {
             background-color: var(--text-brand);
-            width: 18px; /* увеличено */
+            width: 18px;
             border-radius: 10px;
         }
 
         .post-image-static {
             width: 100%;
             display: block;
-            max-height: 55vh; /* увеличено */
+            max-height: 55vh;
             object-fit: contain;
             background-color: #000;
             border-bottom: 1px solid var(--border-subtle);
             cursor: pointer;
         }
 
-        /* Увеличенные элементы интерфейса внизу поста */
         .post-actions {
             display: flex;
-            gap: 1.5rem; /* увеличено */
-            padding: 1rem 1.2rem 1rem 1.2rem; /* увеличено */
+            gap: 1.5rem;
+            padding: 1rem 1.2rem 1rem 1.2rem;
             border-top: 1px solid var(--border-subtle);
             justify-content: space-between;
         }
 
         .actions-left {
             display: flex;
-            gap: 1.5rem; /* увеличено */
+            gap: 1.5rem;
         }
 
         .action-btn {
@@ -498,8 +569,8 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 0.6rem; /* увеличено */
-            font-size: 1rem; /* увеличено */
+            gap: 0.6rem;
+            font-size: 1rem;
             transition: color 0.2s;
         }
 
@@ -508,8 +579,8 @@
         }
 
         .action-btn svg {
-            width: 1.6rem; /* увеличено */
-            height: 1.6rem; /* увеличено */
+            width: 1.6rem;
+            height: 1.6rem;
             stroke: currentColor;
             fill: none;
             transition: fill 0.2s;
@@ -525,83 +596,87 @@
             stroke: var(--text-brand);
         }
 
-        .likes-count, .saves-count {
+        .likes-count {
             font-weight: 600;
             color: var(--text-contrast);
-            font-size: 1rem; /* увеличено */
+            font-size: 1rem;
         }
 
         .post-body {
-            padding: 1rem 1.2rem 0.7rem 1.2rem; /* увеличено */
+            padding: 1rem 1.2rem 0.7rem 1.2rem;
         }
 
         .post-description {
             color: var(--text-primary);
-            font-size: 1rem; /* увеличено */
-            line-height: 1.5; /* увеличено */
-            margin-bottom: 0.7rem; /* увеличено */
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 0.7rem;
         }
 
         .post-categories {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem; /* увеличено */
-            margin-bottom: 0.6rem; /* увеличено */
+            gap: 0.5rem;
+            margin-bottom: 0.6rem;
         }
 
         .category-tag {
             background-color: var(--bg-button);
             border: 1px solid var(--border-subtle);
             border-radius: 9999px;
-            padding: 0.2rem 0.7rem; /* увеличено */
-            font-size: 0.8rem; /* увеличено */
+            padding: 0.2rem 0.7rem;
+            font-size: 0.8rem;
             color: var(--text-secondary);
         }
 
         .post-date {
             color: var(--text-secondary);
-            font-size: 0.85rem; /* увеличено */
+            font-size: 0.85rem;
             text-transform: uppercase;
         }
 
-        /* Улучшенный индикатор загрузки */
+        /* Material You стиль загрузки */
         .loading {
             text-align: center;
             padding: 3rem;
-            font-size: 1.2rem;
             color: var(--text-secondary);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1.5rem;
+            gap: 1rem;
         }
 
-        .loading-spinner {
-            display: inline-block;
-            width: 60px; /* увеличено */
-            height: 60px; /* увеличено */
-            border: 4px solid var(--border-subtle); /* увеличено */
-            border-top-color: var(--text-brand);
-            border-radius: 50%;
-            animation: spin 1s linear infinite; /* ускорено */
+        .material-progress {
+            width: 200px;
+            height: 4px;
+            background-color: var(--border-subtle);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .material-progress-bar {
+            height: 100%;
+            width: 30%;
+            background-color: var(--text-brand);
+            border-radius: 4px;
+            position: absolute;
+            animation: material-loading 1.5s infinite ease-in-out;
+        }
+
+        @keyframes material-loading {
+            0% {
+                left: -30%;
+            }
+            100% {
+                left: 100%;
+            }
         }
 
         .friendly-text {
             color: var(--text-brand);
-            font-weight: 600; /* жирнее */
-            font-size: 1.3rem; /* увеличено */
-            letter-spacing: 0.5px;
-            text-shadow: 0 0 10px rgba(251, 191, 36, 0.3); /* свечение */
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.05); }
+            font-weight: 500;
+            font-size: 1.1rem;
         }
 
         .modal {
@@ -658,37 +733,6 @@
             margin-bottom: 1.5rem;
         }
 
-        .share-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .share-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            background-color: var(--bg-button);
-            border: 1px solid var(--border-subtle);
-            border-radius: 0.75rem;
-            color: var(--text-contrast);
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 1rem;
-            width: 100%;
-        }
-
-        .share-btn:hover {
-            background-color: var(--bg-button-hover);
-            border-color: var(--text-brand);
-        }
-
-        .share-btn i {
-            color: var(--text-brand);
-            font-size: 1.2rem;
-        }
-
         .share-preview {
             display: flex;
             align-items: center;
@@ -719,6 +763,37 @@
         .share-preview-info p {
             color: var(--text-secondary);
             font-size: 0.8rem;
+        }
+
+        .share-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .share-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background-color: var(--bg-button);
+            border: 1px solid var(--border-subtle);
+            border-radius: 0.75rem;
+            color: var(--text-contrast);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        .share-btn:hover {
+            background-color: var(--bg-button-hover);
+            border-color: var(--text-brand);
+        }
+
+        .share-btn i {
+            color: var(--text-brand);
+            font-size: 1.2rem;
         }
     </style>
 </head>
@@ -844,11 +919,24 @@
                     <span class="filter-chip" data-filter="mod">Моды</span>
                     <span class="filter-chip" data-filter="shader">Шейдеры</span>
                     <span class="filter-chip" data-filter="resourcepack">Ресурспаки</span>
+                    <span class="filter-chip" data-filter="modpack">Сборки</span>
+                    <span class="filter-chip" data-filter="plugin">Плагины</span>
+                    <span class="filter-chip" data-filter="datapack">Датапаки</span>
                 </div>
             </div>
+
+            <!-- Истории с топ модами -->
+            <div class="stories-container" id="storiesContainer">
+                <div class="stories-track" id="storiesTrack">
+                    <!-- Заполняется динамически -->
+                </div>
+            </div>
+
             <div class="feed" id="feed">
                 <div class="loading" id="initialLoading">
-                    <div class="loading-spinner"></div>
+                    <div class="material-progress">
+                        <div class="material-progress-bar"></div>
+                    </div>
                     <div class="friendly-text">Собираем для вас подборку ✨</div>
                 </div>
             </div>
@@ -898,7 +986,6 @@
         const savedBtn = document.getElementById('savedBtn');
         const messengerBtn = document.getElementById('messengerBtn');
         const googleSignInBtn = document.getElementById('googleSignInBtn');
-        const userSection = document.getElementById('userSection');
         const userInfo = document.getElementById('userInfo');
         const userName = document.getElementById('userName');
         const userNick = document.getElementById('userNick');
@@ -907,6 +994,11 @@
         const sharePreview = document.getElementById('sharePreview');
         const copyLinkBtn = document.getElementById('copyLinkBtn');
         const shareInChatBtn = document.getElementById('shareInChatBtn');
+        const storiesTrack = document.getElementById('storiesTrack');
+        const ogTitle = document.getElementById('og-title');
+        const ogDescription = document.getElementById('og-description');
+        const ogImage = document.getElementById('og-image');
+        const ogUrl = document.getElementById('og-url');
 
         // ========== АУТЕНТИФИКАЦИЯ ==========
         auth.onAuthStateChanged(async (user) => {
@@ -990,9 +1082,50 @@
             return doc.exists ? doc.data().projectsData || {} : {};
         }
 
+        // ========== ЗАГРУЗКА ТОП МОДОВ ДЛЯ ИСТОРИЙ ==========
+        async function loadTopProjects() {
+            try {
+                const promises = [];
+                // Загружаем по одному проекту каждого типа с большим количеством скачиваний
+                for (const type of projectTypes) {
+                    const url = `${API_BASE}/search?limit=1&index=downloads&facets=${encodeURIComponent(JSON.stringify([[`project_type:${type}`]]))}`;
+                    promises.push(
+                        fetch(url).then(res => res.json()).then(data => data.hits[0])
+                    );
+                }
+                
+                const results = await Promise.all(promises);
+                const validProjects = results.filter(p => p !== undefined);
+                
+                let html = '';
+                for (const project of validProjects.slice(0, 10)) {
+                    html += `
+                        <div class="story-item" onclick="window.location.href='/minecraft/${project.project_type}.html#${project.project_type}/${project.slug}'">
+                            <div class="story-avatar">
+                                <img src="${project.icon_url || 'https://via.placeholder.com/70/2c2c30/a0a0a8?text=Mod'}" 
+                                     onerror="this.src='https://via.placeholder.com/70/2c2c30/a0a0a8?text=Mod'">
+                            </div>
+                            <div class="story-name">${escapeHtml(project.title)}</div>
+                        </div>
+                    `;
+                }
+                
+                storiesTrack.innerHTML = html;
+            } catch (error) {
+                console.error('Ошибка загрузки топ проектов:', error);
+                storiesTrack.innerHTML = '<div style="color: var(--text-secondary); padding: 1rem;">Не удалось загрузить топ проекты</div>';
+            }
+        }
+
         // ========== ПОДЕЛИТЬСЯ ==========
         function showShareModal(post) {
             currentSharePost = post;
+            
+            // Обновляем Open Graph метатеги для предпросмотра
+            ogTitle.setAttribute('content', post.title);
+            ogDescription.setAttribute('content', `Мод для Minecraft от ${post.author}`);
+            ogImage.setAttribute('content', post.icon_url || 'https://via.placeholder.com/512/2c2c30/a0a0a8?text=Mod');
+            ogUrl.setAttribute('content', `${window.location.origin}/minecraft/${post.project_type}.html#${post.project_type}/${post.slug}`);
             
             // Обновляем превью
             sharePreview.innerHTML = `
@@ -1010,7 +1143,7 @@
             if (currentSharePost) {
                 const url = `${window.location.origin}/minecraft/${currentSharePost.project_type}.html#${currentSharePost.project_type}/${currentSharePost.slug}`;
                 
-                // Создаем временный input
+                // Копируем ссылку
                 const textarea = document.createElement('textarea');
                 textarea.value = url;
                 document.body.appendChild(textarea);
@@ -1018,7 +1151,7 @@
                 document.execCommand('copy');
                 document.body.removeChild(textarea);
                 
-                // Закрываем модалку без уведомления
+                // Закрываем модалку
                 shareModal.classList.remove('show');
                 currentSharePost = null;
             }
@@ -1072,8 +1205,7 @@
                 hasMore = true;
                 feedPosts = [];
                 
-                // Убираем старый индикатор и показываем красивый
-                feedEl.innerHTML = '<div class="loading" id="initialLoading"><div class="loading-spinner"></div><div class="friendly-text">Собираем для вас подборку ✨</div></div>';
+                feedEl.innerHTML = '<div class="loading" id="initialLoading"><div class="material-progress"><div class="material-progress-bar"></div></div><div class="friendly-text">Собираем для вас подборку ✨</div></div>';
                 
                 loadMorePosts(true);
             });
@@ -1101,7 +1233,7 @@
             const dots = container.querySelectorAll('.carousel-dot');
             if (!track || dots.length === 0) return;
 
-            // Добавляем поддержку свайпа мышью
+            // Исправленный свайп мышью
             let isDown = false;
             let startX;
             let scrollLeft;
@@ -1111,11 +1243,14 @@
                 track.classList.add('dragging');
                 startX = e.pageX - track.offsetLeft;
                 scrollLeft = track.scrollLeft;
+                e.preventDefault(); // Предотвращаем перетаскивание изображения
             });
 
             track.addEventListener('mouseleave', () => {
-                isDown = false;
-                track.classList.remove('dragging');
+                if (isDown) {
+                    isDown = false;
+                    track.classList.remove('dragging');
+                }
             });
 
             track.addEventListener('mouseup', () => {
@@ -1127,8 +1262,13 @@
                 if (!isDown) return;
                 e.preventDefault();
                 const x = e.pageX - track.offsetLeft;
-                const walk = (x - startX) * 2; // скорость свайпа
+                const walk = (x - startX) * 1.5;
                 track.scrollLeft = scrollLeft - walk;
+            });
+
+            // Предотвращаем перетаскивание изображений
+            track.querySelectorAll('img').forEach(img => {
+                img.addEventListener('dragstart', (e) => e.preventDefault());
             });
 
             const updateDots = () => {
@@ -1211,7 +1351,6 @@
             if (isLoading || !hasMore) return;
             isLoading = true;
 
-            // Убираем старый индикатор загрузки, если он есть
             const oldLoading = document.getElementById('loading-more');
             if (oldLoading) oldLoading.remove();
 
@@ -1257,7 +1396,6 @@
             } finally {
                 isLoading = false;
                 
-                // Убираем индикатор загрузки
                 const loadingElement = document.getElementById('initialLoading');
                 if (loadingElement) loadingElement.remove();
             }
@@ -1308,8 +1446,8 @@
                     mediaHtml = `
                         <div class="carousel-container" id="carousel-${postId}" onclick="event.stopPropagation()">
                             <div class="carousel-track">${slidesHtml}</div>
-                            <div class="carousel-btn prev" onclick="event.stopPropagation(); scrollCarousel(this.closest('.carousel-container'), -1)">‹</div>
-                            <div class="carousel-btn next" onclick="event.stopPropagation(); scrollCarousel(this.closest('.carousel-container'), 1)">›</div>
+                            <div class="carousel-btn prev" onclick="event.stopPropagation(); scrollCarousel(this.closest('.carousel-container'), -1)"></div>
+                            <div class="carousel-btn next" onclick="event.stopPropagation(); scrollCarousel(this.closest('.carousel-container'), 1)"></div>
                             <div class="carousel-dots">${dotsHtml}</div>
                         </div>
                     `;
@@ -1361,7 +1499,9 @@
                                     slug: post.slug,
                                     icon_url: iconUrl
                                 }).replace(/"/g, '&quot;')})">
-                                    <i class="fas fa-share-alt"></i>
+                                    <svg viewBox="0 0 24 24" width="24" height="24">
+                                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/>
+                                    </svg>
                                 </button>
                                 <button class="action-btn ${saved ? 'saved' : ''}" onclick="event.stopPropagation(); toggleSave('${postId}', ${JSON.stringify({
                                     title: post.title,
@@ -1374,7 +1514,6 @@
                                     <svg viewBox="0 0 24 24">
                                         <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
                                     </svg>
-                                    <span class="saves-count">${formatNumber(post.follows || 0)}</span>
                                 </button>
                             </div>
                         </div>
@@ -1418,7 +1557,6 @@
 
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
-        // Закрытие модалки поделиться по клику вне
         window.addEventListener('click', (e) => {
             if (e.target === shareModal) {
                 shareModal.classList.remove('show');
@@ -1427,6 +1565,7 @@
         });
 
         // Запуск
+        loadTopProjects();
         loadMorePosts();
     </script>
 </body>
