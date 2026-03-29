@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deynik Minecraft - Проект</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #0f0f11;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .app-container {
+            display: flex;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        :root {
+            --bg-body: #0f0f11;
+            --bg-raised: #1c1c1f;
+            --bg-button: #2c2c30;
+            --bg-button-hover: #3a3a40;
+            --text-contrast: #ffffff;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a8;
+            --text-brand: #fbbf24;
+            --bg-brand: rgba(251, 191, 36, 0.15);
+            --border-subtle: #2c2c32;
+            --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            
+            --color-fabric: #dbb69b;
+            --color-forge: #959eef;
+            --color-neoforge: #f99e6b;
+            --color-quilt: #c796f9;
+            --color-release: #2bde73;
+            --color-beta: #fbbf24;
+        }
+
+        .sidebar {
+            width: 280px;
+            flex-shrink: 0;
+            background-color: var(--bg-body);
+            padding: 1.5rem 0.8rem;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            overflow-y: auto;
+            border-right: 1px solid var(--border-subtle);
+        }
+
+        .sidebar-logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text-contrast);
+            margin-bottom: 2rem;
+            padding-left: 0.5rem;
+            cursor: pointer;
+        }
+
+        .sidebar-logo span {
+            color: var(--text-brand);
+        }
+
+        .sidebar-category {
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-category-title {
+            padding: 0.5rem 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.6rem 0.8rem;
+            border-radius: 0.6rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .sidebar-item:hover {
+            background-color: var(--bg-button);
+            color: var(--text-contrast);
+        }
+
+        .sidebar-item.active {
+            background-color: var(--bg-brand);
+            color: var(--text-brand);
+        }
+
+        .sidebar-item svg {
+            width: 1.4rem;
+            height: 1.4rem;
+            stroke: currentColor;
+            fill: none;
+        }
+
+        .user-section {
+            margin-top: auto;
+            padding: 1rem 0.5rem;
+            border-top: 1px solid var(--border-subtle);
+            margin-top: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            padding: 0.6rem;
+            border-radius: 0.6rem;
+            background-color: var(--bg-button);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--text-brand);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .user-details {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .user-name {
+            color: var(--text-contrast);
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 0.95rem;
+        }
+
+        .user-nick {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.7rem;
+            background-color: var(--bg-button);
+            border: 1px solid var(--border-subtle);
+            border-radius: 2rem;
+            color: var(--text-contrast);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .google-btn:hover {
+            background-color: var(--bg-button-hover);
+            border-color: var(--text-brand);
+        }
+
+        .google-btn svg {
+            width: 1.2rem;
+            height: 1.2rem;
+        }
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 2rem;
+        }
+
+        .content-wrapper {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            background-color: var(--bg-raised);
+            padding: 0.75rem 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 0.95rem;
+        }
+
+        .back-btn:hover {
+            color: var(--text-brand);
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text-contrast);
+            cursor: pointer;
+        }
+
+        .logo span {
+            color: var(--text-brand);
+        }
+
+        .loading, .error {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            background-color: var(--bg-raised);
+            border-radius: 1rem;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .project-header {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            background-color: var(--bg-raised);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border-subtle);
+            flex-wrap: wrap;
+        }
+
+        .project-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 1rem;
+            background-color: var(--bg-button);
+            object-fit: cover;
+        }
+
+        .project-info {
+            flex: 1;
+        }
+
+        .project-name-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .project-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-contrast);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .action-top-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--bg-brand);
+            color: var(--text-brand);
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .action-top-btn:hover {
+            background-color: var(--text-brand);
+            color: var(--bg-body);
+        }
+
+        .action-top-btn.saved {
+            background-color: var(--text-brand);
+            color: var(--bg-body);
+        }
+
+        .project-author {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .project-stats {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-contrast);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+        }
+
+        .project-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            background-color: var(--bg-raised);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .gallery-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-contrast);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .gallery-image {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .gallery-image:hover {
+            transform: scale(1.02);
+            border-color: var(--text-brand);
+        }
+
+        .project-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .detail-section {
+            background-color: var(--bg-raised);
+            padding: 1.2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .info-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .info-grid strong {
+            color: var(--text-contrast);
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tag {
+            background-color: var(--bg-button);
+            border: 1px solid var(--border-subtle);
+            border-radius: 9999px;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+        }
+
+        .link-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.4rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .link-item:hover {
+            background-color: var(--bg-button);
+            color: var(--text-brand);
+        }
+
+        .versions-section {
+            background-color: var(--bg-raised);
+            border-radius: 1rem;
+            border: 1px solid var(--border-subtle);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .versions-header {
+            padding: 1.2rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .versions-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .loader-badge-filter {
+            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .loader-badge-filter.fabric {
+            background-color: rgba(219, 182, 155, 0.3);
+            color: #dbb69b;
+        }
+        .loader-badge-filter.fabric.active {
+            background-color: var(--color-fabric);
+            color: #000;
+            border-color: var(--color-fabric);
+        }
+        .loader-badge-filter.forge {
+            background-color: rgba(149, 158, 239, 0.3);
+            color: #959eef;
+        }
+        .loader-badge-filter.forge.active {
+            background-color: var(--color-forge);
+            color: #000;
+            border-color: var(--color-forge);
+        }
+        .loader-badge-filter.neoforge {
+            background-color: rgba(249, 158, 107, 0.3);
+            color: #f99e6b;
+        }
+        .loader-badge-filter.neoforge.active {
+            background-color: var(--color-neoforge);
+            color: #000;
+            border-color: var(--color-neoforge);
+        }
+        .loader-badge-filter.quilt {
+            background-color: rgba(199, 150, 249, 0.3);
+            color: #c796f9;
+        }
+        .loader-badge-filter.quilt.active {
+            background-color: var(--color-quilt);
+            color: #000;
+            border-color: var(--color-quilt);
+        }
+
+        .game-version-filter {
+            padding: 0.4rem 1rem;
+            background-color: var(--bg-button);
+            border: 1px solid var(--border-subtle);
+            border-radius: 2rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .game-version-filter.active {
+            background-color: var(--bg-brand);
+            color: var(--text-brand);
+            border-color: var(--text-brand);
+        }
+
+        .versions-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .versions-table th {
+            text-align: left;
+            padding: 0.8rem 1.2rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border-subtle);
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .versions-table td {
+            padding: 0.8rem 1.2rem;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .versions-table tr:hover td {
+            background-color: var(--bg-button);
+        }
+
+        .version-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .version-status {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
+
+        .version-status.release {
+            background-color: var(--color-release);
+            color: #000;
+        }
+
+        .version-status.beta {
+            background-color: var(--color-beta);
+            color: #000;
+        }
+
+        .version-number {
+            font-weight: 600;
+            color: var(--text-contrast);
+        }
+
+        .loader-badge-table {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-right: 0.3rem;
+            margin-bottom: 0.2rem;
+            color: #000;
+        }
+
+        .loader-badge-table.fabric { background-color: var(--color-fabric); }
+        .loader-badge-table.forge { background-color: var(--color-forge); }
+        .loader-badge-table.neoforge { background-color: var(--color-neoforge); }
+        .loader-badge-table.quilt { background-color: var(--color-quilt); }
+
+        .game-versions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+        }
+
+        .game-version {
+            background-color: var(--bg-button);
+            border: 1px solid var(--border-subtle);
+            border-radius: 0.25rem;
+            padding: 0.1rem 0.4rem;
+            font-size: 0.7rem;
+            color: var(--text-primary);
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background-color: var(--bg-brand);
+            color: var(--text-brand);
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .download-btn:hover {
+            background-color: var(--text-brand);
+            color: var(--bg-body);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem;
+        }
+
+        .page-btn {
+            min-width: 2rem;
+            height: 2rem;
+            border-radius: 0.5rem;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .page-btn.active {
+            background-color: var(--bg-brand);
+            color: var(--text-brand);
+            border-color: var(--text-brand);
+        }
+
+        .no-versions {
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 2rem;
+            color: white;
+            font-size: 3rem;
+            cursor: pointer;
+        }
+
+        .modal-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+        }
+
+        .modal-nav-btn {
+            pointer-events: auto;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.6);
+            border: none;
+            color: white;
+            font-size: 32px;
+            cursor: pointer;
+            margin: 0 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="modal" id="galleryModal">
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="">
+        </div>
+        <div class="modal-nav">
+            <button class="modal-nav-btn" onclick="prevImage()">‹</button>
+            <button class="modal-nav-btn" onclick="nextImage()">›</button>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <div class="sidebar"></div>
+
+        <div class="main-content">
+            <div class="content-wrapper">
+                <div class="nav-bar">
+                    <button class="back-btn" onclick="history.back()">
+                        <i class="fas fa-arrow-left"></i> Назад
+                    </button>
+                    <div class="logo" onclick="window.location.href='/minecraft/'">Deynik <span>Minecraft</span></div>
+                </div>
+
+                <div id="projectContent">
+                    <div class="loading">⏳ Загрузка...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="/minecraft/common.js"></script>
+    <script>
+        const API_BASE = 'https://api.modrinth.com/v2';
+        
+        function getProjectInfoFromUrl() {
+            const hash = window.location.hash.substring(1);
+            const parts = hash.split('/');
+            if (parts.length >= 2) {
+                return { type: parts[0], slug: parts[1] };
+            }
+            return null;
+        }
+
+        const projectInfo = getProjectInfoFromUrl();
+        const projectContent = document.getElementById('projectContent');
+        
+        if (!projectInfo) {
+            projectContent.innerHTML = '<div class="error">❌ Не указан проект</div>';
+        }
+
+        let projectData = null;
+        let allVersions = [];
+        let filteredVersions = [];
+        let selectedLoader = null;
+        let selectedGameVersion = null;
+        let currentPage = 1;
+        let availableLoaders = [];
+        let availableGameVersions = [];
+        let currentGalleryImages = [];
+        let currentGalleryIndex = 0;
+        const VERSIONS_PER_PAGE = 10;
+
+        window.loadSidebar();
+
+        window.openModal = function(src, images, index) {
+            if (images) {
+                currentGalleryImages = images;
+                currentGalleryIndex = index;
+            }
+            document.getElementById('modalImage').src = src;
+            document.getElementById('galleryModal').classList.add('show');
+        };
+
+        window.closeModal = function() {
+            document.getElementById('galleryModal').classList.remove('show');
+            currentGalleryImages = [];
+        };
+
+        window.prevImage = function() {
+            if (currentGalleryImages.length > 0) {
+                currentGalleryIndex = (currentGalleryIndex - 1 + currentGalleryImages.length) % currentGalleryImages.length;
+                document.getElementById('modalImage').src = currentGalleryImages[currentGalleryIndex];
+            }
+        };
+
+        window.nextImage = function() {
+            if (currentGalleryImages.length > 0) {
+                currentGalleryIndex = (currentGalleryIndex + 1) % currentGalleryImages.length;
+                document.getElementById('modalImage').src = currentGalleryImages[currentGalleryIndex];
+            }
+        };
+
+        function formatRelativeDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffDays = Math.ceil(Math.abs(now - date) / (1000 * 60 * 60 * 24));
+            if (diffDays < 7) return `${diffDays} дн. назад`;
+            if (diffDays < 30) return `${Math.floor(diffDays/7)} нед. назад`;
+            if (diffDays < 365) return `${Math.floor(diffDays/30)} мес. назад`;
+            return `${Math.floor(diffDays/365)} г. назад`;
+        }
+
+        function getVersionStatus(version) {
+            const versionStr = version.version_number.toLowerCase();
+            if (versionStr.includes('beta') || versionStr.includes('pre') || versionStr.includes('alpha')) {
+                return { type: 'beta', letter: 'B' };
+            }
+            return { type: 'release', letter: 'R' };
+        }
+
+        function getLoaderClass(loader) {
+            switch(loader.toLowerCase()) {
+                case 'fabric': return 'fabric';
+                case 'forge': return 'forge';
+                case 'neoforge': return 'neoforge';
+                case 'quilt': return 'quilt';
+                default: return '';
+            }
+        }
+
+        function applyFilters() {
+            filteredVersions = allVersions.filter(version => {
+                if (selectedLoader && !version.loaders.includes(selectedLoader)) return false;
+                if (selectedGameVersion && !version.game_versions.some(gv => gv.startsWith(selectedGameVersion))) return false;
+                return true;
+            });
+            filteredVersions.sort((a, b) => new Date(b.date_published) - new Date(a.date_published));
+        }
+
+        window.toggleLoader = function(loader) {
+            selectedLoader = selectedLoader === loader ? null : loader;
+            currentPage = 1;
+            applyFilters();
+            renderVersions();
+        };
+
+        window.toggleGameVersion = function(version) {
+            selectedGameVersion = selectedGameVersion === version ? null : version;
+            currentPage = 1;
+            applyFilters();
+            renderVersions();
+        };
+
+        window.goToPage = function(page) {
+            currentPage = page;
+            renderVersions();
+        };
+
+        async function loadProject() {
+            try {
+                projectContent.innerHTML = '<div class="loading">⏳ Загрузка...</div>';
+                
+                const projectResponse = await fetch(`${API_BASE}/project/${projectInfo.slug}`);
+                if (!projectResponse.ok) throw new Error('Проект не найден');
+                projectData = await projectResponse.json();
+                
+                const versionsResponse = await fetch(`${API_BASE}/project/${projectInfo.slug}/version`);
+                allVersions = await versionsResponse.json();
+                
+                const loadersSet = new Set();
+                const gameVersionsSet = new Set();
+                allVersions.forEach(version => {
+                    version.loaders.forEach(loader => loadersSet.add(loader));
+                    version.game_versions.forEach(gv => {
+                        const majorVersion = gv.split('.')[0] + '.' + gv.split('.')[1];
+                        gameVersionsSet.add(majorVersion);
+                    });
+                });
+                availableLoaders = Array.from(loadersSet).sort();
+                availableGameVersions = Array.from(gameVersionsSet).sort().reverse();
+                
+                if (projectData.description) {
+                    await window.translateText(projectData.description);
+                }
+                
+                applyFilters();
+                renderProject();
+                
+            } catch (error) {
+                projectContent.innerHTML = `<div class="error">❌ Ошибка: ${error.message}</div>`;
+            }
+        }
+
+        function renderProject() {
+            const iconUrl = projectData.icon_url || 'https://via.placeholder.com/100/2c2c30/a0a0a8?text=Mod';
+            const description = window.cachedTranslations.get(projectData.description) || projectData.description || 'Нет описания';
+            const isSaved = window.isSaved(`${projectInfo.type}_${projectInfo.slug}`);
+            
+            const links = [];
+            if (projectData.source_url) links.push({ name: 'Исходный код', url: projectData.source_url });
+            if (projectData.issues_url) links.push({ name: 'Сообщить о проблеме', url: projectData.issues_url });
+            if (projectData.wiki_url) links.push({ name: 'Wiki', url: projectData.wiki_url });
+            if (projectData.discord_url) links.push({ name: 'Discord', url: projectData.discord_url });
+            
+            const projectDataForSave = {
+                title: projectData.title,
+                type: projectInfo.type,
+                slug: projectInfo.slug,
+                icon: iconUrl,
+                author: projectData.author,
+                description: description
+            };
+            
+            let html = `
+                <div class="project-header">
+                    <img src="${iconUrl}" class="project-icon" onerror="this.src='https://via.placeholder.com/100/2c2c30/a0a0a8?text=Mod'">
+                    <div class="project-info">
+                        <div class="project-name-row">
+                            <h1 class="project-name">${window.escapeHtml(projectData.title)}</h1>
+                            <div class="action-buttons">
+                                <button class="action-top-btn ${isSaved ? 'saved' : ''}" id="saveProjectBtn" onclick="handleSaveProject()">
+                                    <i class="fas ${isSaved ? 'fa-bookmark' : 'fa-bookmark'}"></i>
+                                    ${isSaved ? 'Сохранено' : 'Сохранить'}
+                                </button>
+                                <button class="action-top-btn" onclick="document.getElementById('versions-section').scrollIntoView({ behavior: 'smooth' })">
+                                    <i class="fas fa-download"></i> Скачать
+                                </button>
+                            </div>
+                        </div>
+                        <div class="project-author">by ${window.escapeHtml(projectData.author || 'Неизвестен')}</div>
+                        <div class="project-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-download"></i>
+                                <div>
+                                    <div class="stat-value">${window.formatNumber(projectData.downloads)}</div>
+                                    <div class="stat-label">скачиваний</div>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="far fa-calendar-alt"></i>
+                                <div>
+                                    <div class="stat-value">${formatRelativeDate(projectData.updated)}</div>
+                                    <div class="stat-label">обновлено</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-description">
+                    ${window.escapeHtml(description)}
+                </div>
+            `;
+            
+            if (projectData.gallery && projectData.gallery.length > 0) {
+                const galleryImages = projectData.gallery.map(g => g.url);
+                html += `
+                    <div class="gallery-section">
+                        <h3 class="section-title">🖼️ Галерея</h3>
+                        <div class="gallery">
+                            ${projectData.gallery.map((img, idx) => `
+                                <img src="${img.url}" class="gallery-image" onclick="openModal('${img.url}', ${JSON.stringify(galleryImages)}, ${idx})">
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            html += `
+                <div class="project-details">
+                    <div class="detail-section">
+                        <h3 class="section-title">📦 Информация</h3>
+                        <div class="info-grid">
+                            <div><strong>Лицензия:</strong> ${window.escapeHtml(projectData.license?.name || 'Не указана')}</div>
+                            <div><strong>Статус:</strong> ${window.escapeHtml(projectData.status || 'Неизвестно')}</div>
+                            <div><strong>Сторона клиента:</strong> ${window.escapeHtml(projectData.client_side || 'Неизвестно')}</div>
+                            <div><strong>Сторона сервера:</strong> ${window.escapeHtml(projectData.server_side || 'Неизвестно')}</div>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <h3 class="section-title">🏷️ Категории</h3>
+                        <div class="tags">
+                            ${(projectData.categories || []).map(cat => `<span class="tag">${window.escapeHtml(cat)}</span>`).join('')}
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <h3 class="section-title">🔗 Ссылки</h3>
+                        <div class="link-list">
+                            <a href="https://modrinth.com/${projectInfo.type}/${projectInfo.slug}" target="_blank" class="link-item">
+                                <i class="fas fa-external-link-alt"></i> Страница на Modrinth
+                            </a>
+                            ${links.map(link => `
+                                <a href="${window.escapeHtml(link.url)}" target="_blank" class="link-item">
+                                    <i class="fas fa-link"></i> ${window.escapeHtml(link.name)}
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="versions-section" id="versions-section">
+                    <div class="versions-header">
+                        <h3 class="section-title">📥 Версии</h3>
+                        <div class="versions-filters">
+                            ${availableLoaders.map(loader => `
+                                <span class="loader-badge-filter ${getLoaderClass(loader)} ${selectedLoader === loader ? 'active' : ''}" 
+                                      onclick="toggleLoader('${loader}')">${loader}</span>
+                            `).join('')}
+                        </div>
+                        <div class="versions-filters" style="margin-top: 0.5rem;">
+                            ${availableGameVersions.map(version => `
+                                <span class="game-version-filter ${selectedGameVersion === version ? 'active' : ''}" 
+                                      onclick="toggleGameVersion('${version}')">${version}</span>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div id="versionsTable"></div>
+                </div>
+            `;
+            
+            projectContent.innerHTML = html;
+            renderVersions();
+        }
+        
+        function renderVersions() {
+            const versionsTableDiv = document.getElementById('versionsTable');
+            if (!versionsTableDiv) return;
+            
+            const totalPages = Math.ceil(filteredVersions.length / VERSIONS_PER_PAGE);
+            const startIndex = (currentPage - 1) * VERSIONS_PER_PAGE;
+            const endIndex = Math.min(startIndex + VERSIONS_PER_PAGE, filteredVersions.length);
+            const paginatedVersions = filteredVersions.slice(startIndex, endIndex);
+            
+            if (filteredVersions.length === 0) {
+                versionsTableDiv.innerHTML = '<div class="no-versions">Нет версий, соответствующих фильтрам</div>';
+                return;
+            }
+            
+            let tableHtml = `
+                <table class="versions-table">
+                    <thead>
+                        <tr><th>Версия</th><th>Загрузчики</th><th>Версии игры</th><th>Дата</th><th></th></tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            for (const version of paginatedVersions) {
+                const status = getVersionStatus(version);
+                tableHtml += `
+                    <tr>
+                        <td>
+                            <div class="version-cell">
+                                <div class="version-status ${status.type}">${status.letter}</div>
+                                <span class="version-number">${window.escapeHtml(version.version_number)}</span>
+                            </div>
+                        </td>
+                        <td>
+                            ${version.loaders.map(loader => 
+                                `<span class="loader-badge-table ${getLoaderClass(loader)}">${loader}</span>`
+                            ).join('')}
+                        </td>
+                        <td>
+                            <div class="game-versions">
+                                ${version.game_versions.slice(0, 3).map(gv => 
+                                    `<span class="game-version">${gv}</span>`
+                                ).join('')}
+                                ${version.game_versions.length > 3 ? 
+                                    `<span class="game-version">+${version.game_versions.length - 3}</span>` : ''}
+                            </div>
+                        </td>
+                        <td>${formatRelativeDate(version.date_published)}</td>
+                        <td>
+                            <a href="${version.files[0]?.url}" class="download-btn" target="_blank">
+                                <i class="fas fa-download"></i> Скачать
+                            </a>
+                        </td>
+                    </tr>
+                `;
+            }
+            
+            tableHtml += `</tbody></table>`;
+            
+            if (totalPages > 1) {
+                tableHtml += '<div class="pagination">';
+                tableHtml += `<button class="page-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>←</button>`;
+                
+                let startPage = Math.max(1, currentPage - 2);
+                let endPage = Math.min(totalPages, currentPage + 2);
+                for (let i = startPage; i <= endPage; i++) {
+                    tableHtml += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+                }
+                
+                tableHtml += `<button class="page-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>→</button>`;
+                tableHtml += '</div>';
+            }
+            
+            versionsTableDiv.innerHTML = tableHtml;
+        }
+        
+        window.handleSaveProject = async function() {
+            if (!window.currentUser) {
+                window.showToast('Войдите, чтобы сохранять проекты', 'error');
+                return;
+            }
+            
+            const projectId = `${projectInfo.type}_${projectInfo.slug}`;
+            const btn = document.getElementById('saveProjectBtn');
+            const isSaved = btn.classList.contains('saved');
+            
+            const projectDataForSave = {
+                title: projectData.title,
+                type: projectInfo.type,
+                slug: projectInfo.slug,
+                icon: projectData.icon_url || 'https://via.placeholder.com/100/2c2c30/a0a0a8?text=Mod',
+                author: projectData.author,
+                description: window.cachedTranslations.get(projectData.description) || projectData.description || 'Нет описания'
+            };
+            
+            if (isSaved) {
+                const success = await window.unsaveProject(projectId);
+                if (success) btn.classList.remove('saved');
+            } else {
+                const success = await window.saveProject(projectId, projectDataForSave);
+                if (success) btn.classList.add('saved');
+            }
+        };
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+            if (e.key === 'ArrowLeft' && document.getElementById('galleryModal').classList.contains('show')) prevImage();
+            if (e.key === 'ArrowRight' && document.getElementById('galleryModal').classList.contains('show')) nextImage();
+        });
+        
+        if (projectInfo) loadProject();
+    </script>
+</body>
+</html>
