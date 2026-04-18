@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deynik Minecraft - Сохраненные</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
+        /* Те же стили что и в index.html для боковой панели */
         * {
             margin: 0;
             padding: 0;
@@ -24,7 +28,7 @@
         .app-container {
             display: flex;
             width: 100%;
-            max-width: 100%;
+            max-width: 1600px;
         }
 
         :root {
@@ -32,6 +36,7 @@
             --bg-raised: #1c1c1f;
             --bg-button: #2c2c30;
             --bg-button-hover: #3a3a40;
+            --bg-selected: #3b3b45;
             --text-contrast: #ffffff;
             --text-primary: #e0e0e0;
             --text-secondary: #a0a0a8;
@@ -41,10 +46,10 @@
         }
 
         .sidebar {
-            width: 280px;
+            width: 240px;
             flex-shrink: 0;
             background-color: var(--bg-body);
-            padding: 1.5rem 0.8rem;
+            padding: 1.5rem 0.5rem;
             height: 100vh;
             position: sticky;
             top: 0;
@@ -52,16 +57,152 @@
             border-right: 1px solid var(--border-subtle);
         }
 
+        .sidebar-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-contrast);
+            margin-bottom: 2rem;
+            padding-left: 0.5rem;
+            cursor: pointer;
+        }
+
+        .sidebar-logo span {
+            color: var(--text-brand);
+        }
+
+        .sidebar-category {
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-category-title {
+            padding: 0.5rem 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .sidebar-item:hover {
+            background-color: var(--bg-button);
+            color: var(--text-contrast);
+        }
+
+        .sidebar-item.active {
+            background-color: var(--bg-brand);
+            color: var(--text-brand);
+        }
+
+        .sidebar-item svg {
+            width: 1.3rem;
+            height: 1.3rem;
+            stroke: currentColor;
+            fill: none;
+        }
+
+        .user-section {
+            margin-top: auto;
+            padding: 1rem 0.5rem;
+            border-top: 1px solid var(--border-subtle);
+            margin-top: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            background-color: var(--bg-button);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--text-brand);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .user-details {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .user-name {
+            color: var(--text-contrast);
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 0.9rem;
+        }
+
+        .user-nick {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+        }
+
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.6rem;
+            background-color: var(--bg-button);
+            border: 1px solid var(--border-subtle);
+            border-radius: 2rem;
+            color: var(--text-contrast);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .google-btn:hover {
+            background-color: var(--bg-button-hover);
+            border-color: var(--text-brand);
+        }
+
+        .google-btn svg {
+            width: 1.1rem;
+            height: 1.1rem;
+        }
+
         .main-content {
             flex: 1;
             min-width: 0;
             padding: 2rem;
-        }
-
-        .content-wrapper {
-            width: 100%;
-            max-width: 1000px;
-            margin: 0 auto;
         }
 
         .saved-header {
@@ -80,7 +221,7 @@
 
         .saved-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 1.5rem;
         }
 
@@ -98,21 +239,21 @@
             border-color: var(--text-brand);
         }
 
-        .saved-card-header {
+        .saved-header-card {
             display: flex;
             gap: 1rem;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
         }
 
         .saved-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 0.75rem;
+            width: 48px;
+            height: 48px;
+            border-radius: 0.5rem;
             background-color: var(--bg-button);
             object-fit: cover;
         }
 
-        .saved-card-info {
+        .saved-title-card {
             flex: 1;
         }
 
@@ -120,18 +261,11 @@
             font-weight: 600;
             color: var(--text-contrast);
             font-size: 1rem;
-            margin-bottom: 0.25rem;
         }
 
         .saved-type {
             font-size: 0.8rem;
             color: var(--text-secondary);
-        }
-
-        .saved-author {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            margin-top: 0.25rem;
         }
 
         .saved-description {
@@ -142,36 +276,11 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            margin-bottom: 0.75rem;
         }
 
-        .saved-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.5rem;
-            border-top: 1px solid var(--border-subtle);
-            padding-top: 0.75rem;
-        }
-
-        .saved-action-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 0.8rem;
-            padding: 0.3rem 0.6rem;
-            border-radius: 0.5rem;
-            transition: all 0.2s;
-        }
-
-        .saved-action-btn:hover {
-            background-color: var(--bg-button);
-            color: var(--text-brand);
-        }
-
-        .loading, .empty-state {
+        .loading {
             text-align: center;
-            padding: 3rem;
+            padding: 2rem;
             color: var(--text-secondary);
             grid-column: 1 / -1;
         }
@@ -179,122 +288,185 @@
 </head>
 <body>
     <div class="app-container">
-        <div class="sidebar"></div>
+        <!-- Боковая панель -->
+        <div class="sidebar">
+            <div class="sidebar-logo" onclick="window.location.href='/minecraft/'">Deynik <span>Minecraft</span></div>
+            
+            <div class="sidebar-category">
+                <div class="sidebar-category-title">Главное</div>
+                <div class="sidebar-menu">
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/'">
+                        <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19.5v-9z"/><path d="M9 21v-6h6v6"/></svg>
+                        Рекомендации
+                    </button>
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html'">
+                        <svg viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        Поиск
+                    </button>
+                    <button class="sidebar-item active" id="savedBtn">
+                        <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                        Сохраненные
+                    </button>
+                    <button class="sidebar-item" id="messengerBtn">
+                        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        Мессенджер
+                    </button>
+                </div>
+            </div>
 
+            <div class="sidebar-category">
+                <div class="sidebar-category-title">Контент</div>
+                <div class="sidebar-menu">
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html?type=mod'">
+                        <svg viewBox="0 0 24 24"><path d="M20 7h-4.5L15 4H9L8.5 7H4v2h16V7z"/><rect x="4" y="9" width="16" height="10" rx="1"/><circle cx="8" cy="13" r="1"/><circle cx="16" cy="13" r="1"/></svg>
+                        Моды
+                    </button>
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html?type=shader'">
+                        <svg viewBox="0 0 24 24"><path d="M12 3v1M5 8h1M18 8h1M8 21h8M12 8v8"/><circle cx="12" cy="15" r="3"/><path d="M8 11L5 8M16 11l3-3"/></svg>
+                        Шейдеры
+                    </button>
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html?type=resourcepack'">
+                        <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M9 9l6 6M15 9l-6 6"/></svg>
+                        Ресурспаки
+                    </button>
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html?type=modpack'">
+                        <svg viewBox="0 0 24 24"><path d="M4 4h16v2H4z"/><rect x="4" y="8" width="16" height="12" rx="1"/><path d="M10 12l2 2 4-4"/></svg>
+                        Сборки
+                    </button>
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html?type=plugin'">
+                        <svg viewBox="0 0 24 24"><path d="M20 12v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"/><rect x="4" y="4" width="16" height="8" rx="1"/><circle cx="12" cy="12" r="2"/></svg>
+                        Плагины
+                    </button>
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html?type=datapack'">
+                        <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8v8H8z"/><path d="M12 12l2-2-2-2"/></svg>
+                        Датапаки
+                    </button>
+                </div>
+            </div>
+
+            <!-- Пользовательская секция -->
+            <div class="user-section" id="userSection">
+                <div id="userInfo" style="display: none;">
+                    <div class="user-info">
+                        <div class="user-avatar" id="userAvatar"></div>
+                        <div class="user-details">
+                            <div class="user-name" id="userName"></div>
+                            <div class="user-nick" id="userNick"></div>
+                        </div>
+                    </div>
+                </div>
+                <button class="google-btn" id="googleSignInBtn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                    Войти через Google
+                </button>
+            </div>
+        </div>
+
+        <!-- Основной контент -->
         <div class="main-content">
-            <div class="content-wrapper">
-                <div class="saved-header">
-                    <h1 class="saved-title">Сохраненные <span>проекты</span></h1>
-                </div>
-                <div class="saved-grid" id="savedGrid">
-                    <div class="loading">Загрузка сохраненных проектов...</div>
-                </div>
+            <div class="saved-header">
+                <h1 class="saved-title">Сохраненные <span>проекты</span></h1>
+            </div>
+            <div class="saved-grid" id="savedGrid">
+                <div class="loading">Загрузка сохраненных проектов...</div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="/minecraft/common.js"></script>
     <script>
-        const savedGrid = document.getElementById('savedGrid');
-        
-        window.loadSidebar();
-        
-        async function loadSavedProjects() {
-            if (!window.currentUser) {
-                savedGrid.innerHTML = '<div class="empty-state">🔒 Войдите, чтобы увидеть сохраненные проекты</div>';
-                return;
+        const firebaseConfig = {
+            apiKey: "AIzaSyBk4nxZ1ldNQUCxsbgaeYTkm9stq0o9o2Q",
+            authDomain: "deygram-e4814.firebaseapp.com",
+            projectId: "deygram-e4814",
+            storageBucket: "deygram-e4814.firebasestorage.app",
+            messagingSenderId: "591207353726",
+            appId: "1:591207353726:web:d20f5e648d3daf86fcb72f"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        let currentUser = null;
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('userInfo').style.display = 'block';
+                document.getElementById('googleSignInBtn').style.display = 'none';
+                document.getElementById('userName').textContent = user.displayName || 'Пользователь';
+                document.getElementById('userNick').textContent = `@${user.email.split('@')[0]}`;
+                document.getElementById('userAvatar').textContent = (user.displayName || 'U')[0].toUpperCase();
+                
+                loadSavedProjects();
+            } else {
+                window.location.href = '/minecraft/';
             }
-            
+        });
+
+        document.getElementById('googleSignInBtn').addEventListener('click', () => {
+            auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+        });
+
+        document.getElementById('messengerBtn').addEventListener('click', () => {
+            window.location.href = '/minecraft/messenger.html';
+        });
+
+        async function loadSavedProjects() {
             try {
-                const savedRef = db.collection('saved').doc(window.currentUser.uid);
+                const savedRef = db.collection('saved').doc(currentUser.uid);
                 const doc = await savedRef.get();
                 
                 if (!doc.exists || !doc.data().projects || doc.data().projects.length === 0) {
-                    savedGrid.innerHTML = '<div class="empty-state">📚 У вас пока нет сохраненных проектов</div>';
+                    document.getElementById('savedGrid').innerHTML = '<div class="loading">У вас пока нет сохраненных проектов</div>';
                     return;
                 }
-                
+
                 const savedIds = doc.data().projects;
                 const projectsData = doc.data().projectsData || {};
-                
+
                 let html = '';
                 for (const id of savedIds) {
                     const data = projectsData[id];
                     if (data) {
-                        const typeNames = {
-                            'mod': 'Мод', 'shader': 'Шейдер', 'resourcepack': 'Ресурспак',
-                            'modpack': 'Сборка', 'plugin': 'Плагин', 'datapack': 'Датапак'
-                        };
                         html += `
-                            <div class="saved-card" onclick="window.location.href='/minecraft/project.html#${data.type}/${data.slug}'">
-                                <div class="saved-card-header">
-                                    <img src="${data.icon || 'https://via.placeholder.com/56/2c2c30/a0a0a8?text=Mod'}" 
-                                         class="saved-icon" onerror="this.src='https://via.placeholder.com/56/2c2c30/a0a0a8?text=Mod'">
-                                    <div class="saved-card-info">
-                                        <div class="saved-name">${window.escapeHtml(data.title)}</div>
-                                        <div class="saved-type">${typeNames[data.type] || data.type}</div>
-                                        <div class="saved-author">${window.escapeHtml(data.author || 'Неизвестен')}</div>
+                            <div class="saved-card" onclick="window.location.href='/minecraft/${data.type}.html#${data.type}/${data.slug}'">
+                                <div class="saved-header-card">
+                                    <img src="${data.icon || 'https://via.placeholder.com/48/2c2c30/a0a0a8?text=Mod'}" 
+                                         class="saved-icon" onerror="this.src='https://via.placeholder.com/48/2c2c30/a0a0a8?text=Mod'">
+                                    <div class="saved-title-card">
+                                        <div class="saved-name">${escapeHtml(data.title)}</div>
+                                        <div class="saved-type">${data.type}</div>
                                     </div>
                                 </div>
-                                <div class="saved-description">${window.escapeHtml(data.description || 'Нет описания')}</div>
-                                <div class="saved-actions">
-                                    <button class="saved-action-btn" onclick="event.stopPropagation(); removeSaved('${id}')">
-                                        <i class="fas fa-trash-alt"></i> Удалить
-                                    </button>
-                                </div>
+                                <div class="saved-description">${escapeHtml(data.description || 'Нет описания')}</div>
                             </div>
                         `;
                     }
                 }
-                
-                savedGrid.innerHTML = html;
-                
+
+                document.getElementById('savedGrid').innerHTML = html;
+
             } catch (error) {
                 console.error('Ошибка:', error);
-                savedGrid.innerHTML = '<div class="empty-state">❌ Ошибка загрузки</div>';
+                document.getElementById('savedGrid').innerHTML = '<div class="loading">Ошибка загрузки</div>';
             }
         }
-        
-        window.removeSaved = async function(projectId) {
-            if (!window.currentUser) return;
-            
-            try {
-                const savedRef = db.collection('saved').doc(window.currentUser.uid);
-                window.savedProjects.delete(projectId);
-                
-                const doc = await savedRef.get();
-                const currentProjects = doc.exists ? doc.data().projects || [] : [];
-                const projectsData = doc.exists ? doc.data().projectsData || {} : {};
-                
-                delete projectsData[projectId];
-                
-                await savedRef.set({
-                    projects: currentProjects.filter(id => id !== projectId),
-                    projectsData: projectsData
-                });
-                
-                window.showToast('Проект удален из сохраненных', 'success');
-                loadSavedProjects();
-            } catch (error) {
-                console.error('Ошибка удаления:', error);
-                window.showToast('Ошибка при удалении', 'error');
-            }
-        };
-        
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                window.currentUser = user;
-                await window.loadSavedProjects();
-                loadSavedProjects();
-            } else {
-                window.currentUser = null;
-                savedGrid.innerHTML = '<div class="empty-state">🔒 Войдите, чтобы увидеть сохраненные проекты</div>';
-            }
-        });
+
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return String(unsafe)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
     </script>
 </body>
 </html>
