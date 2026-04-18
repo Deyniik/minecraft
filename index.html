@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deynik Minecraft - Рекомендации</title>
-    <!-- Open Graph метатеги -->
+    <!-- Open Graph метатеги для предпросмотра в соцсетях -->
     <meta property="og:title" content="Deynik Minecraft" id="og-title">
     <meta property="og:description" content="Лучшие проекты для Minecraft" id="og-description">
     <meta property="og:image" content="" id="og-image">
@@ -57,33 +57,43 @@
             --color-modpack: #f87171;
             --color-plugin: #34d399;
             --color-datapack: #f472b6;
-            
-            --color-fabric: #dbb69b;
-            --color-forge: #959eef;
-            --color-neoforge: #f99e6b;
-            --color-quilt: #c796f9;
         }
 
-        /* Боковая панель */
+        /* Боковая панель - прижата максимально влево */
         .sidebar {
-            width: 280px;
+            width: 264px;
             flex-shrink: 0;
             background-color: var(--bg-body);
-            padding: 1.5rem 0.8rem;
+            padding: 1.65rem 0.55rem;
             height: 100vh;
             position: sticky;
             top: 0;
             left: 0;
             overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--bg-button) var(--bg-body);
             border-right: 1px solid var(--border-subtle);
         }
 
+        .sidebar::-webkit-scrollbar {
+            width: 6.6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: var(--bg-body);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--bg-button);
+            border-radius: 4.4px;
+        }
+
         .sidebar-logo {
-            font-size: 1.6rem;
+            font-size: 1.65rem;
             font-weight: 800;
             color: var(--text-contrast);
-            margin-bottom: 2rem;
-            padding-left: 0.5rem;
+            margin-bottom: 2.2rem;
+            padding-left: 0.55rem;
             cursor: pointer;
         }
 
@@ -92,30 +102,30 @@
         }
 
         .sidebar-category {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.65rem;
         }
 
         .sidebar-category-title {
-            padding: 0.5rem 0.5rem;
+            padding: 0.55rem 0.55rem;
             color: var(--text-secondary);
-            font-size: 0.8rem;
+            font-size: 0.88rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.55px;
             font-weight: 600;
         }
 
         .sidebar-menu {
             display: flex;
             flex-direction: column;
-            gap: 0.25rem;
+            gap: 0.275rem;
         }
 
         .sidebar-item {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            padding: 0.6rem 0.8rem;
-            border-radius: 0.6rem;
+            gap: 1.1rem;
+            padding: 0.55rem 0.825rem;
+            border-radius: 0.55rem;
             color: var(--text-secondary);
             cursor: pointer;
             transition: all 0.2s;
@@ -123,7 +133,7 @@
             background: none;
             width: 100%;
             text-align: left;
-            font-size: 0.95rem;
+            font-size: 0.99rem;
             font-weight: 500;
         }
 
@@ -138,32 +148,32 @@
         }
 
         .sidebar-item svg {
-            width: 1.4rem;
-            height: 1.4rem;
+            width: 1.43rem;
+            height: 1.43rem;
             stroke: currentColor;
             fill: none;
         }
 
         .user-section {
             margin-top: auto;
-            padding: 1rem 0.5rem;
+            padding: 1.1rem 0.55rem;
             border-top: 1px solid var(--border-subtle);
-            margin-top: 1rem;
+            margin-top: 1.1rem;
         }
 
         .user-info {
             display: flex;
             align-items: center;
-            gap: 0.8rem;
-            margin-bottom: 1rem;
-            padding: 0.6rem;
-            border-radius: 0.6rem;
+            gap: 0.825rem;
+            margin-bottom: 1.1rem;
+            padding: 0.55rem;
+            border-radius: 0.55rem;
             background-color: var(--bg-button);
         }
 
         .user-avatar {
-            width: 40px;
-            height: 40px;
+            width: 39.6px;
+            height: 39.6px;
             border-radius: 50%;
             background-color: var(--text-brand);
             display: flex;
@@ -171,7 +181,7 @@
             justify-content: center;
             color: #000;
             font-weight: bold;
-            font-size: 1rem;
+            font-size: 1.1rem;
         }
 
         .user-details {
@@ -185,29 +195,29 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            font-size: 0.95rem;
+            font-size: 0.99rem;
         }
 
         .user-nick {
             color: var(--text-secondary);
-            font-size: 0.8rem;
+            font-size: 0.825rem;
         }
 
         .google-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 0.55rem;
             width: 100%;
-            padding: 0.7rem;
+            padding: 0.66rem;
             background-color: var(--bg-button);
             border: 1px solid var(--border-subtle);
-            border-radius: 2rem;
+            border-radius: 2.2rem;
             color: var(--text-contrast);
             cursor: pointer;
             transition: all 0.2s;
             font-weight: 500;
-            font-size: 0.95rem;
+            font-size: 0.99rem;
         }
 
         .google-btn:hover {
@@ -216,20 +226,24 @@
         }
 
         .google-btn svg {
-            width: 1.2rem;
-            height: 1.2rem;
+            width: 1.21rem;
+            height: 1.21rem;
         }
 
         .main-content {
             flex: 1;
             min-width: 0;
             padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
         .content-wrapper {
             width: 100%;
-            max-width: 680px;
-            margin: 0 auto;
+            max-width: 580px;
+            margin-left: 200px; /* Отступ от боковой панели 200px */
+            margin-right: auto;
         }
 
         .feed-header {
@@ -246,18 +260,12 @@
             color: var(--text-brand);
         }
 
-        .filter-section {
-            margin-top: 1rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            align-items: flex-start;
-        }
-
         .filter-chips {
             display: flex;
             gap: 0.5rem;
+            margin-top: 1rem;
             flex-wrap: wrap;
+            justify-content: flex-start;
         }
 
         .filter-chip {
@@ -278,27 +286,6 @@
             border-color: var(--text-brand);
         }
 
-        .advanced-filters {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .filter-select {
-            padding: 0.4rem 1rem;
-            background-color: var(--bg-button);
-            border: 1px solid var(--border-subtle);
-            border-radius: 2rem;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 0.85rem;
-            outline: none;
-        }
-
-        .filter-select:hover {
-            border-color: var(--text-brand);
-        }
-
         .feed {
             display: flex;
             flex-direction: column;
@@ -313,12 +300,6 @@
             overflow: hidden;
             cursor: pointer;
             width: 100%;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .feed-post:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--card-shadow);
         }
 
         .post-header {
@@ -376,16 +357,18 @@
 
         .post-author {
             color: var(--text-secondary);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             margin-top: 0.2rem;
         }
 
+        /* Карусель */
         .carousel-container {
             position: relative;
             width: 100%;
             background-color: #000;
             border-bottom: 1px solid var(--border-subtle);
             user-select: none;
+            touch-action: pan-y pinch-zoom;
         }
 
         .carousel-track {
@@ -395,12 +378,14 @@
             scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
+            -ms-overflow-style: none;
             cursor: grab;
         }
 
         .carousel-track.dragging {
             cursor: grabbing;
             scroll-snap-type: none;
+            scroll-behavior: auto;
         }
 
         .carousel-track::-webkit-scrollbar {
@@ -419,8 +404,11 @@
         .carousel-slide img {
             width: 100%;
             display: block;
-            max-height: 50vh;
+            max-height: 55vh;
             object-fit: contain;
+            pointer-events: none;
+            user-drag: none;
+            -webkit-user-drag: none;
         }
 
         .carousel-btn {
@@ -433,13 +421,15 @@
             background-color: rgba(0, 0, 0, 0.6);
             border: none;
             color: white;
-            font-size: 28px;
+            font-size: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             z-index: 10;
             transition: background-color 0.2s;
+            line-height: 1;
+            padding-bottom: 6px;
         }
 
         .carousel-btn:hover {
@@ -452,6 +442,22 @@
 
         .carousel-btn.next {
             right: 12px;
+        }
+
+        .carousel-btn.prev::before {
+            content: "←";
+            transform: translateY(2px);
+            display: block;
+        }
+
+        .carousel-btn.next::before {
+            content: "→";
+            transform: translateY(2px);
+            display: block;
+        }
+
+        .carousel-btn span {
+            display: none;
         }
 
         .carousel-dots {
@@ -486,23 +492,24 @@
         .post-image-static {
             width: 100%;
             display: block;
-            max-height: 50vh;
+            max-height: 55vh;
             object-fit: contain;
             background-color: #000;
             border-bottom: 1px solid var(--border-subtle);
+            pointer-events: none;
         }
 
         .post-actions {
             display: flex;
-            gap: 1rem;
-            padding: 0.8rem 1rem;
+            gap: 1.5rem;
+            padding: 1rem 1.2rem 1rem 1.2rem;
             border-top: 1px solid var(--border-subtle);
             justify-content: space-between;
         }
 
         .actions-left {
             display: flex;
-            gap: 1rem;
+            gap: 1.5rem;
         }
 
         .action-btn {
@@ -512,23 +519,21 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-size: 0.9rem;
+            gap: 0.6rem;
+            font-size: 1rem;
             transition: color 0.2s;
-            padding: 0.3rem 0.6rem;
-            border-radius: 0.5rem;
         }
 
         .action-btn:hover {
             color: var(--text-brand);
-            background-color: var(--bg-button);
         }
 
         .action-btn svg {
-            width: 1.4rem;
-            height: 1.4rem;
+            width: 1.6rem;
+            height: 1.6rem;
             stroke: currentColor;
             fill: none;
+            transition: fill 0.2s;
         }
 
         .action-btn.liked svg {
@@ -544,21 +549,18 @@
         .likes-count {
             font-weight: 600;
             color: var(--text-contrast);
+            font-size: 1rem;
         }
 
         .post-body {
-            padding: 1rem;
+            padding: 1rem 1.2rem 0.7rem 1.2rem;
         }
 
         .post-description {
             color: var(--text-primary);
-            font-size: 0.95rem;
+            font-size: 1rem;
             line-height: 1.5;
             margin-bottom: 0.7rem;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
         }
 
         .post-categories {
@@ -572,20 +574,80 @@
             background-color: var(--bg-button);
             border: 1px solid var(--border-subtle);
             border-radius: 9999px;
-            padding: 0.2rem 0.6rem;
-            font-size: 0.75rem;
+            padding: 0.2rem 0.7rem;
+            font-size: 0.8rem;
             color: var(--text-secondary);
         }
 
         .post-date {
             color: var(--text-secondary);
-            font-size: 0.8rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
         }
 
+        /* Material You стиль загрузки */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .material-progress {
+            width: 200px;
+            height: 4px;
+            background-color: var(--border-subtle);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .material-progress-bar {
+            height: 100%;
+            width: 30%;
+            background-color: var(--text-brand);
+            border-radius: 4px;
+            position: absolute;
+            animation: material-loading 1.5s infinite ease-in-out;
+        }
+
+        @keyframes material-loading {
+            0% {
+                left: -30%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+
+        .friendly-text {
+            color: var(--text-brand);
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        /* Анимация загрузки новых постов */
         .loading-more {
             text-align: center;
             padding: 1.5rem;
             color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .loading-more .material-progress {
+            width: 160px;
+            height: 3px;
+        }
+
+        .loading-more .friendly-text {
+            font-size: 0.9rem;
+            color: var(--text-brand);
         }
 
         .modal {
@@ -608,7 +670,6 @@
         .modal-content {
             max-width: 90vw;
             max-height: 90vh;
-            position: relative;
         }
 
         .modal-content img {
@@ -627,34 +688,7 @@
             z-index: 1010;
         }
 
-        .modal-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            pointer-events: none;
-        }
-
-        .modal-nav-btn {
-            pointer-events: auto;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: rgba(0, 0, 0, 0.6);
-            border: none;
-            color: white;
-            font-size: 32px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            margin: 0 1rem;
-        }
-
-        .modal-nav-btn:hover {
-            background-color: rgba(0, 0, 0, 0.8);
-        }
-
+        /* Стили для модального окна поделиться */
         .share-modal-content {
             background-color: var(--bg-raised);
             border-radius: 1rem;
@@ -735,22 +769,23 @@
     </style>
 </head>
 <body>
-    <div class="modal" id="galleryModal">
-        <span class="modal-close" onclick="closeModal()">&times;</span>
+    <div class="modal" id="galleryModal" onclick="closeModal()">
+        <span class="modal-close">&times;</span>
         <div class="modal-content">
             <img id="modalImage" src="" alt="">
         </div>
-        <div class="modal-nav">
-            <button class="modal-nav-btn" onclick="prevImage()">‹</button>
-            <button class="modal-nav-btn" onclick="nextImage()">›</button>
-        </div>
     </div>
 
+    <!-- Модальное окно для поделиться -->
     <div class="modal" id="shareModal">
         <div class="share-modal-content">
             <span class="modal-close" onclick="document.getElementById('shareModal').classList.remove('show')">&times;</span>
             <h3>Поделиться проектом</h3>
-            <div class="share-preview" id="sharePreview"></div>
+            
+            <div class="share-preview" id="sharePreview">
+                <!-- Заполняется динамически -->
+            </div>
+            
             <div class="share-buttons">
                 <button class="share-btn" id="copyLinkBtn">
                     <i class="fas fa-copy"></i>
@@ -765,43 +800,108 @@
     </div>
 
     <div class="app-container">
-        <div class="sidebar"></div>
+        <!-- Боковая панель -->
+        <div class="sidebar">
+            <div class="sidebar-logo" onclick="window.location.href='/minecraft/'">Deynik <span>Minecraft</span></div>
+            
+            <!-- Категория 1: Главное -->
+            <div class="sidebar-category">
+                <div class="sidebar-category-title">Главное</div>
+                <div class="sidebar-menu">
+                    <button class="sidebar-item active" onclick="window.location.href='/minecraft/'">
+                        <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19.5v-9z"/><path d="M9 21v-6h6v6"/></svg>
+                        Рекомендации
+                    </button>
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html'">
+                        <svg viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        Поиск
+                    </button>
+                    <button class="sidebar-item" id="savedBtn">
+                        <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                        Сохраненные
+                    </button>
+                    <button class="sidebar-item" id="messengerBtn">
+                        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        Мессенджер
+                    </button>
+                </div>
+            </div>
 
+            <!-- Категория 2: Контент -->
+            <div class="sidebar-category">
+                <div class="sidebar-category-title">Контент</div>
+                <div class="sidebar-menu">
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html?type=mod'">
+                        <svg viewBox="0 0 24 24"><path d="M20 7h-4.5L15 4H9L8.5 7H4v2h16V7z"/><rect x="4" y="9" width="16" height="10" rx="1"/><circle cx="8" cy="13" r="1"/><circle cx="16" cy="13" r="1"/></svg>
+                        Моды
+                    </button>
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html?type=shader'">
+                        <svg viewBox="0 0 24 24"><path d="M12 3v1M5 8h1M18 8h1M8 21h8M12 8v8"/><circle cx="12" cy="15" r="3"/><path d="M8 11L5 8M16 11l3-3"/></svg>
+                        Шейдеры
+                    </button>
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html?type=resourcepack'">
+                        <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M9 9l6 6M15 9l-6 6"/></svg>
+                        Ресурспаки
+                    </button>
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html?type=modpack'">
+                        <svg viewBox="0 0 24 24"><path d="M4 4h16v2H4z"/><rect x="4" y="8" width="16" height="12" rx="1"/><path d="M10 12l2 2 4-4"/></svg>
+                        Сборки
+                    </button>
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html?type=plugin'">
+                        <svg viewBox="0 0 24 24"><path d="M20 12v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"/><rect x="4" y="4" width="16" height="8" rx="1"/><circle cx="12" cy="12" r="2"/></svg>
+                        Плагины
+                    </button>
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html?type=datapack'">
+                        <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8v8H8z"/><path d="M12 12l2-2-2-2"/></svg>
+                        Датапаки
+                    </button>
+                </div>
+            </div>
+
+            <!-- Пользовательская секция -->
+            <div class="user-section" id="userSection">
+                <div id="userInfo" style="display: none;">
+                    <div class="user-info">
+                        <div class="user-avatar" id="userAvatar"></div>
+                        <div class="user-details">
+                            <div class="user-name" id="userName"></div>
+                            <div class="user-nick" id="userNick"></div>
+                        </div>
+                    </div>
+                </div>
+                <button class="google-btn" id="googleSignInBtn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                    Войти через Google
+                </button>
+            </div>
+        </div>
+
+        <!-- Основной контент -->
         <div class="main-content">
             <div class="content-wrapper">
                 <div class="feed-header">
                     <h1 class="feed-title">Рекомендации <span>для вас</span></h1>
-                    <div class="filter-section">
-                        <div class="filter-chips">
-                            <span class="filter-chip active" data-filter="all">Всё</span>
-                            <span class="filter-chip" data-filter="mod">Моды</span>
-                            <span class="filter-chip" data-filter="shader">Шейдеры</span>
-                            <span class="filter-chip" data-filter="resourcepack">Ресурспаки</span>
-                            <span class="filter-chip" data-filter="modpack">Сборки</span>
-                            <span class="filter-chip" data-filter="plugin">Плагины</span>
-                            <span class="filter-chip" data-filter="datapack">Датапаки</span>
-                        </div>
-                        <div class="advanced-filters">
-                            <select class="filter-select" id="gameVersionFilter">
-                                <option value="">Все версии</option>
-                                <option value="1.21">1.21+</option>
-                                <option value="1.20">1.20+</option>
-                                <option value="1.19">1.19+</option>
-                                <option value="1.18">1.18+</option>
-                            </select>
-                            <select class="filter-select" id="loaderFilter">
-                                <option value="">Все загрузчики</option>
-                                <option value="fabric">Fabric</option>
-                                <option value="forge">Forge</option>
-                                <option value="neoforge">NeoForge</option>
-                                <option value="quilt">Quilt</option>
-                            </select>
-                        </div>
+                    <div class="filter-chips">
+                        <span class="filter-chip active" data-filter="all">Всё</span>
+                        <span class="filter-chip" data-filter="mod">Моды</span>
+                        <span class="filter-chip" data-filter="shader">Шейдеры</span>
+                        <span class="filter-chip" data-filter="resourcepack">Ресурспаки</span>
+                        <span class="filter-chip" data-filter="modpack">Сборки</span>
+                        <span class="filter-chip" data-filter="plugin">Плагины</span>
+                        <span class="filter-chip" data-filter="datapack">Датапаки</span>
                     </div>
                 </div>
 
                 <div class="feed" id="feed">
-                    <div class="loading-more" id="initialLoading">
+                    <div class="loading" id="initialLoading">
+                        <div class="material-progress">
+                            <div class="material-progress-bar"></div>
+                        </div>
                         <div class="friendly-text">Собираем для вас подборку ✨</div>
                     </div>
                 </div>
@@ -809,10 +909,26 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-    <script src="/minecraft/common.js"></script>
     <script>
+        // Firebase конфигурация
+        const firebaseConfig = {
+            apiKey: "AIzaSyBk4nxZ1ldNQUCxsbgaeYTkm9stq0o9o2Q",
+            authDomain: "deygram-e4814.firebaseapp.com",
+            projectId: "deygram-e4814",
+            storageBucket: "deygram-e4814.firebasestorage.app",
+            messagingSenderId: "591207353726",
+            appId: "1:591207353726:web:d20f5e648d3daf86fcb72f"
+        };
+
+        // Инициализация Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // ========== НАСТРОЙКИ ==========
         const API_BASE = 'https://api.modrinth.com/v2';
+        const TRANSLATE_API = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ru&dt=t&q=';
+
         const projectTypes = ['mod', 'shader', 'resourcepack', 'modpack', 'plugin', 'datapack'];
         const projectTypeNames = {
             'mod': 'Мод', 'shader': 'Шейдер', 'resourcepack': 'Ресурспак',
@@ -820,51 +936,216 @@
         };
 
         let feedPosts = [];
+        let cachedTranslations = new Map();
         let isLoading = false;
         let hasMore = true;
         let currentPage = 0;
         let currentFilter = 'all';
-        let currentGameVersion = '';
-        let currentLoader = '';
-        let currentGalleryImages = [];
-        let currentGalleryIndex = 0;
+        let currentUser = null;
+        let savedProjects = new Set();
         let currentSharePost = null;
 
+        // Элементы
         const feedEl = document.getElementById('feed');
         const filterChips = document.querySelectorAll('.filter-chip');
-        const gameVersionFilter = document.getElementById('gameVersionFilter');
-        const loaderFilter = document.getElementById('loaderFilter');
+        const savedBtn = document.getElementById('savedBtn');
+        const messengerBtn = document.getElementById('messengerBtn');
+        const googleSignInBtn = document.getElementById('googleSignInBtn');
+        const userInfo = document.getElementById('userInfo');
+        const userName = document.getElementById('userName');
+        const userNick = document.getElementById('userNick');
+        const userAvatar = document.getElementById('userAvatar');
+        const shareModal = document.getElementById('shareModal');
+        const sharePreview = document.getElementById('sharePreview');
+        const copyLinkBtn = document.getElementById('copyLinkBtn');
+        const shareInChatBtn = document.getElementById('shareInChatBtn');
+        const ogTitle = document.getElementById('og-title');
+        const ogDescription = document.getElementById('og-description');
+        const ogImage = document.getElementById('og-image');
+        const ogUrl = document.getElementById('og-url');
 
-        // Загрузка боковой панели
-        window.loadSidebar();
-
-        // Галерея
-        window.openModal = function(src, images, index) {
-            if (images) {
-                currentGalleryImages = images;
-                currentGalleryIndex = index;
+        // ========== АУТЕНТИФИКАЦИЯ ==========
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                currentUser = user;
+                userInfo.style.display = 'block';
+                googleSignInBtn.style.display = 'none';
+                
+                userName.textContent = user.displayName || 'Пользователь';
+                const nick = `@${user.email.split('@')[0]}_${Math.floor(Math.random() * 10000)}`;
+                userNick.textContent = nick;
+                userAvatar.textContent = (user.displayName || 'U')[0].toUpperCase();
+                
+                await loadSavedProjects();
+            } else {
+                currentUser = null;
+                userInfo.style.display = 'none';
+                googleSignInBtn.style.display = 'flex';
+                savedProjects.clear();
             }
+        });
+
+        googleSignInBtn.addEventListener('click', () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider);
+        });
+
+        // ========== СОХРАНЕННЫЕ ПРОЕКТЫ ==========
+        async function loadSavedProjects() {
+            if (!currentUser) return;
+            
+            try {
+                const savedRef = db.collection('saved').doc(currentUser.uid);
+                const doc = await savedRef.get();
+                
+                if (doc.exists) {
+                    savedProjects = new Set(doc.data().projects || []);
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки сохраненных:', error);
+            }
+        }
+
+        async function toggleSave(postId, projectData, button) {
+            if (!currentUser) {
+                alert('Войдите, чтобы сохранять проекты');
+                return;
+            }
+
+            button.classList.toggle('saved');
+            
+            try {
+                const savedRef = db.collection('saved').doc(currentUser.uid);
+                
+                if (button.classList.contains('saved')) {
+                    savedProjects.add(postId);
+                    
+                    await savedRef.set({
+                        projects: Array.from(savedProjects),
+                        projectsData: {
+                            ...(await getProjectsData()),
+                            [postId]: projectData
+                        }
+                    }, { merge: true });
+                } else {
+                    savedProjects.delete(postId);
+                    await savedRef.set({
+                        projects: Array.from(savedProjects)
+                    }, { merge: true });
+                }
+            } catch (error) {
+                console.error('Ошибка сохранения:', error);
+                button.classList.toggle('saved');
+            }
+        }
+
+        async function getProjectsData() {
+            const savedRef = db.collection('saved').doc(currentUser.uid);
+            const doc = await savedRef.get();
+            return doc.exists ? doc.data().projectsData || {} : {};
+        }
+
+        // ========== ПОДЕЛИТЬСЯ ==========
+        function showShareModal(post) {
+            currentSharePost = post;
+            
+            const projectUrl = `${window.location.origin}/minecraft/${post.project_type}.html#${post.project_type}/${post.slug}`;
+            const imageUrl = post.icon_url || 'https://via.placeholder.com/512/2c2c30/a0a0a8?text=Mod';
+            
+            ogTitle.setAttribute('content', `${post.title} - Minecraft ${projectTypeNames[post.project_type]}`);
+            ogDescription.setAttribute('content', `Скачать ${post.title} для Minecraft. Автор: ${post.author || 'Неизвестен'}`);
+            ogImage.setAttribute('content', imageUrl);
+            ogUrl.setAttribute('content', projectUrl);
+            
+            sharePreview.innerHTML = `
+                <img src="${post.icon_url || 'https://via.placeholder.com/48/2c2c30/a0a0a8?text=Mod'}" alt="">
+                <div class="share-preview-info">
+                    <h4>${escapeHtml(post.title)}</h4>
+                    <p>${escapeHtml(post.author || 'Неизвестен')} • ${projectTypeNames[post.project_type]}</p>
+                </div>
+            `;
+            
+            shareModal.classList.add('show');
+        }
+
+        copyLinkBtn.addEventListener('click', () => {
+            if (currentSharePost) {
+                const url = `${window.location.origin}/minecraft/${currentSharePost.project_type}.html#${currentSharePost.project_type}/${currentSharePost.slug}`;
+                
+                const textarea = document.createElement('textarea');
+                textarea.value = url;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                
+                shareModal.classList.remove('show');
+                currentSharePost = null;
+            }
+        });
+
+        shareInChatBtn.addEventListener('click', () => {
+            if (!currentUser) {
+                alert('Войдите, чтобы поделиться в чате');
+                return;
+            }
+            
+            if (currentSharePost) {
+                const shareData = {
+                    type: 'project',
+                    projectType: currentSharePost.project_type,
+                    projectSlug: currentSharePost.slug,
+                    title: currentSharePost.title,
+                    icon: currentSharePost.icon_url,
+                    author: currentSharePost.author,
+                    timestamp: Date.now()
+                };
+                
+                localStorage.setItem('pendingShare', JSON.stringify(shareData));
+                window.location.href = '/minecraft/messenger.html';
+            }
+        });
+
+        // ========== НАВИГАЦИЯ ==========
+        savedBtn.addEventListener('click', () => {
+            if (!currentUser) {
+                alert('Войдите, чтобы увидеть сохраненные проекты');
+                return;
+            }
+            window.location.href = '/minecraft/saved.html';
+        });
+
+        messengerBtn.addEventListener('click', () => {
+            if (!currentUser) {
+                alert('Войдите, чтобы использовать мессенджер');
+                return;
+            }
+            window.location.href = '/minecraft/messenger.html';
+        });
+
+        filterChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                filterChips.forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                currentFilter = chip.dataset.filter;
+                currentPage = 0;
+                hasMore = true;
+                feedPosts = [];
+                
+                feedEl.innerHTML = '<div class="loading" id="initialLoading"><div class="material-progress"><div class="material-progress-bar"></div></div><div class="friendly-text">Собираем для вас подборку ✨</div></div>';
+                
+                loadMorePosts(true);
+            });
+        });
+
+        // ========== ФУНКЦИИ ДЛЯ ГАЛЕРЕИ ==========
+        window.openModal = function(src) {
             document.getElementById('modalImage').src = src;
             document.getElementById('galleryModal').classList.add('show');
         };
 
         window.closeModal = function() {
             document.getElementById('galleryModal').classList.remove('show');
-            currentGalleryImages = [];
-        };
-
-        window.prevImage = function() {
-            if (currentGalleryImages.length > 0) {
-                currentGalleryIndex = (currentGalleryIndex - 1 + currentGalleryImages.length) % currentGalleryImages.length;
-                document.getElementById('modalImage').src = currentGalleryImages[currentGalleryIndex];
-            }
-        };
-
-        window.nextImage = function() {
-            if (currentGalleryImages.length > 0) {
-                currentGalleryIndex = (currentGalleryIndex + 1) % currentGalleryImages.length;
-                document.getElementById('modalImage').src = currentGalleryImages[currentGalleryIndex];
-            }
         };
 
         window.scrollCarousel = function(container, direction) {
@@ -901,14 +1182,13 @@
             track.addEventListener('mouseup', (e) => {
                 isDown = false;
                 track.classList.remove('dragging');
+                
                 if (!isDragging) {
                     const slide = e.target.closest('.carousel-slide');
                     if (slide) {
                         const img = slide.querySelector('img');
-                        const allImages = Array.from(track.querySelectorAll('.carousel-slide img')).map(i => i.src);
-                        const index = Array.from(track.querySelectorAll('.carousel-slide')).findIndex(s => s === slide);
                         if (img) {
-                            openModal(img.src, allImages, index);
+                            window.openModal(img.src);
                         }
                     }
                 }
@@ -941,8 +1221,28 @@
             updateDots();
         }
 
-        function getGalleryImages(project) {
-            return (project.gallery && project.gallery.length > 0) ? project.gallery.map(g => g.url) : null;
+        // ========== ПЕРЕВОД ==========
+        async function translateText(text) {
+            if (!text || text.length < 20) return text;
+            if (cachedTranslations.has(text)) return cachedTranslations.get(text);
+            try {
+                const response = await fetch(TRANSLATE_API + encodeURIComponent(text));
+                const data = await response.json();
+                const translated = data[0][0][0];
+                cachedTranslations.set(text, translated);
+                return translated;
+            } catch (error) {
+                console.warn('Ошибка перевода:', error);
+                return text;
+            }
+        }
+
+        // ========== ФОРМАТИРОВАНИЕ ==========
+        function formatNumber(num) {
+            if (!num) return '0';
+            if (num >= 1_000_000) return (num / 1_000_000).toFixed(1) + 'M';
+            if (num >= 1_000) return (num / 1_000).toFixed(1) + 'k';
+            return num.toString();
         }
 
         function formatRelativeDate(dateString) {
@@ -951,94 +1251,21 @@
             const now = new Date();
             const diffTime = Math.abs(now - date);
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            if (diffDays < 7) return `${diffDays} дн. назад`;
-            if (diffDays < 30) return `${Math.floor(diffDays/7)} нед. назад`;
-            if (diffDays < 365) return `${Math.floor(diffDays/30)} мес. назад`;
-            return `${Math.floor(diffDays/365)} г. назад`;
+            if (diffDays < 7) return `${diffDays} ${['день', 'дня', 'дней'][getWordIndex(diffDays)]} назад`;
+            if (diffDays < 30) return `${Math.floor(diffDays/7)} ${['неделю', 'недели', 'недель'][getWordIndex(Math.floor(diffDays/7))]} назад`;
+            if (diffDays < 365) return `${Math.floor(diffDays/30)} ${['месяц', 'месяца', 'месяцев'][getWordIndex(Math.floor(diffDays/30))]} назад`;
+            return `${Math.floor(diffDays/365)} ${['год', 'года', 'лет'][getWordIndex(Math.floor(diffDays/365))]} назад`;
         }
 
-        async function loadMorePosts(reset = false) {
-            if (isLoading || !hasMore) return;
-            isLoading = true;
-
-            if (reset) {
-                feedPosts = [];
-                currentPage = 0;
-                hasMore = true;
-                window.showSkeleton(feedEl, 3);
-            }
-
-            try {
-                const typesToFetch = currentFilter === 'all' ? projectTypes : [currentFilter];
-                const facets = [];
-                
-                facets.push([`project_type:${typesToFetch.join(',')}`]);
-                
-                if (currentGameVersion) {
-                    facets.push([`versions:${currentGameVersion}`]);
-                }
-                
-                const randomOffset = Math.floor(Math.random() * 3000);
-                const url = `${API_BASE}/search?limit=8&offset=${randomOffset}&index=newest&facets=${encodeURIComponent(JSON.stringify(facets))}`;
-                
-                const response = await fetch(url);
-                const data = await response.json();
-                
-                let projects = data.hits || [];
-                
-                if (currentLoader) {
-                    const loaderPromises = projects.map(async (project) => {
-                        const versionRes = await fetch(`${API_BASE}/project/${project.slug}/version?limit=5`);
-                        const versions = await versionRes.json();
-                        const hasLoader = versions.some(v => v.loaders.includes(currentLoader));
-                        return { project, hasLoader };
-                    });
-                    
-                    const loaderResults = await Promise.all(loaderPromises);
-                    projects = loaderResults.filter(r => r.hasLoader).map(r => r.project);
-                }
-                
-                for (const project of projects) {
-                    if (project.description && !window.cachedTranslations.has(project.description)) {
-                        await window.translateText(project.description);
-                    }
-                }
-                
-                window.hideSkeleton(feedEl);
-                
-                if (projects.length === 0 && reset) {
-                    feedEl.innerHTML = '<div class="loading-more"><div class="friendly-text">Ничего не найдено 😢</div></div>';
-                    hasMore = false;
-                } else if (projects.length > 0) {
-                    renderNewPosts(projects);
-                    feedPosts.push(...projects);
-                    currentPage++;
-                }
-                
-                if (projects.length < 8) {
-                    hasMore = false;
-                }
-
-            } catch (error) {
-                console.error('Ошибка загрузки:', error);
-                window.hideSkeleton(feedEl);
-                if (reset) {
-                    feedEl.innerHTML = '<div class="loading-more"><div class="friendly-text">❌ Ошибка загрузки. Попробуйте позже</div></div>';
-                }
-            } finally {
-                isLoading = false;
-            }
+        function getWordIndex(n) { 
+            return (n%10==1 && n%100!=11) ? 0 : (n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20)) ? 1 : 2; 
         }
 
-        function getDescription(project) {
-            const cached = window.cachedTranslations.get(project.description);
-            return cached || project.description || 'Нет описания';
+        function getGalleryImages(project) {
+            return (project.gallery && project.gallery.length > 0) ? project.gallery.map(g => g.url) : null;
         }
 
-        function isLiked(postId) {
-            return localStorage.getItem(`like_${postId}`) === 'true';
-        }
-
+        // ========== ЛАЙКИ ==========
         window.toggleLike = function(button, postId) {
             button.classList.toggle('liked');
             const likesSpan = button.querySelector('.likes-count');
@@ -1050,27 +1277,107 @@
                 likes--;
                 localStorage.removeItem(`like_${postId}`);
             }
-            likesSpan.textContent = window.formatNumber(likes);
+            likesSpan.textContent = formatNumber(likes);
         };
 
-        window.handleSave = async function(postId, projectData, button) {
-            if (!window.currentUser) {
-                window.showToast('Войдите, чтобы сохранять проекты', 'error');
-                return;
+        window.toggleSave = toggleSave;
+
+        // ========== ЗАГРУЗКА ПОСТОВ ==========
+        async function loadMorePosts(reset = false) {
+            if (isLoading || !hasMore) return;
+            isLoading = true;
+
+            const oldLoading = document.getElementById('loading-more');
+            if (oldLoading) oldLoading.remove();
+
+            // Показываем анимацию загрузки
+            if (!reset) {
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'loading-more';
+                loadingDiv.id = 'loading-more';
+                loadingDiv.innerHTML = `
+                    <div class="material-progress">
+                        <div class="material-progress-bar"></div>
+                    </div>
+                    <div class="friendly-text">Загружаем еще проекты 🔍</div>
+                `;
+                feedEl.appendChild(loadingDiv);
             }
-            
-            if (button.classList.contains('saved')) {
-                const success = await window.unsaveProject(postId);
-                if (success) {
-                    button.classList.remove('saved');
+
+            try {
+                const promises = [];
+                const typesToFetch = currentFilter === 'all' ? projectTypes : [currentFilter];
+                
+                for (let i = 0; i < 5; i++) {
+                    const randomType = typesToFetch[Math.floor(Math.random() * typesToFetch.length)];
+                    const randomOffset = Math.floor(Math.random() * 5000);
+                    const url = `${API_BASE}/search?limit=1&offset=${randomOffset}&index=newest&facets=${encodeURIComponent(JSON.stringify([[`project_type:${randomType}`]]))}`;
+                    
+                    promises.push(
+                        fetch(url).then(res => res.json()).then(async data => {
+                            if (data.hits && data.hits.length > 0) {
+                                const project = data.hits[0];
+                                const projectRes = await fetch(`${API_BASE}/project/${project.slug}`);
+                                const fullProject = await projectRes.json();
+                                return { ...project, fullData: fullProject };
+                            }
+                            return null;
+                        })
+                    );
                 }
-            } else {
-                const success = await window.saveProject(postId, projectData);
-                if (success) {
-                    button.classList.add('saved');
+
+                let results = await Promise.all(promises);
+                let validPosts = results.filter(p => p !== null);
+                validPosts = shuffleArray(validPosts);
+
+                const translatePromises = validPosts.map(p => p.description && !cachedTranslations.has(p.description) ? translateText(p.description) : Promise.resolve());
+                await Promise.all(translatePromises);
+
+                // Убираем анимацию загрузки
+                const loadingMore = document.getElementById('loading-more');
+                if (loadingMore) loadingMore.remove();
+
+                if (validPosts.length === 0) {
+                    hasMore = false;
+                } else {
+                    renderNewPosts(validPosts);
+                    feedPosts.push(...validPosts);
+                    currentPage++;
                 }
+
+            } catch (error) {
+                console.error('Ошибка загрузки:', error);
+                
+                const loadingMore = document.getElementById('loading-more');
+                if (loadingMore) loadingMore.remove();
+            } finally {
+                isLoading = false;
+                
+                const loadingElement = document.getElementById('initialLoading');
+                if (loadingElement) loadingElement.remove();
             }
-        };
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function getDescription(project) {
+            const cached = cachedTranslations.get(project.description);
+            return cached || project.description || 'Нет описания';
+        }
+
+        function isLiked(postId) {
+            return localStorage.getItem(`like_${postId}`) === 'true';
+        }
+
+        function isSaved(postId) {
+            return savedProjects.has(postId);
+        }
 
         function renderNewPosts(posts) {
             let html = '';
@@ -1078,61 +1385,52 @@
             for (const post of posts) {
                 const description = getDescription(post);
                 const iconUrl = post.icon_url || 'https://via.placeholder.com/48/2c2c30/a0a0a8?text=Mod';
-                const galleryImages = post.gallery || null;
+                const galleryImages = getGalleryImages(post.fullData);
                 const typeName = projectTypeNames[post.project_type] || 'Проект';
                 const postId = `${post.project_type}_${post.slug}`;
                 const liked = isLiked(postId);
-                const saved = window.isSaved(postId);
+                const saved = isSaved(postId);
 
                 let mediaHtml = '';
                 if (galleryImages && galleryImages.length > 1) {
-                    const slidesHtml = galleryImages.map((img, idx) => 
-                        `<div class="carousel-slide"><img src="${img.url}" data-index="${idx}" loading="lazy"></div>`
+                    const slidesHtml = galleryImages.map(img => 
+                        `<div class="carousel-slide"><img src="${img}" onclick="event.stopPropagation(); openModal('${img}')" loading="lazy"></div>`
                     ).join('');
                     const dotsHtml = galleryImages.map((_, idx) => 
-                        `<span class="carousel-dot" data-index="${idx}"></span>`
+                        `<span class="carousel-dot" onclick="event.stopPropagation(); document.querySelector('#carousel-${postId} .carousel-track').scrollTo({ left: ${idx} * document.querySelector('#carousel-${postId} .carousel-track').clientWidth, behavior: 'smooth' })"></span>`
                     ).join('');
 
                     mediaHtml = `
                         <div class="carousel-container" id="carousel-${postId}" onclick="event.stopPropagation()">
                             <div class="carousel-track">${slidesHtml}</div>
-                            <div class="carousel-btn prev" onclick="event.stopPropagation(); scrollCarousel(this.closest('.carousel-container'), -1)">‹</div>
-                            <div class="carousel-btn next" onclick="event.stopPropagation(); scrollCarousel(this.closest('.carousel-container'), 1)">›</div>
+                            <div class="carousel-btn prev" onclick="event.stopPropagation(); scrollCarousel(this.closest('.carousel-container'), -1)"></div>
+                            <div class="carousel-btn next" onclick="event.stopPropagation(); scrollCarousel(this.closest('.carousel-container'), 1)"></div>
                             <div class="carousel-dots">${dotsHtml}</div>
                         </div>
                     `;
                 } else if (galleryImages && galleryImages.length === 1) {
-                    mediaHtml = `<img src="${galleryImages[0].url}" class="post-image-static" loading="lazy">`;
+                    mediaHtml = `<img src="${galleryImages[0]}" class="post-image-static" onclick="event.stopPropagation(); openModal('${galleryImages[0]}')" loading="lazy">`;
                 }
 
-                const projectData = {
-                    title: post.title,
-                    type: post.project_type,
-                    slug: post.slug,
-                    icon: iconUrl,
-                    author: post.author,
-                    description: description
-                };
-
                 html += `
-                    <div class="feed-post" onclick="window.location.href='/minecraft/project.html#${post.project_type}/${post.slug}'">
+                    <div class="feed-post" onclick="window.location.href='/minecraft/${post.project_type}.html#${post.project_type}/${post.slug}'">
                         <div class="post-header">
-                            <img src="${iconUrl}" class="post-icon" alt="${window.escapeHtml(post.title)}" onerror="this.src='https://via.placeholder.com/48/2c2c30/a0a0a8?text=Mod'">
+                            <img src="${iconUrl}" class="post-icon" alt="${escapeHtml(post.title)}" onerror="this.src='https://via.placeholder.com/48/2c2c30/a0a0a8?text=Mod'">
                             <div class="post-info">
                                 <div class="post-title-row">
-                                    <span class="post-title">${window.escapeHtml(post.title)}</span>
+                                    <span class="post-title">${escapeHtml(post.title)}</span>
                                     <span class="post-type ${post.project_type}">${typeName}</span>
                                 </div>
-                                <div class="post-author">${window.escapeHtml(post.author || 'Неизвестен')}</div>
+                                <div class="post-author">${escapeHtml(post.author || 'Неизвестен')}</div>
                             </div>
                         </div>
                         
                         ${mediaHtml}
 
                         <div class="post-body">
-                            <div class="post-description">${window.escapeHtml(description)}</div>
+                            <div class="post-description">${escapeHtml(description)}</div>
                             <div class="post-categories">
-                                ${(post.categories || []).slice(0, 3).map(cat => `<span class="category-tag">${window.escapeHtml(cat)}</span>`).join('')}
+                                ${(post.categories || []).slice(0, 3).map(cat => `<span class="category-tag">${escapeHtml(cat)}</span>`).join('')}
                             </div>
                             <div class="post-date">${formatRelativeDate(post.date_created)}</div>
                         </div>
@@ -1143,20 +1441,33 @@
                                     <svg viewBox="0 0 24 24">
                                         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                                     </svg>
-                                    <span class="likes-count">${window.formatNumber(post.follows)}</span>
+                                    <span class="likes-count">${formatNumber(post.follows)}</span>
                                 </button>
-                                <button class="action-btn" onclick="event.stopPropagation(); window.location.href='/minecraft/project.html#${post.project_type}/${post.slug}'">
+                                <button class="action-btn" onclick="event.stopPropagation(); window.location.href='/minecraft/${post.project_type}.html#${post.project_type}/${post.slug}'">
                                     <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                     Подробнее
                                 </button>
                             </div>
                             <div style="display: flex; gap: 0.5rem;">
-                                <button class="action-btn" onclick="event.stopPropagation(); showShareModal(${JSON.stringify(projectData).replace(/"/g, '&quot;')})">
-                                    <svg viewBox="0 0 24 24">
+                                <button class="action-btn" onclick="event.stopPropagation(); showShareModal(${JSON.stringify({
+                                    title: post.title,
+                                    author: post.author,
+                                    project_type: post.project_type,
+                                    slug: post.slug,
+                                    icon_url: iconUrl
+                                }).replace(/"/g, '&quot;')})">
+                                    <svg viewBox="0 0 24 24" width="24" height="24">
                                         <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/>
                                     </svg>
                                 </button>
-                                <button class="action-btn ${saved ? 'saved' : ''}" onclick="event.stopPropagation(); handleSave('${postId}', ${JSON.stringify(projectData).replace(/"/g, '&quot;')}, this)">
+                                <button class="action-btn ${saved ? 'saved' : ''}" onclick="event.stopPropagation(); toggleSave('${postId}', ${JSON.stringify({
+                                    title: post.title,
+                                    type: post.project_type,
+                                    slug: post.slug,
+                                    icon: iconUrl,
+                                    author: post.author,
+                                    description: description
+                                })}, this)">
                                     <svg viewBox="0 0 24 24">
                                         <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
                                     </svg>
@@ -1180,88 +1491,38 @@
             });
         }
 
-        function showShareModal(projectData) {
-            currentSharePost = projectData;
-            
-            const sharePreview = document.getElementById('sharePreview');
-            sharePreview.innerHTML = `
-                <img src="${projectData.icon || 'https://via.placeholder.com/48/2c2c30/a0a0a8?text=Mod'}" alt="">
-                <div class="share-preview-info">
-                    <h4>${window.escapeHtml(projectData.title)}</h4>
-                    <p>${window.escapeHtml(projectData.author || 'Неизвестен')} • ${projectTypeNames[projectData.type]}</p>
-                </div>
-            `;
-            
-            document.getElementById('shareModal').classList.add('show');
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return String(unsafe).replace(/[&<>"]/g, function(m) {
+                if (m === '&') return '&amp;'; 
+                if (m === '<') return '&lt;'; 
+                if (m === '>') return '&gt;'; 
+                if (m === '"') return '&quot;';
+                return m;
+            });
         }
 
-        document.getElementById('copyLinkBtn').addEventListener('click', () => {
-            if (currentSharePost) {
-                const url = `${window.location.origin}/minecraft/project.html#${currentSharePost.type}/${currentSharePost.slug}`;
-                navigator.clipboard.writeText(url);
-                window.showToast('Ссылка скопирована!', 'success');
-                document.getElementById('shareModal').classList.remove('show');
-            }
-        });
-
-        document.getElementById('shareInChatBtn').addEventListener('click', () => {
-            if (!window.currentUser) {
-                window.showToast('Войдите, чтобы поделиться в чате', 'error');
-                return;
-            }
-            if (currentSharePost) {
-                localStorage.setItem('pendingShare', JSON.stringify(currentSharePost));
-                window.location.href = '/minecraft/messenger.html';
-            }
-        });
-
-        filterChips.forEach(chip => {
-            chip.addEventListener('click', () => {
-                filterChips.forEach(c => c.classList.remove('active'));
-                chip.classList.add('active');
-                currentFilter = chip.dataset.filter;
-                currentPage = 0;
-                hasMore = true;
-                loadMorePosts(true);
-            });
-        });
-
-        gameVersionFilter.addEventListener('change', () => {
-            currentGameVersion = gameVersionFilter.value;
-            currentPage = 0;
-            hasMore = true;
-            loadMorePosts(true);
-        });
-
-        loaderFilter.addEventListener('change', () => {
-            currentLoader = loaderFilter.value;
-            currentPage = 0;
-            hasMore = true;
-            loadMorePosts(true);
-        });
-
+        // ========== СКРОЛЛ ==========
         window.addEventListener('scroll', () => {
             const scrollY = window.scrollY;
             const windowHeight = window.innerHeight;
             const documentHeight = document.documentElement.scrollHeight;
-            if (scrollY + windowHeight > documentHeight - 400 && !isLoading && hasMore) {
+            if (scrollY + windowHeight > documentHeight - 400) {
                 loadMorePosts();
             }
         });
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
-            if (e.key === 'ArrowLeft' && document.getElementById('galleryModal').classList.contains('show')) prevImage();
-            if (e.key === 'ArrowRight' && document.getElementById('galleryModal').classList.contains('show')) nextImage();
-        });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
         window.addEventListener('click', (e) => {
-            if (e.target === document.getElementById('shareModal')) {
-                document.getElementById('shareModal').classList.remove('show');
+            if (e.target === shareModal) {
+                shareModal.classList.remove('show');
+                currentSharePost = null;
             }
         });
 
-        loadMorePosts(true);
+        // Запуск
+        loadMorePosts();
     </script>
 </body>
 </html>
