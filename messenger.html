@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deynik Minecraft - Мессенджер</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -24,7 +28,7 @@
         .app-container {
             display: flex;
             width: 100%;
-            max-width: 100%;
+            max-width: 1600px;
         }
 
         :root {
@@ -32,25 +36,186 @@
             --bg-raised: #1c1c1f;
             --bg-button: #2c2c30;
             --bg-button-hover: #3a3a40;
+            --bg-selected: #3b3b45;
             --text-contrast: #ffffff;
             --text-primary: #e0e0e0;
             --text-secondary: #a0a0a8;
             --text-brand: #fbbf24;
             --bg-brand: rgba(251, 191, 36, 0.15);
             --border-subtle: #2c2c32;
+            --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
             --online-green: #23a55a;
         }
 
+        /* Боковая панель */
         .sidebar {
-            width: 280px;
+            width: 240px;
             flex-shrink: 0;
             background-color: var(--bg-body);
-            padding: 1.5rem 0.8rem;
+            padding: 1.5rem 0.5rem;
             height: 100vh;
             position: sticky;
             top: 0;
             overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--bg-button) var(--bg-body);
             border-right: 1px solid var(--border-subtle);
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: var(--bg-body);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--bg-button);
+            border-radius: 4px;
+        }
+
+        .sidebar-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-contrast);
+            margin-bottom: 2rem;
+            padding-left: 0.5rem;
+            cursor: pointer;
+        }
+
+        .sidebar-logo span {
+            color: var(--text-brand);
+        }
+
+        .sidebar-category {
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-category-title {
+            padding: 0.5rem 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .sidebar-item:hover {
+            background-color: var(--bg-button);
+            color: var(--text-contrast);
+        }
+
+        .sidebar-item.active {
+            background-color: var(--bg-brand);
+            color: var(--text-brand);
+        }
+
+        .sidebar-item svg {
+            width: 1.3rem;
+            height: 1.3rem;
+            stroke: currentColor;
+            fill: none;
+        }
+
+        .user-section {
+            margin-top: auto;
+            padding: 1rem 0.5rem;
+            border-top: 1px solid var(--border-subtle);
+            margin-top: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            background-color: var(--bg-button);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--text-brand);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 1rem;
+            object-fit: cover;
+        }
+
+        .user-details {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .user-name {
+            color: var(--text-contrast);
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 0.9rem;
+        }
+
+        .user-nick {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+        }
+
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.6rem;
+            background-color: var(--bg-button);
+            border: 1px solid var(--border-subtle);
+            border-radius: 2rem;
+            color: var(--text-contrast);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .google-btn:hover {
+            background-color: var(--bg-button-hover);
+            border-color: var(--text-brand);
+        }
+
+        .google-btn svg {
+            width: 1.1rem;
+            height: 1.1rem;
         }
 
         .main-content {
@@ -75,6 +240,7 @@
             display: flex;
             flex-direction: column;
             height: 100%;
+            min-width: 0;
         }
 
         .chat-header {
@@ -89,31 +255,60 @@
             border-radius: 1rem 1rem 0 0;
         }
 
+        .chat-header i {
+            color: var(--text-brand);
+        }
+
         .messages-container {
             flex: 1;
             overflow-y: auto;
             padding: 1rem;
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 0.1rem;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(251, 191, 36, 0.3) #1c1c1f;
+            background-color: var(--bg-raised);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
+        .messages-container::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .messages-container::-webkit-scrollbar-track {
+            background: #1c1c1f;
+        }
+
+        .messages-container::-webkit-scrollbar-thumb {
+            background-color: rgba(251, 191, 36, 0.3);
+            border-radius: 2px;
+        }
+
+        /* Группировка сообщений */
         .message-group {
             display: flex;
             flex-direction: column;
-            gap: 0.2rem;
+            gap: 0.1rem;
+            margin-top: 0.2rem;
+            position: relative;
+        }
+
+        .message-group:first-child {
+            margin-top: 0;
         }
 
         .message-group-header {
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            margin-bottom: 0.2rem;
+            margin-bottom: 0.1rem;
         }
 
         .group-avatar {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background-color: var(--text-brand);
             display: flex;
@@ -121,14 +316,22 @@
             justify-content: center;
             color: #000;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 1rem;
             object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .group-info {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            flex-wrap: wrap;
         }
 
         .group-username {
             font-weight: 600;
             color: var(--text-brand);
-            font-size: 0.95rem;
+            font-size: 1rem;
         }
 
         .group-time {
@@ -139,17 +342,27 @@
         .message {
             display: flex;
             gap: 1rem;
-            padding: 0.2rem 0;
+            padding: 0.1rem 0;
+            width: 100%;
             position: relative;
+            border-radius: 0.3rem;
+            transition: background-color 0.2s;
+        }
+
+        .message:hover {
+            background-color: rgba(255, 255, 255, 0.03);
         }
 
         .message-avatar-placeholder {
-            width: 36px;
+            width: 40px;
             flex-shrink: 0;
         }
 
         .message-content {
             flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
         }
 
         .message-text {
@@ -157,29 +370,15 @@
             font-size: 0.95rem;
             line-height: 1.4;
             word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+            max-width: 100%;
         }
 
-        .reply-preview {
-            background: rgba(251, 191, 36, 0.1);
-            border-left: 3px solid var(--text-brand);
-            padding: 0.3rem 0.6rem;
-            margin-bottom: 0.3rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
-
-        .reply-preview strong {
+        .message a {
             color: var(--text-brand);
-        }
-
-        .message-reply {
-            background: rgba(251, 191, 36, 0.05);
-            border-left: 2px solid var(--text-brand);
-            padding: 0.2rem 0.5rem;
-            margin-bottom: 0.3rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
+            text-decoration: underline;
+            word-break: break-all;
         }
 
         .message-gif {
@@ -189,33 +388,78 @@
             margin-top: 0.25rem;
         }
 
-        .message-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 0.2rem;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .message:hover .message-actions {
-            opacity: 1;
-        }
-
-        .message-action-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 0.7rem;
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-        }
-
-        .message-action-btn:hover {
+        /* Кнопка трех точек */
+        .message-menu-btn {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 28px;
+            height: 28px;
+            border-radius: 0.3rem;
             background-color: var(--bg-button);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 5;
+        }
+
+        .message:hover .message-menu-btn {
+            display: flex;
+        }
+
+        .message-menu-btn:hover {
+            background-color: var(--bg-button-hover);
             color: var(--text-brand);
         }
 
+        /* Контекстное меню */
+        .context-menu {
+            position: fixed;
+            background-color: var(--bg-raised);
+            border: 1px solid var(--border-subtle);
+            border-radius: 0.5rem;
+            padding: 0.3rem 0;
+            min-width: 180px;
+            box-shadow: var(--card-shadow);
+            z-index: 1000;
+            display: none;
+        }
+
+        .context-menu.show {
+            display: block;
+        }
+
+        .context-menu-item {
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .context-menu-item:hover {
+            background-color: var(--bg-button);
+            color: var(--text-contrast);
+        }
+
+        .context-menu-item.delete:hover {
+            color: #ff4444;
+        }
+
+        .context-menu-item i {
+            width: 18px;
+            font-size: 0.9rem;
+        }
+
+        /* Реакции */
         .reactions-container {
             display: flex;
             gap: 0.3rem;
@@ -225,18 +469,30 @@
 
         .reaction-badge {
             background-color: var(--bg-button);
+            border: 1px solid var(--border-subtle);
             border-radius: 1rem;
-            padding: 0.15rem 0.4rem;
-            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.8rem;
             display: flex;
             align-items: center;
-            gap: 0.2rem;
+            gap: 0.3rem;
             cursor: pointer;
             transition: all 0.2s;
         }
 
-        .reaction-badge:hover, .reaction-badge.active {
+        .reaction-badge:hover {
             background-color: var(--bg-brand);
+            border-color: var(--text-brand);
+        }
+
+        .reaction-badge.active {
+            background-color: var(--bg-brand);
+            border-color: var(--text-brand);
+        }
+
+        .reaction-count {
+            color: var(--text-secondary);
+            font-size: 0.7rem;
         }
 
         .reaction-picker {
@@ -247,42 +503,56 @@
             padding: 0.3rem;
             display: flex;
             gap: 0.2rem;
+            box-shadow: var(--card-shadow);
             z-index: 10;
         }
 
         .reaction-emoji {
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.2rem;
+            transition: all 0.2s;
         }
 
         .reaction-emoji:hover {
             background-color: var(--bg-brand);
+            transform: scale(1.1);
         }
 
         .reply-indicator {
             background: rgba(251, 191, 36, 0.1);
-            border-left: 3px solid var(--text-brand);
+            border-left: 2px solid var(--text-brand);
             padding: 0.5rem 0.75rem;
             margin: 0.5rem 1rem;
             border-radius: 4px;
             font-size: 0.8rem;
+            color: #B3B3B3;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+        }
+
+        .reply-indicator strong {
+            color: var(--text-brand);
         }
 
         .cancel-reply {
             background: none;
             border: none;
-            color: var(--text-secondary);
+            color: #888;
             cursor: pointer;
             font-size: 0.8rem;
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+
+        .cancel-reply:hover {
+            color: var(--text-brand);
         }
 
         .message-input-area {
@@ -290,20 +560,23 @@
             gap: 0.5rem;
             padding: 1rem;
             border-top: 1px solid var(--border-subtle);
+            position: relative;
             background-color: var(--bg-raised);
             border-radius: 0 0 1rem 1rem;
         }
 
         .chat-input {
             flex: 1;
-            padding: 0.7rem 1rem;
+            padding: 0.75rem 0.75rem 0.75rem 90px;
             background-color: var(--bg-button);
             border: 1px solid var(--border-subtle);
             border-radius: 2rem;
             color: var(--text-contrast);
             resize: none;
+            max-height: 100px;
             outline: none;
             font-size: 0.9rem;
+            min-width: 0;
         }
 
         .chat-input:focus {
@@ -311,28 +584,52 @@
         }
 
         .emoji-btn, .gif-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
             background: transparent;
             border: none;
-            color: var(--text-secondary);
+            color: #B3B3B3;
             cursor: pointer;
             font-size: 1.2rem;
-            width: 40px;
+            transition: all 0.2s ease;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border-radius: 50%;
+            z-index: 2;
+        }
+
+        .emoji-btn {
+            left: 24px;
+        }
+
+        .gif-btn {
+            left: 60px;
         }
 
         .emoji-btn:hover, .gif-btn:hover {
+            background: rgba(251, 191, 36, 0.2);
             color: var(--text-brand);
-            background-color: var(--bg-button);
         }
 
         .chat-send-btn {
-            background: var(--bg-brand);
-            border: none;
-            color: var(--bg-body);
-            padding: 0.5rem 1.2rem;
+            background: rgba(251, 191, 36, 0.3);
+            border: 1px solid var(--text-brand);
+            color: white;
+            padding: 0.75rem 1.5rem;
             border-radius: 2rem;
             cursor: pointer;
-            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            min-width: 100px;
+            flex-shrink: 0;
+        }
+
+        .chat-send-btn:hover:not(:disabled) {
+            background: rgba(251, 191, 36, 0.5);
         }
 
         .chat-send-btn:disabled {
@@ -342,19 +639,61 @@
 
         .emoji-picker, .gif-picker {
             position: absolute;
-            bottom: 80px;
+            bottom: 70px;
             left: 20px;
-            background: var(--bg-raised);
+            background: rgba(40, 40, 40, 0.95);
             border: 1px solid var(--border-subtle);
             border-radius: 12px;
-            padding: 1rem;
-            width: 300px;
-            display: none;
+            padding: 15px;
+            width: 320px;
+            max-width: 90vw;
             z-index: 100;
+            display: none;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
         }
 
         .emoji-picker.show, .gif-picker.show {
             display: block;
+        }
+
+        .emoji-search, .gif-search {
+            width: 100%;
+            background: rgba(60, 60, 60, 0.8);
+            border: 1px solid var(--border-subtle);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            outline: none;
+            margin-bottom: 12px;
+        }
+
+        .emoji-search:focus, .gif-search:focus {
+            border-color: var(--text-brand);
+        }
+
+        .emoji-categories {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 8px;
+        }
+
+        .emoji-category {
+            background: transparent;
+            border: none;
+            color: #B3B3B3;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 5px 8px;
+            border-radius: 4px;
+        }
+
+        .emoji-category:hover, .emoji-category.active {
+            background: rgba(251, 191, 36, 0.2);
+            color: var(--text-brand);
         }
 
         .emoji-grid {
@@ -366,44 +705,143 @@
         }
 
         .emoji-item {
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             cursor: pointer;
-            text-align: center;
             padding: 5px;
+            border-radius: 4px;
+            text-align: center;
         }
 
         .emoji-item:hover {
-            background-color: var(--bg-button);
-            border-radius: 4px;
+            background: rgba(251, 191, 36, 0.2);
+            transform: scale(1.1);
         }
 
         .gif-results {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 8px;
-            max-height: 200px;
+            max-height: 250px;
             overflow-y: auto;
         }
 
         .gif-item {
             width: 100%;
-            height: 80px;
+            height: 100px;
             object-fit: cover;
             border-radius: 8px;
             cursor: pointer;
         }
 
+        .gif-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 8px rgba(251, 191, 36, 0.5);
+        }
+
+        .gif-trending {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .gif-trending-btn {
+            background: rgba(60, 60, 60, 0.8);
+            border: 1px solid var(--border-subtle);
+            color: #B3B3B3;
+            padding: 5px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .gif-trending-btn:hover {
+            background: rgba(251, 191, 36, 0.2);
+            color: white;
+        }
+
+        .mentions-list {
+            position: absolute;
+            bottom: 100%;
+            left: 90px;
+            right: 120px;
+            background: rgba(40, 40, 40, 0.95);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .mentions-list.show {
+            display: block;
+        }
+
+        .mention-item {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mention-item:hover {
+            background: rgba(251, 191, 36, 0.2);
+        }
+
+        .mention-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: var(--text-brand);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 0.8rem;
+            object-fit: cover;
+        }
+
+        .mention-name {
+            flex: 1;
+            color: var(--text-contrast);
+        }
+
+        .mention-nick {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .no-messages {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        /* Правая панель с пользователями */
         .users-panel {
             width: 240px;
             border-left: 1px solid var(--border-subtle);
             background-color: var(--bg-body);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
             position: absolute;
             right: 1rem;
             top: 1rem;
             bottom: 1rem;
             border-radius: 1rem;
-            display: flex;
-            flex-direction: column;
         }
 
         .users-header {
@@ -411,6 +849,7 @@
             border-bottom: 1px solid var(--border-subtle);
             color: var(--text-secondary);
             font-size: 0.8rem;
+            text-transform: uppercase;
             font-weight: 600;
         }
 
@@ -424,10 +863,11 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            padding: 0.5rem;
+            padding: 0.5rem 0.75rem;
             border-radius: 0.5rem;
             cursor: pointer;
             transition: all 0.2s;
+            margin-bottom: 0.25rem;
             position: relative;
         }
 
@@ -445,16 +885,17 @@
             justify-content: center;
             color: #000;
             font-weight: bold;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
+            position: relative;
             object-fit: cover;
         }
 
         .online-indicator {
             position: absolute;
-            bottom: 6px;
-            left: 32px;
-            width: 8px;
-            height: 8px;
+            bottom: 2px;
+            right: 2px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             background-color: var(--online-green);
             border: 2px solid var(--bg-body);
@@ -462,86 +903,186 @@
 
         .user-item-info {
             flex: 1;
+            overflow: hidden;
         }
 
         .user-item-name {
             color: var(--text-contrast);
-            font-size: 0.85rem;
             font-weight: 500;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .loading {
-            text-align: center;
-            padding: 2rem;
+        .user-item-nick {
             color: var(--text-secondary);
+            font-size: 0.7rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .edit-modal {
+        /* Модальное окно для редактирования */
+        .modal {
             display: none;
             position: fixed;
-            top: 0;
+            z-index: 1001;
             left: 0;
+            top: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(3px);
         }
 
-        .edit-modal-content {
-            background: var(--bg-raised);
+        .modal-content {
+            background-color: var(--bg-raised);
+            margin: 15% auto;
+            padding: 20px;
             border-radius: 1rem;
-            padding: 1.5rem;
             width: 90%;
             max-width: 400px;
             border: 1px solid var(--border-subtle);
         }
 
-        .edit-modal-content textarea {
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: var(--text-contrast);
+        }
+
+        .modal-close {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .modal-close:hover {
+            color: var(--text-brand);
+        }
+
+        .modal-input {
             width: 100%;
             padding: 0.75rem;
-            background: var(--bg-button);
+            background-color: var(--bg-button);
             border: 1px solid var(--border-subtle);
             border-radius: 0.5rem;
             color: var(--text-contrast);
-            margin: 1rem 0;
-            resize: vertical;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
         }
 
-        .edit-modal-buttons {
+        .modal-input:focus {
+            outline: none;
+            border-color: var(--text-brand);
+        }
+
+        .modal-buttons {
             display: flex;
             gap: 0.5rem;
             justify-content: flex-end;
         }
 
-        .edit-modal-buttons button {
+        .modal-btn {
             padding: 0.5rem 1rem;
             border-radius: 0.5rem;
             cursor: pointer;
             border: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
         }
 
-        .edit-save {
-            background: var(--text-brand);
+        .modal-btn.primary {
+            background-color: var(--text-brand);
             color: #000;
         }
 
-        .edit-cancel {
-            background: var(--bg-button);
+        .modal-btn.primary:hover {
+            background-color: #fbbf24;
+        }
+
+        .modal-btn.secondary {
+            background-color: var(--bg-button);
             color: var(--text-contrast);
+        }
+
+        .modal-btn.secondary:hover {
+            background-color: var(--bg-button-hover);
         }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <div class="sidebar"></div>
+        <!-- Боковая панель -->
+        <div class="sidebar">
+            <div class="sidebar-logo" onclick="window.location.href='/minecraft/'">Deynik <span>Minecraft</span></div>
+            
+            <div class="sidebar-category">
+                <div class="sidebar-category-title">Главное</div>
+                <div class="sidebar-menu">
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/'">
+                        <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19.5v-9z"/><path d="M9 21v-6h6v6"/></svg>
+                        Рекомендации
+                    </button>
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html'">
+                        <svg viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        Поиск
+                    </button>
+                    <button class="sidebar-item" id="savedBtn">
+                        <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                        Сохраненные
+                    </button>
+                    <button class="sidebar-item active" id="messengerBtn">
+                        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        Мессенджер
+                    </button>
+                </div>
+            </div>
 
+            <div class="sidebar-category">
+                <div class="sidebar-category-title">Контент</div>
+                <div class="sidebar-menu">
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html?type=mod'">Моды</button>
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html?type=shader'">Шейдеры</button>
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html?type=resourcepack'">Ресурспаки</button>
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html?type=modpack'">Сборки</button>
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html?type=plugin'">Плагины</button>
+                    <button class="sidebar-item" onclick="window.location.href='/minecraft/search.html?type=datapack'">Датапаки</button>
+                </div>
+            </div>
+
+            <!-- Пользовательская секция -->
+            <div class="user-section" id="userSection">
+                <div id="userInfo" style="display: none;">
+                    <div class="user-info">
+                        <img class="user-avatar" id="userAvatar" src="" alt="">
+                        <div class="user-details">
+                            <div class="user-name" id="userName"></div>
+                            <div class="user-nick" id="userNick"></div>
+                        </div>
+                    </div>
+                </div>
+                <button class="google-btn" id="googleSignInBtn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                    Войти через Google
+                </button>
+            </div>
+        </div>
+
+        <!-- Основной контент -->
         <div class="main-content">
             <div class="messenger-container">
                 <div class="chat-area">
                     <div class="chat-header">
-                        <i class="fas fa-hashtag"></i> Общий чат
+                        <i class="fas fa-hashtag"></i> Основной чат
                     </div>
                     
                     <div class="messages-container" id="messagesContainer">
@@ -551,144 +1092,340 @@
                     <div id="replyIndicator" class="reply-indicator" style="display: none;"></div>
                     
                     <div class="message-input-area">
-                        <button class="emoji-btn" id="emojiBtn"><i class="far fa-smile"></i></button>
-                        <button class="gif-btn" id="gifBtn">GIF</button>
+                        <button class="emoji-btn" id="emojiBtn">
+                            <i class="far fa-smile"></i>
+                        </button>
+                        <button class="gif-btn" id="gifBtn">
+                            GIF
+                        </button>
                         <input type="text" class="chat-input" id="messageInput" placeholder="Введите сообщение... (@упомянуть)" maxlength="500">
                         <button class="chat-send-btn" id="sendBtn" disabled>Отправить</button>
                         
+                        <div class="mentions-list" id="mentionsList"></div>
+                        
                         <div class="emoji-picker" id="emojiPicker">
+                            <input type="text" class="emoji-search" id="emojiSearch" placeholder="Поиск эмодзи...">
+                            <div class="emoji-categories">
+                                <button class="emoji-category active" data-category="all">Все</button>
+                                <button class="emoji-category" data-category="smileys">😀</button>
+                                <button class="emoji-category" data-category="hearts">❤️</button>
+                                <button class="emoji-category" data-category="objects">🔔</button>
+                            </div>
                             <div class="emoji-grid" id="emojiGrid"></div>
                         </div>
                         
                         <div class="gif-picker" id="gifPicker">
+                            <input type="text" class="gif-search" id="gifSearch" placeholder="Поиск GIF...">
+                            <div class="gif-trending">
+                                <button class="gif-trending-btn" data-term="funny">Смешные</button>
+                                <button class="gif-trending-btn" data-term="minecraft">Minecraft</button>
+                                <button class="gif-trending-btn" data-term="dance">Танцы</button>
+                                <button class="gif-trending-btn" data-term="love">Любовь</button>
+                            </div>
                             <div class="gif-results" id="gifResults"></div>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Правая панель с пользователями -->
             <div class="users-panel">
                 <div class="users-header">
-                    <i class="fas fa-users"></i> ПОЛЬЗОВАТЕЛИ — <span id="onlineCount">0</span>
+                    <i class="fas fa-users" style="margin-right: 0.5rem;"></i> ПОЛЬЗОВАТЕЛИ — <span id="onlineCount">0</span>
                 </div>
                 <div class="users-list" id="usersList">
-                    <div class="loading">Загрузка...</div>
+                    <div class="loading">Загрузка пользователей...</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="edit-modal" id="editModal">
-        <div class="edit-modal-content">
-            <h3 style="color: var(--text-contrast);">Редактировать сообщение</h3>
-            <textarea id="editInput" rows="3"></textarea>
-            <div class="edit-modal-buttons">
-                <button class="edit-cancel" id="cancelEdit">Отмена</button>
-                <button class="edit-save" id="saveEdit">Сохранить</button>
+    <!-- Контекстное меню -->
+    <div class="context-menu" id="contextMenu">
+        <div class="context-menu-item" id="menuReply">
+            <i class="fas fa-reply"></i> Ответить
+        </div>
+        <div class="context-menu-item" id="menuReact">
+            <i class="far fa-smile"></i> Реакция
+        </div>
+        <div class="context-menu-item" id="menuCopy">
+            <i class="far fa-copy"></i> Копировать
+        </div>
+        <div class="context-menu-item" id="menuEdit">
+            <i class="fas fa-edit"></i> Редактировать
+        </div>
+        <div class="context-menu-item delete" id="menuDelete">
+            <i class="fas fa-trash-alt"></i> Удалить
+        </div>
+    </div>
+
+    <!-- Модальное окно редактирования -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Редактировать сообщение</h3>
+                <span class="modal-close" id="closeEditModal">&times;</span>
+            </div>
+            <textarea class="modal-input" id="editInput" rows="3"></textarea>
+            <div class="modal-buttons">
+                <button class="modal-btn secondary" id="cancelEdit">Отмена</button>
+                <button class="modal-btn primary" id="saveEdit">Сохранить</button>
             </div>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="/minecraft/common.js"></script>
     <script>
+        // Firebase конфигурация
+        const firebaseConfig = {
+            apiKey: "AIzaSyBk4nxZ1ldNQUCxsbgaeYTkm9stq0o9o2Q",
+            authDomain: "deygram-e4814.firebaseapp.com",
+            projectId: "deygram-e4814",
+            storageBucket: "deygram-e4814.firebasestorage.app",
+            messagingSenderId: "591207353726",
+            appId: "1:591207353726:web:d20f5e648d3daf86fcb72f"
+        };
+
+        // Инициализация Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        let currentUser = null;
         let unsubscribeMessages = null;
         let replyingToMessage = null;
-        let editingMessageId = null;
+        let editingMessage = null;
+        let userNickname = localStorage.getItem('userNickname') || '';
         let allUsers = [];
         let onlineUsers = new Set();
-        
+        let heartbeatInterval = null;
+        let currentMessageForMenu = null;
+
+        // Элементы
         const messagesContainer = document.getElementById('messagesContainer');
         const messageInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
+        const userName = document.getElementById('userName');
+        const userNick = document.getElementById('userNick');
+        const userAvatar = document.getElementById('userAvatar');
+        const userInfo = document.getElementById('userInfo');
+        const googleSignInBtn = document.getElementById('googleSignInBtn');
+        const savedBtn = document.getElementById('savedBtn');
         const replyIndicator = document.getElementById('replyIndicator');
-        const usersList = document.getElementById('usersList');
-        const onlineCount = document.getElementById('onlineCount');
-        
         const emojiBtn = document.getElementById('emojiBtn');
         const gifBtn = document.getElementById('gifBtn');
         const emojiPicker = document.getElementById('emojiPicker');
         const gifPicker = document.getElementById('gifPicker');
+        const emojiSearch = document.getElementById('emojiSearch');
+        const gifSearch = document.getElementById('gifSearch');
         const emojiGrid = document.getElementById('emojiGrid');
         const gifResults = document.getElementById('gifResults');
-        
+        const emojiCategoryBtns = document.querySelectorAll('.emoji-category');
+        const gifTrendingBtns = document.querySelectorAll('.gif-trending-btn');
+        const mentionsList = document.getElementById('mentionsList');
+        const usersList = document.getElementById('usersList');
+        const onlineCount = document.getElementById('onlineCount');
+        const contextMenu = document.getElementById('contextMenu');
         const editModal = document.getElementById('editModal');
         const editInput = document.getElementById('editInput');
+        const closeEditModal = document.getElementById('closeEditModal');
         const cancelEdit = document.getElementById('cancelEdit');
         const saveEdit = document.getElementById('saveEdit');
-        
+
+        // Эмодзи
+        const emojiCategories = {
+            all: ["😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "😊", "😇", "🙂", "🙃", "😉", "😌", "😍", "🥰", "😘", "😗", "😙", "😚", "😋", "😛", "😝", "😜", "🤪", "🤨", "🧐", "🤓", "😎", "🤩", "🥳", "😏", "😒", "😞", "😔", "😟", "😕", "🙁", "☹️", "😣", "😖", "😫", "😩", "🥺", "😢", "😭", "😤", "😠", "😡", "🤬", "🤯", "😳", "🥵", "🥶", "😱", "😨", "😰", "😥", "😓", "🤗", "🤔", "🤭", "🤫", "🤥", "😶", "😐", "😑", "😬", "🙄", "😯", "😦", "😧", "😮", "😲", "🥱", "😴", "🤤", "😪", "😵", "🤐", "🥴", "🤢", "🤮", "🤧", "😷", "🤒", "🤕", "🤑", "🤠", "😈", "👿", "👹", "👺", "🤡", "💩", "👻", "💀", "☠️", "👽", "👾", "🤖", "🎃"],
+            smileys: ["😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "😊", "😇", "🙂", "🙃", "😉", "😌", "😍", "🥰", "😘", "😗", "😙", "😚", "😋", "😛", "😝", "😜", "🤪", "🤨", "🧐", "🤓", "😎", "🤩", "🥳", "😏", "😒", "😞", "😔", "😟", "😕", "🙁", "☹️", "😣", "😖", "😫", "😩", "🥺", "😢", "😭", "😤", "😠", "😡", "🤬", "🤯", "😳", "🥵", "🥶", "😱", "😨", "😰", "😥", "😓", "🤗", "🤔", "🤭", "🤫", "🤥", "😶", "😐", "😑", "😬", "🙄", "😯", "😦", "😧", "😮", "😲", "🥱", "😴", "🤤", "😪", "😵", "🤐", "🥴", "🤢", "🤮", "🤧", "😷", "🤒", "🤕", "🤑", "🤠", "😈", "👿", "👹", "👺", "🤡", "💩", "👻", "💀", "☠️", "👽", "👾", "🤖", "🎃"],
+            hearts: ["❤️", "🧡", "💛", "💚", "💙", "💜", "🖤", "🤍", "🤎", "💔", "❣️", "💕", "💞", "💓", "💗", "💖", "💘", "💝", "💟", "💌", "💋"],
+            objects: ["🔔", "🎵", "🎶", "🎼", "🎧", "🎤", "🎷", "🎸", "🎹", "🎺", "🎻", "🥁", "📻", "📱", "💻", "🖥️", "🖨️", "🎥", "📹", "📼", "🔍", "🔎", "💡", "📔", "📒", "📕", "📗", "📘", "📙", "📚", "📖", "🔖", "🎯", "🧩", "🚀", "⭐", "🌟", "🎁", "🎉", "🎊", "🎈", "🎂", "🍰", "🧁", "🥧", "🍦", "🍨", "🍩", "🍪", "🎀", "🎗️", "🎟️", "🎫", "🏆", "🏅", "🥇", "🥈", "🥉", "⚽", "🏀", "🏈", "⚾", "🥎", "🎾", "🏐", "🏉", "🥏", "🎱", "🪀", "🏓", "🏸", "🏒", "🏑", "🥍", "🏏", "🎿", "⛷️", "🏂", "🪂", "🏋️", "🤼", "🤸", "⛹️", "🤾", "🏌️", "🏇", "🧘"]
+        };
+
+        // Стандартные реакции
         const quickReactions = ['👍', '❤️', '😂', '😮', '😢', '😡'];
-        
-        const emojis = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','☠️','👽','👾','🤖','🎃'];
-        
-        window.loadSidebar();
-        
-        function loadEmojis() {
-            emojiGrid.innerHTML = '';
-            emojis.forEach(emoji => {
-                const div = document.createElement('div');
-                div.className = 'emoji-item';
-                div.textContent = emoji;
-                div.onclick = () => {
-                    messageInput.value += emoji;
-                    emojiPicker.classList.remove('show');
-                    messageInput.focus();
+
+        // ========== АУТЕНТИФИКАЦИЯ ==========
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                currentUser = user;
+                userInfo.style.display = 'block';
+                googleSignInBtn.style.display = 'none';
+                
+                const displayName = userNickname || user.displayName || 'Пользователь';
+                const nick = userNickname || `@${user.email.split('@')[0]}`;
+                
+                userName.textContent = displayName;
+                userNick.textContent = nick;
+                userAvatar.src = user.photoURL || '';
+                userAvatar.onerror = function() {
+                    this.src = '';
+                    this.style.backgroundColor = 'var(--text-brand)';
+                    this.style.display = 'flex';
+                    this.textContent = displayName.charAt(0).toUpperCase();
                 };
-                emojiGrid.appendChild(div);
+                
+                // Сохраняем в users
+                await db.collection('users').doc(user.uid).set({
+                    uid: user.uid,
+                    displayName: displayName,
+                    nick: nick,
+                    email: user.email,
+                    photoURL: user.photoURL || ''
+                }, { merge: true });
+                
+                loadMessages();
+                loadUsers();
+                setupOnlineStatus();
+                
+                // Создаем приветственное сообщение если чат пуст
+                const snapshot = await db.collection('chat').limit(1).get();
+                if (snapshot.empty) {
+                    db.collection('chat').add({
+                        text: 'Добро пожаловать в общий чат! 🎮',
+                        userId: 'system',
+                        userName: 'Система',
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+            } else {
+                currentUser = null;
+                userInfo.style.display = 'none';
+                googleSignInBtn.style.display = 'flex';
+                messagesContainer.innerHTML = '<div class="no-messages">🔒 Войдите, чтобы видеть сообщения</div>';
+                
+                if (unsubscribeMessages) {
+                    unsubscribeMessages();
+                }
+                
+                if (heartbeatInterval) {
+                    clearInterval(heartbeatInterval);
+                }
+            }
+        });
+
+        googleSignInBtn.addEventListener('click', () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider);
+        });
+
+        savedBtn.addEventListener('click', () => {
+            if (!currentUser) {
+                alert('Войдите, чтобы увидеть сохраненные проекты');
+                return;
+            }
+            window.location.href = '/minecraft/saved.html';
+        });
+
+        // ========== ONLINE СТАТУС ==========
+        function setupOnlineStatus() {
+            if (!currentUser) return;
+            
+            const userRef = db.collection('onlineUsers').doc(currentUser.uid);
+            
+            // Устанавливаем онлайн статус
+            const setOnline = () => {
+                userRef.set({
+                    online: true,
+                    lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+                    uid: currentUser.uid
+                });
+            };
+            
+            setOnline();
+            
+            // Отправляем heartbeat каждые 30 секунд
+            heartbeatInterval = setInterval(setOnline, 30000);
+            
+            // При закрытии вкладки
+            window.addEventListener('beforeunload', () => {
+                userRef.update({ 
+                    online: false,
+                    lastSeen: firebase.firestore.FieldValue.serverTimestamp() 
+                });
+                if (heartbeatInterval) {
+                    clearInterval(heartbeatInterval);
+                }
+            });
+            
+            // Слушаем изменения онлайн статусов
+            db.collection('onlineUsers').onSnapshot((snapshot) => {
+                onlineUsers.clear();
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (data.online) {
+                        onlineUsers.add(doc.id);
+                    }
+                });
+                loadUsers();
             });
         }
-        
-        async function searchGifs(query = '') {
-            const term = query || 'minecraft';
-            try {
-                const response = await fetch(`https://g.tenor.com/v1/search?q=${encodeURIComponent(term)}&key=LIVDSRZULELA&limit=20`);
-                const data = await response.json();
-                gifResults.innerHTML = '';
-                data.results.forEach(result => {
-                    const url = result.media[0].gif.url;
-                    const img = document.createElement('img');
-                    img.className = 'gif-item';
-                    img.src = url;
-                    img.onclick = () => sendGif(url);
-                    gifResults.appendChild(img);
+
+        // ========== ЗАГРУЗКА ПОЛЬЗОВАТЕЛЕЙ ==========
+        function loadUsers() {
+            db.collection('users').onSnapshot((snapshot) => {
+                allUsers = [];
+                const usersMap = new Map();
+                
+                snapshot.forEach(doc => {
+                    const user = doc.data();
+                    if (!usersMap.has(user.uid)) {
+                        usersMap.set(user.uid, user);
+                    }
                 });
-            } catch (error) {
-                console.error('Ошибка поиска GIF:', error);
-            }
+                
+                allUsers = Array.from(usersMap.values());
+                
+                let html = '';
+                
+                allUsers.forEach(user => {
+                    if (user.uid !== currentUser?.uid) {
+                        const isOnline = onlineUsers.has(user.uid);
+                        html += `
+                            <div class="user-item" data-user="${user.uid}">
+                                <img class="user-item-avatar" src="${user.photoURL || ''}" 
+                                     onerror="this.src=''; this.style.backgroundColor='var(--text-brand)'; this.style.display='flex'; this.textContent='${user.displayName.charAt(0)}';"
+                                     alt="">
+                                ${isOnline ? '<span class="online-indicator"></span>' : ''}
+                                <div class="user-item-info">
+                                    <div class="user-item-name">${user.displayName}</div>
+                                    <div class="user-item-nick">${user.nick || ''}</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+                
+                const currentUserData = allUsers.find(u => u.uid === currentUser?.uid);
+                if (currentUserData) {
+                    html = `
+                        <div class="user-item" style="background: var(--bg-brand); margin-bottom: 0.5rem;">
+                            <img class="user-item-avatar" src="${currentUserData.photoURL || ''}" 
+                                 onerror="this.src=''; this.style.backgroundColor='var(--text-brand)'; this.style.display='flex'; this.textContent='${currentUserData.displayName.charAt(0)}';"
+                                 alt="">
+                            <span class="online-indicator"></span>
+                            <div class="user-item-info">
+                                <div class="user-item-name">${currentUserData.displayName} (вы)</div>
+                                <div class="user-item-nick">${currentUserData.nick || ''}</div>
+                            </div>
+                        </div>
+                    ` + html;
+                }
+                
+                if (html === '') {
+                    html = '<div class="loading">Нет пользователей</div>';
+                }
+                
+                usersList.innerHTML = html;
+                onlineCount.textContent = onlineUsers.size;
+            });
         }
-        
-        async function sendGif(url) {
-            if (!window.currentUser) return;
-            await sendMessage(url, true);
-            gifPicker.classList.remove('show');
-        }
-        
-        emojiBtn.addEventListener('click', () => {
-            emojiPicker.classList.toggle('show');
-            gifPicker.classList.remove('show');
-        });
-        
-        gifBtn.addEventListener('click', () => {
-            gifPicker.classList.toggle('show');
-            emojiPicker.classList.remove('show');
-            if (gifPicker.classList.contains('show') && gifResults.children.length === 0) {
-                searchGifs();
+
+        // ========== ЗАГРУЗКА СООБЩЕНИЙ ==========
+        function loadMessages() {
+            if (unsubscribeMessages) {
+                unsubscribeMessages();
             }
-        });
-        
-        document.addEventListener('click', (e) => {
-            if (!emojiPicker.contains(e.target) && e.target !== emojiBtn) emojiPicker.classList.remove('show');
-            if (!gifPicker.contains(e.target) && e.target !== gifBtn) gifPicker.classList.remove('show');
-        });
-        
-        async function loadMessages() {
-            if (unsubscribeMessages) unsubscribeMessages();
-            
+
             messagesContainer.innerHTML = '<div class="loading">Загрузка сообщений...</div>';
-            
+
             unsubscribeMessages = db.collection('chat')
                 .orderBy('timestamp', 'asc')
                 .onSnapshot((snapshot) => {
@@ -696,68 +1433,84 @@
                     snapshot.forEach(doc => {
                         messages.push({ id: doc.id, ...doc.data() });
                     });
+                    
+                    if (messages.length === 0) {
+                        messagesContainer.innerHTML = '<div class="no-messages">💬 Нет сообщений. Будьте первым!</div>';
+                        return;
+                    }
+
                     renderMessages(messages);
                     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, (error) => {
+                    console.error('Ошибка:', error);
+                    messagesContainer.innerHTML = '<div class="no-messages">❌ Ошибка загрузки</div>';
                 });
         }
-        
+
         function renderMessages(messages) {
-            if (messages.length === 0) {
-                messagesContainer.innerHTML = '<div class="loading">💬 Нет сообщений. Будьте первым!</div>';
-                return;
-            }
-            
             let html = '';
             let lastUserId = null;
             let lastTime = null;
-            let groupMessages = [];
+            let messageGroup = [];
+            let messageCount = 0;
             
             for (let i = 0; i < messages.length; i++) {
                 const msg = messages[i];
                 const nextMsg = messages[i + 1];
-                groupMessages.push(msg);
                 
-                if (!nextMsg || nextMsg.userId !== msg.userId) {
-                    const firstMsg = groupMessages[0];
-                    const time = firstMsg.timestamp ? new Date(firstMsg.timestamp.toDate()).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }) : '';
+                messageGroup.push(msg);
+                messageCount++;
+                
+                if (!nextMsg || nextMsg.userId !== msg.userId || messageCount >= 5) {
+                    const firstMsg = messageGroup[0];
+                    const time = firstMsg.timestamp ? new Date(firstMsg.timestamp.toDate()).toLocaleTimeString('ru-RU', { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                    }) : '';
+                    
+                    const displayName = firstMsg.userName || 'Пользователь';
                     
                     const userData = allUsers.find(u => u.uid === firstMsg.userId);
                     const photoURL = userData?.photoURL || '';
-                    const displayName = firstMsg.userName || 'Пользователь';
                     
                     html += `<div class="message-group" data-user="${firstMsg.userId}">`;
+                    
                     html += `
                         <div class="message-group-header">
-                            <img class="group-avatar" src="${photoURL}" onerror="this.src=''; this.style.backgroundColor='var(--text-brand)'; this.textContent='${displayName.charAt(0)}'">
-                            <span class="group-username">${window.escapeHtml(displayName)}</span>
-                            <span class="group-time">${time}</span>
+                            <img class="group-avatar" src="${photoURL}" 
+                                 onerror="this.src=''; this.style.backgroundColor='var(--text-brand)'; this.style.display='flex'; this.textContent='${displayName.charAt(0)}';"
+                                 alt="">
+                            <div class="group-info">
+                                <span class="group-username">${displayName}</span>
+                                <span class="group-time">${time}</span>
+                            </div>
                         </div>
                     `;
                     
-                    for (const groupMsg of groupMessages) {
-                        let messageHtml = '';
-                        if (groupMsg.replyTo) {
-                            messageHtml += `<div class="reply-preview"><i class="fas fa-reply"></i> Ответ <strong>${window.escapeHtml(groupMsg.replyTo.userName)}</strong></div>`;
+                    messageGroup.forEach(groupMsg => {
+                        let messageText = groupMsg.text || '';
+                        if (messageText) {
+                            const urlRegex = /(https?:\/\/[^\s]+)/g;
+                            messageText = messageText.replace(urlRegex, '<a href="$&" target="_blank">$&</a>');
+                            
+                            const mentionRegex = /@(\w+)/g;
+                            messageText = messageText.replace(mentionRegex, '<span style="color: var(--text-brand); font-weight: 600;">$&</span>');
                         }
                         
-                        let text = groupMsg.text || '';
-                        const urlRegex = /(https?:\/\/[^\s]+)/g;
-                        text = text.replace(urlRegex, '<a href="$&" target="_blank" style="color: var(--text-brand);">$&</a>');
-                        const mentionRegex = /@(\w+)/g;
-                        text = text.replace(mentionRegex, '<span style="color: var(--text-brand); font-weight: 500;">$&</span>');
+                        const gifHtml = groupMsg.gif ? `<img src="${groupMsg.gif}" class="message-gif" alt="GIF">` : '';
                         
-                        messageHtml += `<div class="message-text">${text}</div>`;
-                        if (groupMsg.gif) messageHtml += `<img src="${groupMsg.gif}" class="message-gif">`;
-                        
+                        // Реакции
                         let reactionsHtml = '';
                         if (groupMsg.reactions) {
                             reactionsHtml = '<div class="reactions-container">';
                             Object.entries(groupMsg.reactions).forEach(([emoji, users]) => {
                                 const userCount = Object.keys(users).length;
-                                const isActive = users[window.currentUser?.uid];
+                                const isActive = users[currentUser?.uid];
                                 reactionsHtml += `
-                                    <span class="reaction-badge ${isActive ? 'active' : ''}" data-emoji="${emoji}" data-message-id="${groupMsg.id}">
-                                        ${emoji} ${userCount}
+                                    <span class="reaction-badge ${isActive ? 'active' : ''}" 
+                                          data-emoji="${emoji}" 
+                                          data-message-id="${groupMsg.id}">
+                                        ${emoji} <span class="reaction-count">${userCount}</span>
                                     </span>
                                 `;
                             });
@@ -768,52 +1521,153 @@
                             <div class="message" data-message-id="${groupMsg.id}" data-user-id="${groupMsg.userId}">
                                 <div class="message-avatar-placeholder"></div>
                                 <div class="message-content">
-                                    ${messageHtml}
+                                    <div class="message-text">${messageText}</div>
+                                    ${gifHtml}
                                     ${reactionsHtml}
-                                    <div class="message-actions">
-                                        <button class="message-action-btn" onclick="replyToMessage('${groupMsg.id}', '${displayName}')"><i class="fas fa-reply"></i></button>
-                                        <button class="message-action-btn" onclick="showReactionPicker('${groupMsg.id}')"><i class="far fa-smile"></i></button>
-                                        ${window.currentUser?.uid === groupMsg.userId ? `
-                                            <button class="message-action-btn" onclick="editMessage('${groupMsg.id}', '${window.escapeHtml(text).replace(/'/g, "\\'")}')"><i class="fas fa-edit"></i></button>
-                                            <button class="message-action-btn" onclick="deleteMessage('${groupMsg.id}')"><i class="fas fa-trash-alt"></i></button>
-                                        ` : ''}
-                                        <button class="message-action-btn" onclick="copyMessageText('${window.escapeHtml(text).replace(/'/g, "\\'")}')"><i class="fas fa-copy"></i></button>
-                                    </div>
+                                </div>
+                                <div class="message-menu-btn">
+                                    <i class="fas fa-ellipsis-v"></i>
                                 </div>
                             </div>
                         `;
-                    }
+                    });
+                    
                     html += `</div>`;
-                    groupMessages = [];
+                    
+                    messageGroup = [];
+                    messageCount = 0;
                 }
             }
             
             messagesContainer.innerHTML = html;
             
+            // Добавляем обработчики
+            addMessageEventListeners();
+        }
+
+        function addMessageEventListeners() {
+            // Обработчики для кнопки меню
+            document.querySelectorAll('.message-menu-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const messageDiv = btn.closest('.message');
+                    const messageId = messageDiv.dataset.messageId;
+                    const userId = messageDiv.dataset.userId;
+                    
+                    showContextMenu(e.clientX, e.clientY, messageId, userId);
+                });
+            });
+            
+            // Обработчики для реакций
             document.querySelectorAll('.reaction-badge').forEach(badge => {
                 badge.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    toggleReaction(badge.dataset.messageId, badge.dataset.emoji);
+                    const messageId = badge.dataset.messageId;
+                    const emoji = badge.dataset.emoji;
+                    toggleReaction(messageId, emoji);
+                });
+            });
+            
+            // Контекстное меню на ПКМ
+            document.querySelectorAll('.message').forEach(msg => {
+                msg.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    const messageId = msg.dataset.messageId;
+                    const userId = msg.dataset.userId;
+                    
+                    showContextMenu(e.clientX, e.clientY, messageId, userId);
                 });
             });
         }
-        
-        window.replyToMessage = function(messageId, userName) {
-            replyingToMessage = { id: messageId, userName: userName };
-            replyIndicator.style.display = 'flex';
-            replyIndicator.innerHTML = `
-                <span><i class="fas fa-reply"></i> Ответ <strong>${window.escapeHtml(userName)}</strong></span>
-                <button class="cancel-reply" onclick="cancelReply()"><i class="fas fa-times"></i></button>
-            `;
-            messageInput.focus();
-        };
-        
-        window.cancelReply = function() {
-            replyingToMessage = null;
-            replyIndicator.style.display = 'none';
-        };
-        
-        window.showReactionPicker = function(messageId) {
+
+        // ========== КОНТЕКСТНОЕ МЕНЮ ==========
+        function showContextMenu(x, y, messageId, userId) {
+            currentMessageForMenu = { id: messageId, userId: userId };
+            
+            // Показываем/скрываем пункты в зависимости от автора
+            const isOwn = userId === currentUser?.uid;
+            document.getElementById('menuEdit').style.display = isOwn ? 'flex' : 'none';
+            document.getElementById('menuDelete').style.display = isOwn ? 'flex' : 'none';
+            
+            contextMenu.style.left = x + 'px';
+            contextMenu.style.top = y + 'px';
+            contextMenu.classList.add('show');
+        }
+
+        // Закрытие контекстного меню
+        document.addEventListener('click', () => {
+            contextMenu.classList.remove('show');
+        });
+
+        // Обработчики меню
+        document.getElementById('menuReply').addEventListener('click', () => {
+            if (currentMessageForMenu) {
+                startReply(currentMessageForMenu.id, currentMessageForMenu.userId);
+            }
+            contextMenu.classList.remove('show');
+        });
+
+        document.getElementById('menuReact').addEventListener('click', () => {
+            if (currentMessageForMenu) {
+                showReactionPicker(currentMessageForMenu.id);
+            }
+            contextMenu.classList.remove('show');
+        });
+
+        document.getElementById('menuCopy').addEventListener('click', () => {
+            if (currentMessageForMenu) {
+                copyMessage(currentMessageForMenu.id);
+            }
+            contextMenu.classList.remove('show');
+        });
+
+        document.getElementById('menuEdit').addEventListener('click', () => {
+            if (currentMessageForMenu) {
+                editMessage(currentMessageForMenu.id);
+            }
+            contextMenu.classList.remove('show');
+        });
+
+        document.getElementById('menuDelete').addEventListener('click', () => {
+            if (currentMessageForMenu) {
+                deleteMessage(currentMessageForMenu.id);
+            }
+            contextMenu.classList.remove('show');
+        });
+
+        // ========== ФУНКЦИИ ДЛЯ СООБЩЕНИЙ ==========
+        async function toggleReaction(messageId, emoji) {
+            if (!currentUser) return;
+            
+            try {
+                const messageRef = db.collection('chat').doc(messageId);
+                const doc = await messageRef.get();
+                
+                if (doc.exists) {
+                    const message = doc.data();
+                    const reactions = message.reactions || {};
+                    const userReactions = reactions[emoji] || {};
+                    
+                    if (userReactions[currentUser.uid]) {
+                        delete userReactions[currentUser.uid];
+                        if (Object.keys(userReactions).length === 0) {
+                            delete reactions[emoji];
+                        } else {
+                            reactions[emoji] = userReactions;
+                        }
+                    } else {
+                        userReactions[currentUser.uid] = true;
+                        reactions[emoji] = userReactions;
+                    }
+                    
+                    await messageRef.update({ reactions });
+                }
+            } catch (error) {
+                console.error('Ошибка реакции:', error);
+            }
+        }
+
+        function showReactionPicker(messageId) {
             const picker = document.createElement('div');
             picker.className = 'reaction-picker';
             
@@ -821,132 +1675,190 @@
                 const btn = document.createElement('span');
                 btn.className = 'reaction-emoji';
                 btn.textContent = emoji;
-                btn.onclick = () => {
+                btn.addEventListener('click', () => {
                     toggleReaction(messageId, emoji);
                     picker.remove();
-                };
+                });
                 picker.appendChild(btn);
             });
             
             const msgDiv = document.querySelector(`[data-message-id="${messageId}"]`);
             if (msgDiv) {
                 msgDiv.appendChild(picker);
-                setTimeout(() => picker.remove(), 3000);
+                
+                setTimeout(() => {
+                    picker.remove();
+                }, 5000);
             }
-        };
-        
-        window.copyMessageText = function(text) {
-            navigator.clipboard.writeText(text);
-            window.showToast('Скопировано!', 'success');
-        };
-        
-        window.editMessage = function(messageId, currentText) {
-            editingMessageId = messageId;
-            editInput.value = currentText;
-            editModal.style.display = 'flex';
-        };
-        
+        }
+
+        async function copyMessage(messageId) {
+            try {
+                const doc = await db.collection('chat').doc(messageId).get();
+                if (doc.exists) {
+                    const text = doc.data().text || '';
+                    await navigator.clipboard.writeText(text);
+                    alert('Скопировано!');
+                }
+            } catch (error) {
+                console.error('Ошибка копирования:', error);
+            }
+        }
+
+        async function editMessage(messageId) {
+            try {
+                const doc = await db.collection('chat').doc(messageId).get();
+                if (doc.exists) {
+                    const text = doc.data().text || '';
+                    editingMessage = messageId;
+                    editInput.value = text;
+                    editModal.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+            }
+        }
+
         saveEdit.addEventListener('click', async () => {
+            if (!editingMessage) return;
+            
             const newText = editInput.value.trim();
-            if (!newText || !editingMessageId) return;
+            if (!newText) return;
             
             try {
-                await db.collection('chat').doc(editingMessageId).update({
+                await db.collection('chat').doc(editingMessage).update({
                     text: newText,
                     edited: true
                 });
                 editModal.style.display = 'none';
-                editingMessageId = null;
-                window.showToast('Сообщение обновлено', 'success');
+                editingMessage = null;
             } catch (error) {
                 console.error('Ошибка редактирования:', error);
-                window.showToast('Не удалось отредактировать', 'error');
+                alert('Не удалось отредактировать');
             }
         });
-        
-        cancelEdit.addEventListener('click', () => {
-            editModal.style.display = 'none';
-            editingMessageId = null;
-        });
-        
-        window.deleteMessage = async function(messageId) {
+
+        async function deleteMessage(messageId) {
             if (!confirm('Удалить сообщение?')) return;
-            try {
-                await db.collection('chat').doc(messageId).delete();
-                window.showToast('Сообщение удалено', 'success');
-            } catch (error) {
-                console.error('Ошибка удаления:', error);
-                window.showToast('Не удалось удалить', 'error');
-            }
-        };
-        
-        async function toggleReaction(messageId, emoji) {
-            if (!window.currentUser) return;
             
             try {
-                const messageRef = db.collection('chat').doc(messageId);
-                const doc = await messageRef.get();
-                if (doc.exists) {
-                    const message = doc.data();
-                    const reactions = message.reactions || {};
-                    const userReactions = reactions[emoji] || {};
-                    
-                    if (userReactions[window.currentUser.uid]) {
-                        delete userReactions[window.currentUser.uid];
-                        if (Object.keys(userReactions).length === 0) {
-                            delete reactions[emoji];
-                        } else {
-                            reactions[emoji] = userReactions;
-                        }
-                    } else {
-                        userReactions[window.currentUser.uid] = true;
-                        reactions[emoji] = userReactions;
-                    }
-                    await messageRef.update({ reactions });
-                }
+                await db.collection('chat').doc(messageId).delete();
             } catch (error) {
-                console.error('Ошибка реакции:', error);
+                console.error('Ошибка удаления:', error);
+                alert('Не удалось удалить');
             }
         }
-        
-        messageInput.addEventListener('input', () => {
-            sendBtn.disabled = messageInput.value.trim() === '';
+
+        // ========== ОТВЕТ НА СООБЩЕНИЕ ==========
+        function startReply(messageId, userId) {
+            const messageDiv = document.querySelector(`[data-message-id="${messageId}"]`);
+            const userDiv = messageDiv.closest('.message-group').querySelector('.group-username');
+            const userName = userDiv.textContent;
+            
+            replyingToMessage = { id: messageId, user: userName };
+            
+            replyIndicator.style.display = 'flex';
+            replyIndicator.innerHTML = `
+                <span>Ответ на <strong>${userName}</strong></span>
+                <button class="cancel-reply"><i class="fas fa-times"></i></button>
+            `;
+            
+            replyIndicator.querySelector('.cancel-reply').addEventListener('click', cancelReply);
+            messageInput.focus();
+        }
+
+        function cancelReply() {
+            replyingToMessage = null;
+            replyIndicator.style.display = 'none';
+        }
+
+        // ========== ОТПРАВКА СООБЩЕНИЙ ==========
+        messageInput.addEventListener('input', function() {
+            sendBtn.disabled = this.value.trim() === '';
+            checkMentions();
         });
-        
-        messageInput.addEventListener('keypress', (e) => {
+
+        messageInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && !e.shiftKey && !sendBtn.disabled) {
                 e.preventDefault();
                 sendMessage();
             }
         });
-        
+
         sendBtn.addEventListener('click', sendMessage);
-        
-        async function sendMessage(gifUrl = null, isGif = false) {
-            const text = messageInput.value.trim();
-            if (!text && !isGif) return;
-            if (!window.currentUser) {
-                window.showToast('Войдите, чтобы отправлять сообщения', 'error');
+
+        function checkMentions() {
+            const text = messageInput.value;
+            const lastAt = text.lastIndexOf('@');
+            
+            if (lastAt !== -1 && lastAt === text.length - 1) {
+                showMentions('');
+            } else if (lastAt !== -1 && text[lastAt] === '@') {
+                const searchTerm = text.slice(lastAt + 1);
+                const atIndex = searchTerm.indexOf(' ');
+                const term = atIndex === -1 ? searchTerm : searchTerm.slice(0, atIndex);
+                showMentions(term);
+            } else {
+                mentionsList.classList.remove('show');
+            }
+        }
+
+        function showMentions(searchTerm) {
+            const filtered = allUsers.filter(user => 
+                user.nick && user.nick.toLowerCase().includes(searchTerm.toLowerCase())
+            ).slice(0, 5);
+            
+            if (filtered.length === 0) {
+                mentionsList.classList.remove('show');
                 return;
             }
             
+            let html = '';
+            filtered.forEach(user => {
+                html += `
+                    <div class="mention-item" data-nick="${user.nick}">
+                        <img class="mention-avatar" src="${user.photoURL || ''}" 
+                             onerror="this.src=''; this.style.backgroundColor='var(--text-brand)'; this.style.display='flex'; this.textContent='${user.displayName.charAt(0)}';"
+                             alt="">
+                        <div class="mention-name">${user.displayName}</div>
+                        <div class="mention-nick">${user.nick}</div>
+                    </div>
+                `;
+            });
+            
+            mentionsList.innerHTML = html;
+            mentionsList.classList.add('show');
+            
+            document.querySelectorAll('.mention-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const nick = item.dataset.nick;
+                    const text = messageInput.value;
+                    const lastAt = text.lastIndexOf('@');
+                    messageInput.value = text.substring(0, lastAt) + nick + ' ';
+                    mentionsList.classList.remove('show');
+                    messageInput.focus();
+                });
+            });
+        }
+
+        async function sendMessage() {
+            const text = messageInput.value.trim();
+            if (!text || !currentUser) return;
+
+            const displayName = userNickname || currentUser.displayName || 'Пользователь';
+
             const messageData = {
-                userId: window.currentUser.uid,
-                userName: window.currentUser.displayName || 'Пользователь',
+                text: text,
+                userId: currentUser.uid,
+                userName: displayName,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                 reactions: {}
             };
             
-            if (isGif) {
-                messageData.gif = gifUrl;
-            } else {
-                messageData.text = text;
-            }
-            
             if (replyingToMessage) {
                 messageData.replyTo = {
                     messageId: replyingToMessage.id,
-                    userName: replyingToMessage.userName
+                    userName: replyingToMessage.user
                 };
             }
             
@@ -956,111 +1868,193 @@
                 sendBtn.disabled = true;
                 cancelReply();
             } catch (error) {
-                console.error('Ошибка отправки:', error);
-                window.showToast('Не удалось отправить', 'error');
+                console.error('Ошибка:', error);
+                alert('Не удалось отправить сообщение');
             }
         }
-        
-        async function loadUsers() {
-            db.collection('users').onSnapshot((snapshot) => {
-                allUsers = [];
-                snapshot.forEach(doc => {
-                    allUsers.push(doc.data());
-                });
-                
-                db.collection('onlineUsers').onSnapshot((onlineSnapshot) => {
-                    onlineUsers.clear();
-                    onlineSnapshot.forEach(doc => {
-                        if (doc.data().online) onlineUsers.add(doc.id);
-                    });
-                    renderUsers();
+
+        // ========== ЭМОДЗИ ==========
+        function initEmojiPicker() {
+            loadEmojis('all');
+            
+            emojiBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                emojiPicker.classList.toggle('show');
+                gifPicker.classList.remove('show');
+            });
+            
+            emojiSearch.addEventListener('input', () => {
+                filterEmojis();
+            });
+            
+            emojiCategoryBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    emojiCategoryBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    loadEmojis(btn.dataset.category);
                 });
             });
-        }
-        
-        function renderUsers() {
-            let html = '';
-            const currentUserData = allUsers.find(u => u.uid === window.currentUser?.uid);
             
-            if (currentUserData) {
-                html += `
-                    <div class="user-item" style="background: var(--bg-brand); margin-bottom: 0.5rem;">
-                        <img class="user-item-avatar" src="${currentUserData.photoURL || ''}" onerror="this.src=''; this.style.backgroundColor='var(--text-brand)'; this.textContent='${(currentUserData.displayName || 'U').charAt(0)}'">
-                        <span class="online-indicator"></span>
-                        <div class="user-item-info">
-                            <div class="user-item-name">${window.escapeHtml(currentUserData.displayName || 'Пользователь')} (вы)</div>
-                        </div>
-                    </div>
-                `;
-            }
-            
-            allUsers.forEach(user => {
-                if (user.uid !== window.currentUser?.uid) {
-                    const isOnline = onlineUsers.has(user.uid);
-                    html += `
-                        <div class="user-item">
-                            <img class="user-item-avatar" src="${user.photoURL || ''}" onerror="this.src=''; this.style.backgroundColor='var(--text-brand)'; this.textContent='${(user.displayName || 'U').charAt(0)}'">
-                            ${isOnline ? '<span class="online-indicator"></span>' : ''}
-                            <div class="user-item-info">
-                                <div class="user-item-name">${window.escapeHtml(user.displayName || 'Пользователь')}</div>
-                            </div>
-                        </div>
-                    `;
+            document.addEventListener('click', (e) => {
+                if (!emojiPicker.contains(e.target) && e.target !== emojiBtn) {
+                    emojiPicker.classList.remove('show');
                 }
             });
-            
-            usersList.innerHTML = html || '<div class="loading">Нет пользователей</div>';
-            onlineCount.textContent = onlineUsers.size;
         }
-        
-        function setupUserOnline() {
-            if (!window.currentUser) return;
-            const userRef = db.collection('onlineUsers').doc(window.currentUser.uid);
-            const setOnline = () => {
-                userRef.set({ online: true, lastSeen: firebase.firestore.FieldValue.serverTimestamp(), uid: window.currentUser.uid });
-            };
-            setOnline();
-            const interval = setInterval(setOnline, 30000);
-            window.addEventListener('beforeunload', () => {
-                clearInterval(interval);
-                userRef.update({ online: false });
+
+        function loadEmojis(category) {
+            emojiGrid.innerHTML = '';
+            const emojis = emojiCategories[category] || emojiCategories.all;
+            
+            emojis.forEach(emoji => {
+                const el = document.createElement('div');
+                el.className = 'emoji-item';
+                el.textContent = emoji;
+                el.addEventListener('click', () => {
+                    messageInput.value += emoji;
+                    messageInput.focus();
+                    emojiPicker.classList.remove('show');
+                });
+                emojiGrid.appendChild(el);
             });
         }
-        
-        function checkPendingShare() {
-            const pending = localStorage.getItem('pendingShare');
-            if (pending) {
-                localStorage.removeItem('pendingShare');
-                try {
-                    const shareData = JSON.parse(pending);
-                    const message = `📦 Поделился проектом: ${shareData.title}\n🔗 /minecraft/project.html#${shareData.projectType}/${shareData.projectSlug}`;
-                    db.collection('chat').add({
-                        text: message,
-                        userId: window.currentUser.uid,
-                        userName: window.currentUser.displayName || 'Пользователь',
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                        reactions: {}
+
+        function filterEmojis() {
+            const term = emojiSearch.value.toLowerCase();
+            const category = document.querySelector('.emoji-category.active').dataset.category;
+            const emojis = emojiCategories[category] || emojiCategories.all;
+            
+            emojiGrid.innerHTML = '';
+            
+            emojis.forEach(emoji => {
+                if (term === '' || emoji.includes(term)) {
+                    const el = document.createElement('div');
+                    el.className = 'emoji-item';
+                    el.textContent = emoji;
+                    el.addEventListener('click', () => {
+                        messageInput.value += emoji;
+                        messageInput.focus();
+                        emojiPicker.classList.remove('show');
                     });
-                } catch(e) {}
+                    emojiGrid.appendChild(el);
+                }
+            });
+        }
+
+        // ========== GIF ==========
+        function initGifPicker() {
+            loadTrendingGifs();
+            
+            gifBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                gifPicker.classList.toggle('show');
+                emojiPicker.classList.remove('show');
+            });
+            
+            gifSearch.addEventListener('input', () => {
+                searchGifs();
+            });
+            
+            gifTrendingBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    searchGifs(btn.dataset.term);
+                });
+            });
+            
+            document.addEventListener('click', (e) => {
+                if (!gifPicker.contains(e.target) && e.target !== gifBtn) {
+                    gifPicker.classList.remove('show');
+                }
+            });
+        }
+
+        function loadTrendingGifs() {
+            const gifs = [
+                'https://media.tenor.com/J7mHkqEm9ZcAAAAi/anime-dance.gif',
+                'https://media.tenor.com/KI_RNHe9R5UAAAAi/anime.gif',
+                'https://media.tenor.com/Bn3J7sYRHhUAAAAi/anime-headpat.gif',
+                'https://media.tenor.com/0j9m-6MkCAIAAAAi/anime-smile.gif',
+                'https://media.tenor.com/2s4BiB_-P2EAAAAi/anime-wave.gif',
+                'https://media.tenor.com/x8v1oUO4ls4AAAAi/anime.gif'
+            ];
+            
+            gifResults.innerHTML = '';
+            gifs.forEach(url => {
+                const img = document.createElement('img');
+                img.className = 'gif-item';
+                img.src = url;
+                img.addEventListener('click', () => sendGif(url));
+                gifResults.appendChild(img);
+            });
+        }
+
+        async function searchGifs(query = null) {
+            const term = query || gifSearch.value;
+            if (!term) {
+                loadTrendingGifs();
+                return;
+            }
+            
+            try {
+                const response = await fetch(`https://g.tenor.com/v1/search?q=${encodeURIComponent(term)}&key=LIVDSRZULELA&limit=20`);
+                const data = await response.json();
+                
+                gifResults.innerHTML = '';
+                data.results.forEach(result => {
+                    const url = result.media[0].gif.url;
+                    const img = document.createElement('img');
+                    img.className = 'gif-item';
+                    img.src = url;
+                    img.addEventListener('click', () => sendGif(url));
+                    gifResults.appendChild(img);
+                });
+            } catch (error) {
+                console.error('Ошибка поиска GIF:', error);
+                loadTrendingGifs();
             }
         }
-        
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                window.currentUser = user;
-                await window.loadSavedProjects();
-                loadMessages();
-                loadUsers();
-                setupUserOnline();
-                setTimeout(checkPendingShare, 1000);
-            } else {
-                window.currentUser = null;
-                messagesContainer.innerHTML = '<div class="loading">🔒 Войдите, чтобы видеть сообщения</div>';
-                if (unsubscribeMessages) unsubscribeMessages();
+
+        async function sendGif(url) {
+            if (!currentUser) return;
+            
+            const displayName = userNickname || currentUser.displayName || 'Пользователь';
+            
+            try {
+                await db.collection('chat').add({
+                    gif: url,
+                    userId: currentUser.uid,
+                    userName: displayName,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    reactions: {}
+                });
+                gifPicker.classList.remove('show');
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Не удалось отправить GIF');
+            }
+        }
+
+        // ========== МОДАЛЬНЫЕ ОКНА ==========
+        closeEditModal.addEventListener('click', () => {
+            editModal.style.display = 'none';
+            editingMessage = null;
+        });
+
+        cancelEdit.addEventListener('click', () => {
+            editModal.style.display = 'none';
+            editingMessage = null;
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === editModal) {
+                editModal.style.display = 'none';
+                editingMessage = null;
             }
         });
-        
-        loadEmojis();
+
+        // Инициализация
+        initEmojiPicker();
+        initGifPicker();
     </script>
 </body>
 </html>
